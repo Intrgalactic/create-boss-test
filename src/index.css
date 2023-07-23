@@ -479,6 +479,7 @@ textarea {
   padding-inline: 20px;
   font-family: NexaHeavy;
   color: black;
+  background-color: white;
   border-radius: 20px;
   -webkit-appearance: none;
   appearance: none;
@@ -819,7 +820,9 @@ footer {
     scroll-margin-inline: 20px;
 
   }
-
+  .testimonial__box {
+    margin-right: 40px;
+  }
   .testimonial__box-user-details {
     align-items: center;
     margin-bottom: 20px;
