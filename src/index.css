@@ -804,6 +804,7 @@ footer {
   .testimonial-section__boxes-container {
     width: calc(280px);
     min-width: 280px;
+    padding-inline:20px;
   }
   .carousel-button {
     width: 80px;
@@ -814,15 +815,11 @@ footer {
   }
 
   .testimonial__box {
-    width: 200px;
-    margin-inline: 20px;
-    min-width: 200px;
-    scroll-margin-inline: 20px;
+    width: 220px;
+    margin-inline: 30px;
+    min-width: 220px;
+    scroll-margin-inline: 30px;
 
-  }
-  .testimonial__box:last-of-type {
-    scroll-margin-left: 40px;
-    scroll-margin-right: 0px;
   }
   .testimonial__box-user-details {
     align-items: center;
