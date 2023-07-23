@@ -72,6 +72,7 @@ h2 {
 header {
   height: 108px;
   background-color: #0B32FF;
+  position: relative;
 }
 
 header nav a {
@@ -84,28 +85,23 @@ header nav a {
 
 .nav-button {
   width: 50px;
-  height: 60px;
-  background-color: #0B6CFF;
-  border-top-left-radius: 20px;
-  border-bottom-left-radius: 20px;
-  padding-bottom: 5px;
-  padding-top: 5px;
-  display: grid;
-  position: fixed;
-  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.8) inset;
+  height: 40px;
+  border-radius: 8px;
+  box-shadow: 0px 2px 10px black;
+  position: absolute;
   right: 0;
   display: none;
-  align-items: center;
-  flex-wrap: wrap;
+  background-color: white;
 }
 
 .nav-button hr {
-  border-color: white;
-  width: 50%;
-  border-radius: 30%;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.5);
-  height: 0.8px;
-  background-color: white;
+  border-color: #0B32FF;
+  display:block;
+  background-color: #0B32FF;
+  width: 60%;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+  height: 1px;
+ 
   border-style: solid;
 
 }
@@ -129,8 +125,8 @@ header nav,
   height: 972px;
   background-size: 100% 100%;
   background-image: image-set(
-    url('assets/images/hero-bg.webp') type('image/webp'),
-    url('assets/images/hero-bg.jpg') type('image/jpeg')
+    url('src/assets/images/hero-bg.webp') type('image/webp'),
+    url('src/assets/images/hero-bg.jpg') type('image/jpeg')
   )
 }
 
@@ -170,8 +166,8 @@ header nav,
 
 .service-overview-section {
   background-image: image-set(
-    url('assets/images/service-overview-bg.webp') type('image/webp'),
-    url('assets/images/service-overview-bg.jpg') type('image/jpeg')
+    url('src/assets/images/service-overview-bg.webp') type('image/webp'),
+    url('src/assets/images/service-overview-bg.jpg') type('image/jpeg')
   );
   padding-block: 100px;
   background-size: 100% 100%;
@@ -240,8 +236,8 @@ header nav,
 
 .benefits-section {
   background-image:image-set(
-    url('assets/images/benefits-bg.webp') type('image/webp'),
-    url('assets/images/benefits-bg.jpg') type('image/jpeg')
+    url('src/assets/images/benefits-bg.webp') type('image/webp'),
+    url('src/assets/images/benefits-bg.jpg') type('image/jpeg')
   );
   background-size: 100% 100%;
   padding-block: 100px;
@@ -435,8 +431,8 @@ header nav,
 
 .contact-section {
   background-image:image-set(
-    url('assets/images/contact-bg.webp') type('image/webp'),
-    url('assets/images/contact-bg.jpg') type('image/jpeg')
+    url('src/assets/images/contact-bg.webp') type('image/webp'),
+    url('src/assets/images/contact-bg.jpg') type('image/jpeg')
   );
   background-size: cover;
   padding-bottom:250px;
@@ -541,8 +537,8 @@ textarea::placeholder {
 }
 footer .callout {
   background-image: image-set(
-    url('assets/images/callout-bg.webp') type('image/webp'),
-    url('assets/images/callout.jpg') type('image/jpeg')
+    url('src/assets/images/callout-bg.webp') type('image/webp'),
+    url('src/assets/images/callout.jpg') type('image/jpeg')
   );
   width: 50vw;
   position: absolute;
@@ -627,7 +623,7 @@ footer {
   }
 
   .nav-button {
-    display: flex;
+    display: block;
   }
 
   .testimonials-section,
@@ -692,8 +688,8 @@ footer {
     height: 70vh;
     min-height: 500px;
     background-image: image-set(
-      url('assets/images/mobile-hero-bg.webp') type('image/webp'),
-      url('assets/images/mobile-hero-bg.jpg') type('image/jpeg')
+      url('src/assets/images/mobile-hero-bg.webp') type('image/webp'),
+      url('src/assets/images/mobile-hero-bg.jpg') type('image/jpeg')
     );
     background-size: 150% 100%;
     background-position: center;
