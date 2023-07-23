@@ -10,7 +10,6 @@ export const Carousel = forwardRef((props, ref) => {
         window.addEventListener("resize", handleWindowResize);
         if (ref.current) {
             elementsToScroll = ref.current.querySelector("div").childNodes;
-            elementsToScroll[0].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
         }
         return () => {
             window.removeEventListener("resize", handleWindowResize);
