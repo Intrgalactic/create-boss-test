@@ -821,8 +821,8 @@ footer {
 
   }
   .testimonial__box:last-of-type {
-    scroll-margin-left: 0px;
-    scroll-margin-right: 40px;
+    scroll-margin-left: 40px;
+    scroll-margin-right: 0px;
   }
   .testimonial__box-user-details {
     align-items: center;
