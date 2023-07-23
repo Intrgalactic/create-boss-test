@@ -828,7 +828,6 @@ footer {
 
   .testimonial__box p:not(.testimonial__box-user-details p) {
     font-size: 0.65em;
-    font-family: Inter;
   }
 
   .section-heading:not(.benefits-section .section-heading) {
