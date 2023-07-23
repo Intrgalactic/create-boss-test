@@ -56,7 +56,7 @@ export const Carousel = forwardRef((props, ref) => {
             }
         }
         else {
-            e.target.classList.contains("right-carousel-button") ? elementsToScroll[0].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" }) : elementsToScroll[elementsToScroll.length - 1].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            e.target.classList.contains("right-carousel-button") ? elementsToScroll[0].scrollIntoView({ behavior: "smooth", block: "center", inline: "center" }) : elementsToScroll[elementsToScroll.length - 1].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
             e.target.classList.contains("right-carousel-button") ? setScrollCount(0) : setScrollCount(elementsToScroll.length - 1);
         }
     }

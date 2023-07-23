@@ -548,7 +548,7 @@ footer .callout {
   background-image: url('assets/images/callout-bg.jpg');
   background-image: image-set(
     url('assets/images/callout-bg.webp') type('image/webp'),
-    url('assets/images/callout.jpg') type('image/jpeg')
+    url('assets/images/callout-bg.jpg') type('image/jpeg')
   );
   width: 50vw;
   position: absolute;
@@ -643,9 +643,9 @@ footer {
 
   .pricing-section__boxes-container {
     width: 250px;
-    margin-inline: 10px;
     max-width: 250px;
     min-width: 250px;
+    padding-inline:20px;
     margin: auto;
   }
 
@@ -819,9 +819,6 @@ footer {
     min-width: 200px;
     scroll-margin-inline: 20px;
 
-  }
-  .testimonial__box:last-of-type {
-    margin-left:0px;
   }
   .testimonial__box-user-details {
     align-items: center;
