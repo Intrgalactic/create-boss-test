@@ -10,6 +10,7 @@
 
 html {
   scroll-behavior: smooth;
+  font-display: swap;
 }
 
 :root {
@@ -820,9 +821,7 @@ footer {
     scroll-margin-inline: 20px;
 
   }
-  .testimonial__box {
-    margin-right: 40px;
-  }
+
   .testimonial__box-user-details {
     align-items: center;
     margin-bottom: 20px;
