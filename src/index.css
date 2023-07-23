@@ -820,6 +820,10 @@ footer {
     scroll-margin-inline: 20px;
 
   }
+  .testimonial__box:last-of-type {
+    scroll-margin-left: 0px;
+    scroll-margin-right: 40px;
+  }
   .testimonial__box-user-details {
     align-items: center;
     margin-bottom: 20px;
