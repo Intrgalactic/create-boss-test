@@ -1,0 +1,39 @@
+import { lazy } from "react";
+
+import speechToTextImage from 'src/assets/images/speech-to-text.png';
+import webpSpeechToTextImage from 'src/assets/images/speech-to-text.webp';
+import textToSpeechImage from 'src/assets/images/text-to-speech.png';
+import webpTextToSpeechImage from 'src/assets/images/text-to-speech.webp';
+import subtitlesToVideoImage from 'src/assets/images/subtitles-to-video.png';
+import webpSubtitlesToVideoImage from 'src/assets/images/subtitles-to-video.webp';
+import subtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.png';
+import webpSubtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.webp';
+import { Picture } from "./picture";
+import { ContentContainer } from "./content-container";
+const ServiceOverviewBox = lazy(() => import('./content-box').then(module => {
+    return { default: module.ServiceOverviewBox }
+}))
+import { ContentBox } from "./content-box";
+import { SectionHeading } from "./section-heading";
+
+export function ServiceOverviewContainer() {
+    return (
+        <div className="service-overview-section__container">
+            <SectionHeading heading="Time and Streamline Your Workflow with Our Services"/>
+            <ContentContainer containerClass="service-overview-section__boxes-container">
+                <ContentBox heading="Getting Subtitles from Video" description="Extract accurate subtitles effortlessly, repurposing video content for wider reach and engagement." boxClass="service-overview__box ">
+                    <Picture images={[subtitlesFromVideoImage, webpSubtitlesFromVideoImage]} imgWidth="116.67px" imgHeight="75px" alt="camera" />
+                </ContentBox>
+                <ContentBox heading="Adding Subtitles to Video" description="Enhance engagement with professional subtitles, making videos accessible and inclusive." boxClass="service-overview__box ">
+                    <Picture images={[subtitlesToVideoImage, webpSubtitlesToVideoImage]} imgWidth="105px" imgHeight="75px" alt="subtitles" />
+                </ContentBox>
+                <ContentBox heading="Speech To Text" description="Efficiently transcribe spoken words into editable text, saving time and increasing productivity for interviews, lectures, and meetings." boxClass="service-overview__box ">
+                    <Picture images={[speechToTextImage, webpSpeechToTextImage]} imgWidth="100px" imgHeight="75px" alt="qoutes" />
+                </ContentBox>
+                <ContentBox heading="Text To Speech " description="Transform written content into captivating audio experiences with customizable voices for books, podcasts, and presentations" boxClass="service-overview__box ">
+                    <Picture images={[textToSpeechImage, webpTextToSpeechImage]} imgWidth="37.5px" imgHeight="75px" alt="microphone" />
+                </ContentBox>
+            </ContentContainer>
+        </div>
+    )
+}
