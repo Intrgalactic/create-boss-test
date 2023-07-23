@@ -15,7 +15,7 @@ export const Carousel = forwardRef((props, ref) => {
         return () => {
             window.removeEventListener("resize", handleWindowResize);
         }
-    }, [setScrollCount, ref.current, windowSize]);
+    }, [setScrollCount, ref.current]);
     function handleWindowResize() {
         setWindowSize(window.innerWidth);
     }

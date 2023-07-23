@@ -480,6 +480,8 @@ textarea {
   font-family: NexaHeavy;
   color: black;
   border-radius: 20px;
+  -webkit-appearance: none;
+  appearance: none;
   border: none;
   font-size: 1.5em;
   box-shadow: 0px 0px 4px 5px rgba(0, 0, 0, 0.125) inset;
@@ -521,6 +523,7 @@ textarea {
   min-width: 80%;
   max-width: 80%;
   height: 150px;
+  padding-top:20px;
   max-height: 250px;
   min-height: 150px;
 }
@@ -827,7 +830,7 @@ footer {
   }
 
   .testimonial__box p:not(.testimonial__box-user-details p) {
-    font-size: 0.65em;
+    font-size: 0.8em;
   }
 
   .section-heading:not(.benefits-section .section-heading) {
