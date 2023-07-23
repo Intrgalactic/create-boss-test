@@ -87,7 +87,7 @@ header nav a {
   width: 50px;
   height: 40px;
   border-radius: 8px;
-  box-shadow: 0px 2px 10px black;
+  box-shadow: 0px 2px 1px black;
   position: absolute;
   right: 0;
   display: none;
@@ -99,7 +99,7 @@ header nav a {
   display:block;
   background-color: #0B32FF;
   width: 60%;
-  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.5);
+  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.5);
   height: 1px;
  
   border-style: solid;
@@ -124,9 +124,10 @@ header nav,
 .hero-section {
   height: 972px;
   background-size: 100% 100%;
+  background-image: url('assets/images/hero-bg.jpg');
   background-image: image-set(
-    url('src/assets/images/hero-bg.webp') type('image/webp'),
-    url('src/assets/images/hero-bg.jpg') type('image/jpeg')
+    url('assets/images/hero-bg.webp') type('image/webp'),
+    url('assets/images/hero-bg.jpg') type('image/jpeg')
   )
 }
 
@@ -165,9 +166,10 @@ header nav,
 }
 
 .service-overview-section {
+  background-image: url('assets/images/service-overview-bg.jpg');
   background-image: image-set(
-    url('src/assets/images/service-overview-bg.webp') type('image/webp'),
-    url('src/assets/images/service-overview-bg.jpg') type('image/jpeg')
+    url('assets/images/service-overview-bg.webp') type('image/webp'),
+    url('assets/images/service-overview-bg.jpg') type('image/jpeg')
   );
   padding-block: 100px;
   background-size: 100% 100%;
@@ -235,9 +237,10 @@ header nav,
 }
 
 .benefits-section {
+  background-image: url('assets/images/benefits-bg.jpg');
   background-image:image-set(
-    url('src/assets/images/benefits-bg.webp') type('image/webp'),
-    url('src/assets/images/benefits-bg.jpg') type('image/jpeg')
+    url('assets/images/benefits-bg.webp') type('image/webp'),
+    url('assets/images/benefits-bg.jpg') type('image/jpeg')
   );
   background-size: 100% 100%;
   padding-block: 100px;
@@ -430,9 +433,10 @@ header nav,
 }
 
 .contact-section {
+  background-image: url('assets/images/contact-bg.jpg');
   background-image:image-set(
-    url('src/assets/images/contact-bg.webp') type('image/webp'),
-    url('src/assets/images/contact-bg.jpg') type('image/jpeg')
+    url('assets/images/contact-bg.webp') type('image/webp'),
+    url('assets/images/contact-bg.jpg') type('image/jpeg')
   );
   background-size: cover;
   padding-bottom:250px;
@@ -536,9 +540,10 @@ textarea::placeholder {
   opacity: 1;
 }
 footer .callout {
+  background-image: url('assets/images/callout-bg.jpg');
   background-image: image-set(
-    url('src/assets/images/callout-bg.webp') type('image/webp'),
-    url('src/assets/images/callout.jpg') type('image/jpeg')
+    url('assets/images/callout-bg.webp') type('image/webp'),
+    url('assets/images/callout.jpg') type('image/jpeg')
   );
   width: 50vw;
   position: absolute;
@@ -687,9 +692,10 @@ footer {
   .hero-section {
     height: 70vh;
     min-height: 500px;
+    background-image: url('assets/images/mobile-hero-bg.jpg');
     background-image: image-set(
-      url('src/assets/images/mobile-hero-bg.webp') type('image/webp'),
-      url('src/assets/images/mobile-hero-bg.jpg') type('image/jpeg')
+      url('assets/images/mobile-hero-bg.webp') type('image/webp'),
+      url('assets/images/mobile-hero-bg.jpg') type('image/jpeg')
     );
     background-size: 150% 100%;
     background-position: center;
