@@ -805,7 +805,9 @@ footer {
     width: calc(280px);
     min-width: 280px;
   }
-
+  .testimonial__box:last-of-type {
+    margin-right: 40px;
+  }
   .carousel-button {
     width: 80px;
   }
