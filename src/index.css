@@ -707,7 +707,7 @@ footer {
   .hero-section {
     height: 500px;
     min-height: 500px;
-    background-size: 220% 60%;
+    background-size: 140% 60%;
     background-position: center;
     background-repeat: no-repeat;
     background-image: url('assets/images/mobile-hero-bg.jpg');
@@ -832,7 +832,7 @@ footer {
   }
 
   .testimonial__box p:not(.testimonial__box-user-details p) {
-    font-size: 0.8em;
+    font-size: 0.9em;
   }
 
   .section-heading:not(.benefits-section .section-heading) {
