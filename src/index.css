@@ -93,16 +93,16 @@ header nav a {
   position: absolute;
   right: 0;
   display: none;
- 
+
 }
 
 .nav-button hr {
   border-color: white;
-  display:block;
+  display: block;
   background-color: white;
   width: 60%;
   height: 1px;
- 
+
   border-style: solid;
 
 }
@@ -126,10 +126,8 @@ header nav,
   height: 972px;
   background-size: 100% 100%;
   background-image: url('assets/images/hero-bg.jpg');
-  background-image: image-set(
-    url('assets/images/hero-bg.webp') type('image/webp'),
-    url('assets/images/hero-bg.jpg') type('image/jpeg')
-  )
+  background-image: image-set(url('assets/images/hero-bg.webp') type('image/webp'),
+      url('assets/images/hero-bg.jpg') type('image/jpeg'))
 }
 
 .hero-section__container {
@@ -168,12 +166,11 @@ header nav,
 
 .service-overview-section {
   background-image: url('assets/images/service-overview-bg.jpg');
-  background-image: image-set(
-    url('assets/images/service-overview-bg.webp') type('image/webp'),
-    url('assets/images/service-overview-bg.jpg') type('image/jpeg')
-  );
+  background-image: image-set(ow-gap url('assets/images/service-overview-bg.webp') type('image/webp'),
+      url('assets/images/service-overview-bg.jpg') type('image/jpeg'));
   padding-block: 100px;
   background-size: 100% 100%;
+  height: fit-content;
 }
 
 .service-overview-section__container {
@@ -188,7 +185,7 @@ header nav,
   width: 60vw;
   flex-wrap: wrap;
   justify-content: center;
-  row-gap: 80px;
+  row-gap: 100px;
 }
 
 .service-overview__box {
@@ -200,8 +197,8 @@ header nav,
 }
 
 .service-overview__box img {
-  filter: drop-shadow(0px 1px 70px white);
-  -webkit-filter: drop-shadow(0px 1px 70px white);
+  filter: drop-shadow(0px 1px 30px white);
+  -webkit-filter: drop-shadow(0px 1px 30px white);
 }
 
 .service-overview__box p {
@@ -239,10 +236,8 @@ header nav,
 
 .benefits-section {
   background-image: url('assets/images/benefits-bg.jpg');
-  background-image:image-set(
-    url('assets/images/benefits-bg.webp') type('image/webp'),
-    url('assets/images/benefits-bg.jpg') type('image/jpeg')
-  );
+  background-image: image-set(url('assets/images/benefits-bg.webp') type('image/webp'),
+      url('assets/images/benefits-bg.jpg') type('image/jpeg'));
   background-size: 100% 100%;
   padding-block: 100px;
 }
@@ -284,7 +279,9 @@ header nav,
   align-self: center;
 }
 
-.carousel-button:hover,.call-to-action-btn:hover,input[type="checkbox"]:hover {
+.carousel-button:hover,
+.call-to-action-btn:hover,
+input[type="checkbox"]:hover {
   cursor: pointer;
 }
 
@@ -435,12 +432,10 @@ header nav,
 
 .contact-section {
   background-image: url('assets/images/contact-bg.jpg');
-  background-image:image-set(
-    url('assets/images/contact-bg.webp') type('image/webp'),
-    url('assets/images/contact-bg.jpg') type('image/jpeg')
-  );
+  background-image: image-set(url('assets/images/contact-bg.webp') type('image/webp'),
+      url('assets/images/contact-bg.jpg') type('image/jpeg'));
   background-size: cover;
-  padding-bottom:250px;
+  padding-bottom: 250px;
   padding-top: 100px;
 }
 
@@ -488,18 +483,20 @@ textarea {
   font-size: 1.5em;
   box-shadow: 0px 0px 4px 5px rgba(0, 0, 0, 0.125) inset;
 }
+
 .contact-section__form-container form textarea {
   margin-bottom: 15px;
 }
+
 .contact-section__form-container form label {
   display: flex;
   width: calc(80% + 40px);
   margin: auto;
   font-family: NexaHeavy;
-  column-gap:30px;
+  column-gap: 30px;
   justify-content: space-between;
   text-align: left;
-  margin-bottom:15px;
+  margin-bottom: 15px;
 }
 
 input[type="checkbox"] {
@@ -525,104 +522,117 @@ textarea {
   min-width: 80%;
   max-width: 80%;
   height: 150px;
-  padding-top:20px;
+  padding-top: 20px;
   max-height: 250px;
   min-height: 150px;
 }
+
 .contact-section__form-container {
   text-align: left;
 }
+
 .contact-section__form-container .call-to-action-btn {
-  margin-left:calc(10% - 20px);
+  margin-left: calc(10% - 20px);
   height: 60px;
   width: 200px;
   background-color: #DD0BFF;
-  text-shadow: 0px 4px 4px rgba(0,0,0,0.25);
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 .contact-section__form-container form input::placeholder,
 textarea::placeholder {
   color: black;
   opacity: 1;
 }
+
 footer .callout {
   background-image: url('assets/images/callout-bg.jpg');
-  background-image: image-set(
-    url('assets/images/callout-bg.webp') type('image/webp'),
-    url('assets/images/callout-bg.jpg') type('image/jpeg')
-  );
+  background-image: image-set(url('assets/images/callout-bg.webp') type('image/webp'),
+      url('assets/images/callout-bg.jpg') type('image/jpeg'));
   width: 50vw;
   position: absolute;
-  top:-150px;
-  transform:translateX(-50%);
-  left:50%;
-  margin:auto;
+  top: -150px;
+  transform: translateX(-50%);
+  left: 50%;
+  margin: auto;
   background-repeat: no-repeat;
   background-size: cover;
   border-radius: 30px;
-  display:flex;
+  display: flex;
   align-items: center;
-  padding-inline:5%;
+  padding-inline: 5%;
   justify-content: space-between;
-  box-shadow: 0px -4px 20px rgba(0,0,0,0.5);
+  box-shadow: 0px -4px 20px rgba(0, 0, 0, 0.5);
   height: 300px;
 }
+
 footer .callout .call-to-action-btn {
   width: 250px;
   min-width: 250px;
-  padding-inline:20px;
-  font-size:1.3em;
+  padding-inline: 20px;
+  font-size: 1.3em;
   background-color: #DD0BFF;
-  text-shadow: 0px 4px 4px rgba(0,0,0,0.25);
+  text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
 }
+
 .callout-heading-description {
   font-family: NexaHeavy;
   text-align: left;
   width: 90%;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.50);
 }
+
 .callout-heading-description h3 {
   font-size: 2.5em;
 }
+
 .callout-heading-description p {
-  font-size:1.5em;
+  font-size: 1.5em;
   width: 80%;
 }
 
 footer {
   background-color: black;
-  padding-top:300px;
+  padding-top: 300px;
   position: relative;
 }
+
 .footer-container__links {
-  display:flex;
+  display: flex;
   justify-content: space-between;
-  padding-inline:10vw;
+  padding-inline: 10vw;
   flex-wrap: wrap;
-  gap:50px;
+  gap: 50px;
 }
+
 .footer-links-single-container {
-  font-size:1.5em;
-  display:grid;
-  color:white;
+  font-size: 1.5em;
+  display: grid;
+  color: white;
   text-align: left;
-  font-family:NexaHeavy;
+  font-family: NexaHeavy;
 }
+
 .footer-links-single-container h5 {
-  margin:0;
-  font-size:1.4em;
+  margin: 0;
+  font-size: 1.4em;
 }
-.footer-links-single-container a ,.footer-container__end a{
-  color:white;
+
+.footer-links-single-container a,
+.footer-container__end a {
+  color: white;
   text-decoration: none;
 }
+
 .footer-container__end {
   align-items: center;
-  display:flex;
-  margin-top:50px;
-  padding-inline:10vw;
+  display: flex;
+  margin-top: 50px;
+  padding-inline: 10vw;
   background-color: #1D1D1D;
-  gap:50px;
+  gap: 50px;
 }
+
 @media only screen and (max-width:768px) {
   header {
     height: 20vh;
@@ -645,7 +655,7 @@ footer {
     width: 250px;
     max-width: 250px;
     min-width: 250px;
-    padding-inline:20px;
+    padding-inline: 20px;
     margin: auto;
   }
 
@@ -697,19 +707,16 @@ footer {
   .hero-section {
     height: 500px;
     min-height: 500px;
-    background-image: url('assets/images/mobile-hero-bg.jpg');
-    background-image: image-set(
-      url('assets/images/mobile-hero-bg.webp') type('image/webp'),
-      url('assets/images/mobile-hero-bg.jpg') type('image/jpeg')
-    );
-    background-size: 150% 100%;
+    background-size: 220% 60%;
     background-position: center;
     background-repeat: no-repeat;
+    background-image: url('assets/images/mobile-hero-bg.jpg');
+    background-image: image-set(url('assets/images/mobile-hero-bg.webp') type('image/webp'),
+        url('assets/images/mobile-hero-bg.jpg') type('image/jpeg'));
   }
 
   .hero-section__container {
     width: 80vw;
-    padding-top:50px;
   }
 
   .hero-section__container h1 {
@@ -729,24 +736,11 @@ footer {
     background-size: 150% 100%;
   }
 
-  .service-overview-section__boxes-container::-webkit-scrollbar,
-  .benefits-section__boxes-container::-webkit-scrollbar {
-    display: none;
-    width: 0 !important;
-  }
-
-  .benefits-section__boxes-container,
-  .service-overview-section__boxes-container {
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-    scrollbar-width: none;
-    padding-block: 20px;
-  }
   .benefits-section__boxes-container {
     width: 80vw;
   }
+
   .service-overview-section__boxes-container {
-    height: 370px;
     width: 90vw;
   }
 
@@ -762,13 +756,14 @@ footer {
     width: 80vw;
   }
 
+  .service-overview-section__boxes-container,
   .benefits-section__boxes-container {
-    row-gap: 110px;
+    row-gap: 40px;
   }
 
   .benefits__box {
-    width: calc(70vw - 20px);
-    margin-inline:10px;
+    width: calc(80vw - 40px);
+
     align-self: center;
   }
 
@@ -785,12 +780,9 @@ footer {
 
   .service-overview__box p {
     width: 90%;
-    font-size: 0.8em;
+    font-size: 1em;
   }
 
-  .benefits-section__boxes-container {
-    height: clamp(210px, 220px, 290px);
-  }
 
   .benefits__box h3 {
     font-size: 1em;
@@ -801,6 +793,10 @@ footer {
     padding-inline: 20px;
   }
 
+  .benefits-section__container {
+    display: block;
+  }
+
   .benefits-section__container picture {
     display: none;
   }
@@ -809,6 +805,7 @@ footer {
     width: calc(280px);
     min-width: 280px;
   }
+
   .carousel-button {
     width: 80px;
   }
@@ -824,6 +821,7 @@ footer {
     scroll-margin-inline: 20px;
 
   }
+
   .testimonial__box-user-details {
     align-items: center;
     margin-bottom: 20px;
@@ -841,84 +839,106 @@ footer {
     width: 100%;
     padding-bottom: 25px;
   }
+
   .contact-section__container {
-    display:block;
+    display: block;
   }
+
   .contact-heading-description .section-heading {
-    font-size:3em;
+    font-size: 3em;
     margin-bottom: 0;
   }
+
   .contact-heading-description {
     width: 100%;
   }
+
   .contact-heading-description p {
-    font-size:1.05em;
+    font-size: 1.05em;
   }
+
   .contact-section__form-container {
     width: 100%;
   }
-  .contact-section__form-container form input:not(input[type="checkbox"]), textarea {
+
+  .contact-section__form-container form input:not(input[type="checkbox"]),
+  textarea {
     width: 60%;
     max-width: 60%;
-    font-size:1.2em;
+    font-size: 1.2em;
     min-width: 60%;
   }
+
   .contact-section__form-container form label {
     width: calc(60% + 40px);
-    font-size:0.7em;
+    font-size: 0.7em;
   }
+
   textarea {
     height: 100px;
     max-height: 150px;
     min-height: 100px;
   }
+
   .contact-section__form-container {
     text-align: center;
   }
+
   .contact-section__form-container .call-to-action-btn {
-    margin-left:0;
+    margin-left: 0;
     width: 70%;
   }
+
   .callout-heading-description h3 {
-    font-size:1.8em;
-    margin-top:0;
+    font-size: 1.8em;
+    margin-top: 0;
   }
+
   footer .callout {
     width: 70vw;
-    display:block;
+    display: block;
     height: fit-content;
-    padding-block:40px;
+    padding-block: 40px;
     background-size: 100% 100%;
   }
+
   .callout-heading-description {
     width: 100%;
   }
+
   .callout-heading-description p {
-    font-size:1em;
+    font-size: 1em;
     width: 100%;
   }
+
   footer .callout .call-to-action-btn {
     width: 170px;
     min-width: 170px;
     height: 70px;
-    font-size:1em;
+    font-size: 1em;
   }
+
   .footer-links-single-container {
     flex-basis: 50%;
   }
+
   .footer-links-single-container h5 {
-    font-size:1em;
+    font-size: 1em;
   }
+
   .footer-links-single-container a {
-    font-size:0.8em;
+    font-size: 0.8em;
   }
+
   .footer-links-single-container:nth-child(even) {
     text-align: right;
   }
+
   .footer-container__links {
-    column-gap:0px;
+    column-gap: 0px;
   }
 }
+
 @media only screen and (max-width:470px) {
   header {
     height: 10vh;
@@ -926,20 +946,39 @@ footer {
     background-color: black;
     border-bottom: 3px solid white;
   }
+
   .hero-section {
-    padding-inline:5vw;
+    padding-inline: 5vw;
+    height: 90vh;
+
   }
+
+  .hero-section__container h1 {
+    font-size: 2em;
+  }
+
+  .hero-section__container p {
+    font-size: 1.3em;
+  }
+
+  .hero-section__container .call-to-action-btn {
+    width: 70vw;
+  }
+
   .header__container {
     -webkit-justify-content: space-between;
     justify-content: space-between;
   }
+
   .footer-links-single-container h5 {
-    font-size:0.8em;
+    font-size: 0.8em;
   }
+
   .footer-links-single-container a {
-    font-size:0.6em;
+    font-size: 0.6em;
   }
 }
+
 @media only screen and (min-width:512px) and (max-width:768px) {
   .hero-section__container h1 {
     font-size: 2em;
@@ -957,7 +996,6 @@ footer {
     width: 90vw;
     justify-content: space-around;
     column-gap: 0;
-    height: 300px;
   }
 
   .service-overview__box {
@@ -977,22 +1015,13 @@ footer {
     font-size: 0.75em;
   }
 
-  .benefits-section__container {
-    display: block;
-  }
-
-  .benefits-section__boxes-container {
-    height: 230px;
-    row-gap: 100px;
-  }
-
   .benefits__box {
     width: calc(30vw - 20px);
     height: 190px;
   }
 
   .benefits__box h3 {
-    font-size: 1.2em;
+    font-size: 0.8em;
   }
 
   .benefits__box p {
@@ -1142,25 +1171,29 @@ footer {
     scroll-margin-inline: 20px;
     min-width: 230px;
   }
+
   footer .callout {
     width: 60vw;
-    display:block;
+    display: block;
     height: fit-content;
-    padding-block:40px;
+    padding-block: 40px;
     background-size: 100% 100%;
   }
+
   .callout-heading-description {
     width: 100%;
   }
+
   .callout-heading-description p {
-    font-size:1.1em;
+    font-size: 1.1em;
     width: 100%;
   }
+
   footer .callout .call-to-action-btn {
     width: 300px;
     min-width: 300px;
     height: 90px;
-    font-size:1.2em;
+    font-size: 1.2em;
   }
 }
 
@@ -1173,15 +1206,20 @@ footer {
   .pricing-section .carousel {
     column-gap: 50px;
   }
+
   .contact-section__container {
     display: block;
   }
-  .contact-heading-description,.contact-section__form-container {
+
+  .contact-heading-description,
+  .contact-section__form-container {
     width: 80vw;
   }
+
   .contact-heading-description p {
-    font-size:1.4em;
+    font-size: 1.4em;
   }
+
   input[type="checkbox"] {
     width: 40px;
   }
@@ -1200,13 +1238,16 @@ footer {
     width: 850px;
     min-width: 850px;
   }
+
   .contact-heading-description {
     width: 40vw;
   }
+
   .contact-heading-description p {
-    font-size:1.7em;
+    font-size: 1.7em;
   }
+
   .contact-heading-description .section-heading {
-    font-size:3em;
+    font-size: 3em;
   }
 }

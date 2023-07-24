@@ -15,28 +15,11 @@ const ServiceOverviewBox = lazy(() => import('./content-box').then(module => {
 }))
 import { ContentBox } from "./content-box";
 import { SectionHeading } from "./section-heading";
-import { detectIsElementVisible, launchObserver } from "src/utils/utilities";
-
 
 export function ServiceOverviewContainer() {
-    const boxesRef = useRef();
-    var timeout = 2000;
-    const [isScrollingDone, setIsScrollingDone] = useState(false);
-    const controller = new AbortController();
-    const observer = new IntersectionObserver(entries => {
-            detectIsElementVisible(entries[0].isIntersecting, boxesRef, controller, setIsScrollingDone, timeout);
-        }, {
-            threshold: 1,
-    })
-    useEffect(() => {
-        launchObserver(boxesRef,isScrollingDone,observer);
-        return () => {
-            observer.unobserve(boxesRef.current);
-        }
-    }, [boxesRef, isScrollingDone,observer]);
-    console.log(isScrollingDone);
+    
     return (
-        <div className="service-overview-section__container" ref={boxesRef}>
+        <div className="service-overview-section__container" >
             <SectionHeading heading="Time and Streamline Your Workflow with Our Services" />
             <ContentContainer containerClass="service-overview-section__boxes-container">
                 <ContentBox heading="Getting Subtitles from Video" description="Extract accurate subtitles effortlessly, repurposing video content for wider reach and engagement." boxClass="service-overview__box ">

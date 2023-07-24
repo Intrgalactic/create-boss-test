@@ -4,26 +4,10 @@ import moneyImage from 'src/assets/images/money.png';
 import webpMoneyImage from 'src/assets/images/money.webp';
 import { Picture } from "./picture";
 import { SectionHeading } from "./section-heading";
-import { useEffect, useRef, useState } from "react";
-import { detectIsElementVisible, launchObserver } from "src/utils/utilities";
 export function BenefitsContainer() {
-    const boxesRef = useRef();
-    var timeout = 2000;
-    const [isScrollingDone, setIsScrollingDone] = useState(false);
-    const controller = new AbortController();
-    const observer = new IntersectionObserver(entries => {
-            detectIsElementVisible(entries[0].isIntersecting, boxesRef, controller, setIsScrollingDone, timeout);
-        }, {
-            threshold: 1,
-    })
-    useEffect(() => {
-        launchObserver(boxesRef,isScrollingDone,observer);
-        return () => {
-            observer.unobserve(boxesRef.current);
-        }
-    }, [boxesRef, isScrollingDone,observer]);
+ 
     return (
-        <div className="benefits-section__container" ref={boxesRef}>
+        <div className="benefits-section__container" >
             <Picture images={[moneyImage, webpMoneyImage]} imgHeight="290.89px" imgWidth="404.25px" alt="money bag" />
             <div className="benefits-section__pre-container">
                 <SectionHeading heading="Discover the Advantages of Our Speech Conversion Services" />
