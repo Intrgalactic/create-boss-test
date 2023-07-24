@@ -26,17 +26,17 @@ export function ServiceOverviewContainer() {
         const observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
                 const childrens = boxesRef.current.childNodes[1];
-                document.body.style.overflowY = "hidden";
-                for (let i = 0; i < childrens.childNodes.length; i++) {
+                document.body.style.overflow = "hidden";
+                for (let i = 1; i < childrens.childNodes.length; i++) {
                     setTimeout(() => {
                         childrens.childNodes[i].scrollIntoView({ behavior: "smooth", inline: "nearest", block: "center" });
                     }, timeout);
                     timeout += 2000;
                 }
                 setTimeout(() => {
-                    document.body.style.overflowY = "scroll";
+                    document.body.style.overflow = "scroll";
                     setIsScrollingDone(true);
-                }, 8000);
+                }, 6000);
             }
         }, {
             threshold: 1,
