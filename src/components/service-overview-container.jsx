@@ -27,7 +27,7 @@ export function ServiceOverviewContainer() {
             const childrens = boxesRef.current.childNodes[1];
             window.addEventListener("scroll",  function preventScroll() {
                 window.scrollTo({
-                    top:entries[0].boundingClientRect.bottom ,
+                    top:entries[0].boundingClientRect.bottom / 2 ,
                     behavior:"smooth"
                 })
 
