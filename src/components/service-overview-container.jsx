@@ -18,15 +18,14 @@ import { SectionHeading } from "./section-heading";
 
 export function ServiceOverviewContainer() {
     const boxesRef = useRef();
-    var scrollY = window.scrollY;
-    var iterator = 1;
     var timeout = 2000;
     const [isScrollingDone,setIsScrollingDone] = useState(false);
     useEffect(() => {
         const observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
                 const childrens = boxesRef.current.childNodes[1];
-                document.querySelector("#root").style.overflowY = "hidden";
+                document.querySelector("#root").style.overflow = "hidden";
+                const length = window.innerWidth < 512 ? childrens.childNodes.length : childrens.childNodes.length / 2;
                 for (let i = 1; i < childrens.childNodes.length; i++) {
                     setTimeout(() => {
                         childrens.childNodes[i].scrollIntoView({ behavior: "smooth", inline: "nearest", block: "center" });
@@ -34,7 +33,7 @@ export function ServiceOverviewContainer() {
                     timeout += 2000;
                 }
                 setTimeout(() => {
-                    document.querySelector("#root").style.overflowY = "scroll";
+                    document.querySelector("#root").style.overflow = "scroll";
                     setIsScrollingDone(true);
                 }, 6000);
             }
