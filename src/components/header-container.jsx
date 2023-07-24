@@ -9,14 +9,14 @@ export function HeaderContainer() {
     function toggleNav() {
         if (isNavOpened) {
             navRef.current.classList.toggle("visible");
-            navRef.current.style.left = "-50vw";
+            navRef.current.style.left = "-100vw";
         }
         else {
             navRef.current.classList.toggle("visible");
             setIsNavOpened(!isNavOpened);
             setTimeout(() => {
                 navRef.current.style.left = "0";
-            }, 150);
+            }, 0);
         }
         setIsNavOpened(!isNavOpened);
     }

@@ -95,7 +95,9 @@ header nav a {
   display: none;
 
 }
-
+.nav-button:not(header nav .nav-button) {
+  z-index:0;
+}
 .nav-button hr {
   border-color: white;
   display: block;
@@ -650,6 +652,7 @@ footer {
     display:block;
     position: fixed;  
     top:0;
+    z-index:1;
     background-color: black;
     height: 100vh;
     padding-top:calc(10vh - 20px);
@@ -987,17 +990,18 @@ footer {
     border-bottom: 3px solid white;
   }
   header .visible {
-    width: 50vw;
+    width: 100vw;
     display:block;
     position: fixed;  
     top:0;
     background-color: black;
     height: 100vh;
     padding-top:calc(5vh - 20px);
-    transition-duration: 150ms;
-    left:-50vw;
+    transition-duration: 250ms;
+    transition-timing-function: ease-in-out;
+    left:-100vw;
   }
- 
+  
   .hero-section {
     padding-inline: 5vw;
     height: 90vh;
