@@ -986,7 +986,18 @@ footer {
     background-color: black;
     border-bottom: 3px solid white;
   }
-
+  header .visible {
+    width: 50vw;
+    display:block;
+    position: fixed;  
+    top:0;
+    background-color: black;
+    height: 100vh;
+    padding-top:calc(5vh - 20px);
+    transition-duration: 150ms;
+    left:-50vw;
+  }
+ 
   .hero-section {
     padding-inline: 5vw;
     height: 90vh;
