@@ -28,7 +28,7 @@ export function ServiceOverviewContainer() {
             window.addEventListener("scroll",  function preventScroll() {
                 window.scrollTo({
                     top:entries[0].boundingClientRect.bottom ,
-                    behavior:"instant"
+                    behavior:"smooth"
                 })
 
             },{signal:controller.signal});
