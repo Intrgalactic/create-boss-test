@@ -37,6 +37,7 @@ body {
   min-width: 320px;
   max-width: 100vw;
   min-height: 100vh;
+  background-color: black;
 }
 
 header,
@@ -88,19 +89,17 @@ header nav a {
   width: 50px;
   height: 40px;
   border-radius: 8px;
-  box-shadow: 0px 2px 1px black;
   position: absolute;
   right: 0;
   display: none;
-  background-color: white;
+ 
 }
 
 .nav-button hr {
-  border-color: #0B32FF;
+  border-color: white;
   display:block;
-  background-color: #0B32FF;
+  background-color: white;
   width: 60%;
-  box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.5);
   height: 1px;
  
   border-style: solid;
@@ -709,10 +708,11 @@ footer {
 
   .hero-section__container {
     width: 80vw;
+    padding-top:50px;
   }
 
   .hero-section__container h1 {
-    font-size: clamp(1.2em, 1.4em, 1.6em);
+    font-size: clamp(1.4em, 1.6em, 1.6em);
   }
 
   .hero-section__container p {
@@ -804,7 +804,6 @@ footer {
   .testimonial-section__boxes-container {
     width: calc(280px);
     min-width: 280px;
-    padding-inline:20px;
   }
   .carousel-button {
     width: 80px;
@@ -815,10 +814,10 @@ footer {
   }
 
   .testimonial__box {
-    width: 220px;
-    margin-inline: 30px;
-    min-width: 220px;
-    scroll-margin-inline: 30px;
+    width: 200px;
+    margin-inline: 20px;
+    min-width: 200px;
+    scroll-margin-inline: 20px;
 
   }
   .testimonial__box-user-details {
@@ -862,7 +861,7 @@ footer {
   }
   .contact-section__form-container form label {
     width: calc(60% + 40px);
-    font-size:0.8em;
+    font-size:0.7em;
   }
   textarea {
     height: 100px;
@@ -917,7 +916,18 @@ footer {
   }
 }
 @media only screen and (max-width:470px) {
-
+  header {
+    height: 10vh;
+    background-color: black;
+    border-bottom: 3px solid white;
+  }
+  .hero-section {
+    padding-inline:5vw;
+  }
+  .header__container {
+    -webkit-justify-content: space-between;
+    justify-content: space-between;
+  }
   .footer-links-single-container h5 {
     font-size:0.8em;
   }

@@ -1,4 +1,4 @@
-import { lazy } from "react";
+import { lazy, useEffect, useRef } from "react";
 
 import speechToTextImage from 'src/assets/images/speech-to-text.png';
 import webpSpeechToTextImage from 'src/assets/images/speech-to-text.webp';
@@ -17,9 +17,41 @@ import { ContentBox } from "./content-box";
 import { SectionHeading } from "./section-heading";
 
 export function ServiceOverviewContainer() {
+    const boxesRef = useRef();
+    var scrollY = window.scrollY;
+    var iterator = 1;
+    var timeout = 2000;
+    const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+            const childrens = boxesRef.current.childNodes[1];
+            document.body.style.overflowY = "hidden";
+            for (let i = 1;i < childrens.childNodes.length;i++) {
+                setTimeout(() => {
+                    childrens.childNodes[i].scrollIntoView({behavior:"smooth",inline:"nearest",block:"center"});
+                },timeout);
+                timeout += 2000;
+            }
+            setTimeout(() => {
+                document.body.style.overflowY = "scroll";
+            },6000);
+        }
+    }, {
+        threshold: 1,
+    });
+    useEffect(() => {
+        if (boxesRef.current) {
+           observer.observe(boxesRef.current);
+        }   
+        return () => {
+
+        }
+    },[boxesRef]);
+    function scrollWithTimeout() {
+
+    }
     return (
-        <div className="service-overview-section__container">
-            <SectionHeading heading="Time and Streamline Your Workflow with Our Services"/>
+        <div className="service-overview-section__container" ref={boxesRef}>
+            <SectionHeading heading="Time and Streamline Your Workflow with Our Services" />
             <ContentContainer containerClass="service-overview-section__boxes-container">
                 <ContentBox heading="Getting Subtitles from Video" description="Extract accurate subtitles effortlessly, repurposing video content for wider reach and engagement." boxClass="service-overview__box ">
                     <Picture images={[subtitlesFromVideoImage, webpSubtitlesFromVideoImage]} imgWidth="116.67px" imgHeight="75px" alt="camera" />
