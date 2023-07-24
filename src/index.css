@@ -47,7 +47,7 @@ header,
 .benefits-section,
 .testimonials-section,
 .pricing-section,
-.contact-section {
+.contact-section,.about-us-section__content {
   padding-inline: 10vw;
 }
 
@@ -66,12 +66,11 @@ h2 {
   text-shadow: 0px 4px 10px black;
 }
 
-.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading) {
+.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading,.about-us-section__container .section-heading) {
   width: 60%;
   padding-block: 50px;
   margin: auto;
 }
-
 header {
   height: 108px;
   background-color: #0B32FF;
@@ -121,7 +120,7 @@ header nav a {
 header nav,
 .header__container {
   display: flex;
-  column-gap: 150px;
+  column-gap: 70px;
 }
 
 .hero-section {
@@ -635,6 +634,38 @@ footer {
   gap: 50px;
 }
 
+.about-us-section__container {
+  height: fit-content;
+  min-height: 90vh;
+  color:white;
+  background-color: #0B6CFF;
+  margin-bottom:100px;
+}
+.about-us-section__container .section-heading{ 
+  text-shadow: 0px 2px 2px black;
+  background-color: #004FC5;
+  padding-block:50px;
+  padding-inline:10%;
+  width: 80%;
+}
+
+.about-us-section__content {
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  padding-bottom:50px;
+}
+.about-us-section__content img {
+  filter:drop-shadow(0px 0px 10px rgba(0,0,0,0.4));
+}
+.about-us-section__content p {
+  width: 720px;
+  text-shadow: 0px 2px 5px black;
+  font-size:1.1em;
+  display:block;
+  margin: auto;
+  text-align: left;
+}
 @media only screen and (max-width:768px) {
   header {
     height: 20vh;
@@ -878,7 +909,7 @@ footer {
     font-size: 0.9em;
   }
 
-  .section-heading:not(.benefits-section .section-heading) {
+  .section-heading:not(.benefits-section .section-heading,.about-us-section__container .section-heading ) {
     width: 100%;
     padding-bottom: 25px;
   }
@@ -980,6 +1011,17 @@ footer {
   .footer-container__links {
     column-gap: 0px;
   }
+  .about-us-section__content {
+    display:block;
+    padding-bottom: 150px;
+  }
+  .about-us-section__content img {
+    width: 90%;
+    height: auto;
+  }
+  .about-us-section__content p {
+    width: 100%;
+  }
 }
 
 @media only screen and (max-width:470px) {
@@ -1031,6 +1073,12 @@ footer {
 
   .footer-links-single-container a {
     font-size: 0.6em;
+  }
+  .about-us-section__content img {
+    width: 95%;
+  }
+  .about-us-section__content p {
+    font-size:0.85em;
   }
 }
 
@@ -1249,6 +1297,21 @@ footer {
     min-width: 300px;
     height: 90px;
     font-size: 1.2em;
+  }
+  .about-us-section__container .section-heading {
+    font-size:1.3em;
+  }
+  .about-us-section__content {
+
+    display:block;
+    padding-bottom:100px;
+  }
+  .about-us-section__content img {
+    width: 95%;
+    height: auto;
+  }
+  .about-us-section__content p {
+    width: 100%;
   }
 }
 

@@ -10,8 +10,10 @@ const NavWithRef = forwardRef((props, ref) => {
   return (
     <nav ref={ref}>
        {props.isNavOpened ? <NavButton toggleNav={props.toggleNav}/> : null}
-      <Link>Home</Link>
+      <Link to='/'>Home</Link>
       <Link>Try It Out</Link>
+      <Link to='/about-us'>About Us</Link>
+      <Link>FAQ</Link>
       <Link onClick={(e) => { scrollToItem(e,".pricing__box") }}>Pricing</Link>
       <Link onClick={(e) => { scrollToItem(e,".contact-section__form-container") }}>Contact</Link>
 

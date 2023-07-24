@@ -1,26 +1,14 @@
 import './App.css'
-import Header from './layouts/header'
-import Hero from './layouts/hero'
-import ServiceOverview from './layouts/service-overview'
-import Benefits from './layouts/benefits'
-import Testimonials from './layouts/testimonials'
-import Pricing from './layouts/pricing'
-import Contact from './layouts/contact'
-import Footer from './layouts/footer'
 import { Routes, Route } from 'react-router-dom'
+import Home from './pages/home'
+import AboutUs from './pages/about-us'
 function App() {
 
   return (
-    <>
-      <Header />
-      <Hero />
-      <ServiceOverview />
-      <Benefits />
-      <Testimonials />
-      <Pricing />
-      <Contact />
-      <Footer />
-    </>
+    <Routes>
+      <Route exact path="/" element={<Home/>}/>
+      <Route exact path="/about-us" element={<AboutUs/>}/>
+    </Routes>
   )
 }
 
