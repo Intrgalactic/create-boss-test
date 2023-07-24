@@ -26,11 +26,7 @@ export function ServiceOverviewContainer() {
         if (entries[0].isIntersecting) {
             const childrens = boxesRef.current.childNodes[1];
             window.addEventListener("scroll",  function preventScroll() {
-                window.scrollTo({
-                    top:entries[0].boundingClientRect.bottom / 1.5 ,
-                    behavior:"instant"
-                })
-
+                boxesRef.current.scrollIntoView({ behavior: "instant", inline: "nearest", block: "center" })
             },{signal:controller.signal});
             const length = window.innerWidth < 512 ? childrens.childNodes.length : childrens.childNodes.length / 2;
             for (let i = 1; i < childrens.childNodes.length; i++) {
