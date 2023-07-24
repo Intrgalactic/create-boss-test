@@ -741,7 +741,9 @@ footer {
     scrollbar-width: none;
     padding-block: 20px;
   }
-
+  .benefits-section__boxes-container {
+    width: 80vw;
+  }
   .service-overview-section__boxes-container {
     height: 370px;
     width: 90vw;
@@ -760,11 +762,13 @@ footer {
   }
 
   .benefits-section__boxes-container {
-    row-gap: 80px;
+    row-gap: 110px;
   }
 
   .benefits__box {
-    width: 70vw;
+    width: calc(70vw - 20px);
+    margin-inline:10px;
+    align-self: center;
   }
 
   .service-overview__box {
@@ -785,7 +789,6 @@ footer {
 
   .benefits-section__boxes-container {
     height: clamp(210px, 220px, 290px);
-    padding-inline: 10px;
   }
 
   .benefits__box h3 {
@@ -983,7 +986,7 @@ footer {
   }
 
   .benefits__box {
-    width: 30vw;
+    width: calc(30vw - 20px);
     height: 190px;
   }
 

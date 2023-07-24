@@ -15,50 +15,24 @@ const ServiceOverviewBox = lazy(() => import('./content-box').then(module => {
 }))
 import { ContentBox } from "./content-box";
 import { SectionHeading } from "./section-heading";
+import { detectIsElementVisible, launchObserver } from "src/utils/utilities";
 
 export function ServiceOverviewContainer() {
     const boxesRef = useRef();
     var timeout = 2000;
-    const [isScrollingDone,setIsScrollingDone] = useState(false);
+    const [isScrollingDone, setIsScrollingDone] = useState(false);
     const controller = new AbortController();
 
     const observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-            const childrens = boxesRef.current.childNodes[1];
-            window.addEventListener("scroll",  function preventScroll() {
-                boxesRef.current.scrollIntoView({ behavior: "instant", inline: "nearest", block: "center" })
-            },{signal:controller.signal});
-            const length = window.innerWidth < 512 ? childrens.childNodes.length : childrens.childNodes.length / 2;
-            for (let i = 1; i < childrens.childNodes.length; i++) {
-                setTimeout(() => {
-                    childrens.childNodes[i].scrollIntoView({ behavior: "smooth", inline: "nearest", block: "center" });
-                }, timeout);
-                timeout += 2000;
-            }
-            setTimeout(() => {
-                controller.abort();
-                setIsScrollingDone(true);
-            }, length * 2000);
-        }
-        setObserverEntry(entries[0]);
+        detectIsElementVisible(entries[0].isIntersecting,boxesRef,controller,setIsScrollingDone,timeout);
     }, {
         threshold: 1,
     });
+
     useEffect(() => {
-       
-        if (boxesRef.current && !isScrollingDone) {
-            if (window.innerWidth <= 768) {
-                observer.observe(boxesRef.current);
-            }
-        }
-        else if (isScrollingDone && boxesRef.current) {
-            observer.unobserve(boxesRef.current);
-        }
-       
-        return () => {
-            observer.unobserve(boxesRef.current);
-        }
-    }, [boxesRef,isScrollingDone]);
+        launchObserver(boxesRef, isScrollingDone, observer);
+
+    }, [boxesRef, isScrollingDone]);
   
     return (
         <div className="service-overview-section__container" ref={boxesRef}>
