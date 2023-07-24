@@ -28,6 +28,7 @@ html {
 
 #root {
   padding: 0;
+  position: relative;
   max-width: 100vw;
 
 }

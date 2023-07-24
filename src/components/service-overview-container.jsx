@@ -26,7 +26,7 @@ export function ServiceOverviewContainer() {
         const observer = new IntersectionObserver(entries => {
             if (entries[0].isIntersecting) {
                 const childrens = boxesRef.current.childNodes[1];
-                document.body.style.overflow = "hidden";
+                document.querySelector("#root").style.overflowY = "hidden";
                 for (let i = 1; i < childrens.childNodes.length; i++) {
                     setTimeout(() => {
                         childrens.childNodes[i].scrollIntoView({ behavior: "smooth", inline: "nearest", block: "center" });
@@ -34,7 +34,7 @@ export function ServiceOverviewContainer() {
                     timeout += 2000;
                 }
                 setTimeout(() => {
-                    document.body.style.overflow = "scroll";
+                    document.querySelector("#root").style.overflowY = "scroll";
                     setIsScrollingDone(true);
                 }, 6000);
             }
