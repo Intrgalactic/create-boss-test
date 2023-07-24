@@ -17,22 +17,24 @@ import { ContentBox } from "./content-box";
 import { SectionHeading } from "./section-heading";
 import { detectIsElementVisible, launchObserver } from "src/utils/utilities";
 
+
 export function ServiceOverviewContainer() {
     const boxesRef = useRef();
     var timeout = 2000;
     const [isScrollingDone, setIsScrollingDone] = useState(false);
     const controller = new AbortController();
-
     const observer = new IntersectionObserver(entries => {
-        detectIsElementVisible(entries[0].isIntersecting,boxesRef,controller,setIsScrollingDone,timeout,isScrollingDone);
-    }, {
-        threshold: 1,
-    });
-
+            detectIsElementVisible(entries[0].isIntersecting, boxesRef, controller, setIsScrollingDone, timeout);
+        }, {
+            threshold: 1,
+    })
     useEffect(() => {
-        launchObserver(boxesRef, isScrollingDone, observer);
-    }, [boxesRef, isScrollingDone]);
-  
+        launchObserver(boxesRef,isScrollingDone,observer);
+        return () => {
+            observer.unobserve(boxesRef.current);
+        }
+    }, [boxesRef, isScrollingDone,observer]);
+    console.log(isScrollingDone);
     return (
         <div className="service-overview-section__container" ref={boxesRef}>
             <SectionHeading heading="Time and Streamline Your Workflow with Our Services" />

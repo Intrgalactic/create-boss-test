@@ -11,16 +11,17 @@ export function BenefitsContainer() {
     var timeout = 2000;
     const [isScrollingDone, setIsScrollingDone] = useState(false);
     const controller = new AbortController();
-
     const observer = new IntersectionObserver(entries => {
-        detectIsElementVisible(entries[0].isIntersecting,boxesRef,controller,setIsScrollingDone,timeout,isScrollingDone);
-    }, {
-        threshold: 1,
-    });
-
+            detectIsElementVisible(entries[0].isIntersecting, boxesRef, controller, setIsScrollingDone, timeout);
+        }, {
+            threshold: 1,
+    })
     useEffect(() => {
-        launchObserver(boxesRef, isScrollingDone, observer);
-    }, [boxesRef, isScrollingDone]);
+        launchObserver(boxesRef,isScrollingDone,observer);
+        return () => {
+            observer.unobserve(boxesRef.current);
+        }
+    }, [boxesRef, isScrollingDone,observer]);
     return (
         <div className="benefits-section__container" ref={boxesRef}>
             <Picture images={[moneyImage, webpMoneyImage]} imgHeight="290.89px" imgWidth="404.25px" alt="money bag" />

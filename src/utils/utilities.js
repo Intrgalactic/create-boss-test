@@ -14,8 +14,8 @@ export function destroyObserving(controller, setIsScrollingDone, length) {
     }, length * 2000);
 }
 
-export function detectIsElementVisible(isVisible, ref, controller, setIsScrollingDone,timeout,isScrollingDone) {
-    if (isVisible && !isScrollingDone) {
+export function detectIsElementVisible(isVisible, ref, controller, setIsScrollingDone,timeout) {
+    if (isVisible) {
         const childrens = ref.current.classList.contains("benefits-section__container") ? ref.current.querySelector(".benefits-section__pre-container").childNodes[1]: ref.current.childNodes[1];
         window.addEventListener("scroll", function preventScroll() {
             ref.current.scrollIntoView({ behavior: "instant", inline: "nearest", block: "center" });
@@ -27,19 +27,12 @@ export function detectIsElementVisible(isVisible, ref, controller, setIsScrollin
 }
 
 export function launchObserver(ref, isScrollingDone, observer) {
-    if (ref.current && !isScrollingDone) {
+    if (ref.current && !isScrollingDone && observer) {
         if (window.innerWidth <= 768) {
             observer.observe(ref.current);
         }
     }
-    else if (isScrollingDone && ref.current) {
-        console.log("unobserved");
+    else if (ref.current) {
         observer.unobserve(ref.current);
-        observer.disconnect();
-    }
-
-    return () => {
-        observer.unobserve(ref.current);
-        observer.disconnect();
     }
 }

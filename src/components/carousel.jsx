@@ -70,7 +70,6 @@ export const Carousel = forwardRef((props, ref) => {
             setScrollCount(count => count - it);
         }
     }
-    console.log(scrollCount);
     return (
         <div className="carousel" ref={ref}>
             {windowSize < 512 ?
