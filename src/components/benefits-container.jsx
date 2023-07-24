@@ -13,7 +13,7 @@ export function BenefitsContainer() {
     const controller = new AbortController();
 
     const observer = new IntersectionObserver(entries => {
-        detectIsElementVisible(entries[0].isIntersecting,boxesRef,controller,setIsScrollingDone,timeout);
+        detectIsElementVisible(entries[0].isIntersecting,boxesRef,controller,setIsScrollingDone,timeout,isScrollingDone);
     }, {
         threshold: 1,
     });

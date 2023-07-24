@@ -24,14 +24,13 @@ export function ServiceOverviewContainer() {
     const controller = new AbortController();
 
     const observer = new IntersectionObserver(entries => {
-        detectIsElementVisible(entries[0].isIntersecting,boxesRef,controller,setIsScrollingDone,timeout);
+        detectIsElementVisible(entries[0].isIntersecting,boxesRef,controller,setIsScrollingDone,timeout,isScrollingDone);
     }, {
         threshold: 1,
     });
 
     useEffect(() => {
         launchObserver(boxesRef, isScrollingDone, observer);
-
     }, [boxesRef, isScrollingDone]);
   
     return (
