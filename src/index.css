@@ -281,7 +281,7 @@ header nav,
 
 .carousel-button:hover,
 .call-to-action-btn:hover,
-input[type="checkbox"]:hover {
+input[type="checkbox"]:hover,.nav-button:hover {
   cursor: pointer;
 }
 
@@ -645,7 +645,47 @@ footer {
   .nav-button {
     display: block;
   }
-
+  header .visible {
+    width: 50vw;
+    display:block;
+    position: fixed;  
+    top:0;
+    background-color: black;
+    height: 100vh;
+    padding-top:calc(10vh - 20px);
+    transition-duration: 150ms;
+    left:-50vw;
+  }
+ 
+  header .visible a:first-of-type {
+    margin-top:40px;
+  }
+  header .visible a {
+    border-bottom:2px solid white;
+    display:block;
+    padding-block:20px;
+    padding-left:10%;
+    text-align: left;
+    background-color: black;
+  }
+  header nav .nav-button hr {
+    display:none;
+  }
+  header nav .nav-button {
+    display:block;
+    left:10%;
+  }
+  header nav .nav-button:after {
+    content: "\00d7"; 
+    top:-12px;
+    left:-12.5px;
+    font-size:40px;
+    width: 48px;
+    height: 48px;
+    bottom:0;
+    display:block;
+    position:absolute;
+  }
   .testimonials-section,
   .pricing-section {
     padding-top: 50px;
