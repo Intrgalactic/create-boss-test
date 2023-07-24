@@ -20,26 +20,35 @@ export function ServiceOverviewContainer() {
     const boxesRef = useRef();
     var timeout = 2000;
     const [isScrollingDone,setIsScrollingDone] = useState(false);
-    useEffect(() => {
-        const observer = new IntersectionObserver(entries => {
-            if (entries[0].isIntersecting) {
-                const childrens = boxesRef.current.childNodes[1];
-                document.body.style.overflowY = "hidden";
-                const length = window.innerWidth < 512 ? childrens.childNodes.length : childrens.childNodes.length / 2;
-                for (let i = 1; i < childrens.childNodes.length; i++) {
-                    setTimeout(() => {
-                        childrens.childNodes[i].scrollIntoView({ behavior: "smooth", inline: "nearest", block: "center" });
-                    }, timeout);
-                    timeout += 2000;
-                }
+    const controller = new AbortController();
+
+    const observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting) {
+            const childrens = boxesRef.current.childNodes[1];
+            window.addEventListener("scroll",  function preventScroll() {
+                window.scrollTo({
+                    top:entries[0].boundingClientRect.bottom / 1.5
+                })
+
+            },{signal:controller.signal});
+            const length = window.innerWidth < 512 ? childrens.childNodes.length : childrens.childNodes.length / 2;
+            for (let i = 1; i < childrens.childNodes.length; i++) {
                 setTimeout(() => {
-                    document.body.style.overflowY = "scroll";
-                    setIsScrollingDone(true);
-                }, length * 2000);
+                    childrens.childNodes[i].scrollIntoView({ behavior: "smooth", inline: "nearest", block: "center" });
+                }, timeout);
+                timeout += 2000;
             }
-        }, {
-            threshold: 1,
-        });
+            setTimeout(() => {
+                controller.abort();
+                setIsScrollingDone(true);
+            }, length * 2000);
+        }
+        setObserverEntry(entries[0]);
+    }, {
+        threshold: 1,
+    });
+    useEffect(() => {
+       
         if (boxesRef.current && !isScrollingDone) {
             if (window.innerWidth <= 768) {
                 observer.observe(boxesRef.current);
@@ -48,13 +57,12 @@ export function ServiceOverviewContainer() {
         else if (isScrollingDone && boxesRef.current) {
             observer.unobserve(boxesRef.current);
         }
+       
         return () => {
             observer.unobserve(boxesRef.current);
         }
     }, [boxesRef,isScrollingDone]);
-    function scrollWithTimeout() {
-
-    }
+  
     return (
         <div className="service-overview-section__container" ref={boxesRef}>
             <SectionHeading heading="Time and Streamline Your Workflow with Our Services" />
