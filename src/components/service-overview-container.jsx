@@ -1,4 +1,4 @@
-import { lazy, useEffect, useRef } from "react";
+import { lazy, useEffect, useRef, useState } from "react";
 
 import speechToTextImage from 'src/assets/images/speech-to-text.png';
 import webpSpeechToTextImage from 'src/assets/images/speech-to-text.webp';
@@ -21,31 +21,38 @@ export function ServiceOverviewContainer() {
     var scrollY = window.scrollY;
     var iterator = 1;
     var timeout = 2000;
-    const observer = new IntersectionObserver(entries => {
-        if (entries[0].isIntersecting) {
-            const childrens = boxesRef.current.childNodes[1];
-            document.body.style.overflowY = "hidden";
-            for (let i = 1;i < childrens.childNodes.length;i++) {
-                setTimeout(() => {
-                    childrens.childNodes[i].scrollIntoView({behavior:"smooth",inline:"nearest",block:"center"});
-                },timeout);
-                timeout += 2000;
-            }
-            setTimeout(() => {
-                document.body.style.overflowY = "scroll";
-            },6000);
-        }
-    }, {
-        threshold: 1,
-    });
+    const [isScrollingDone,setIsScrollingDone] = useState(false);
     useEffect(() => {
-        if (boxesRef.current) {
-           observer.observe(boxesRef.current);
-        }   
-        return () => {
-
+        const observer = new IntersectionObserver(entries => {
+            if (entries[0].isIntersecting) {
+                const childrens = boxesRef.current.childNodes[1];
+                document.body.style.overflowY = "hidden";
+                for (let i = 0; i < childrens.childNodes.length; i++) {
+                    setTimeout(() => {
+                        childrens.childNodes[i].scrollIntoView({ behavior: "smooth", inline: "nearest", block: "center" });
+                    }, timeout);
+                    timeout += 2000;
+                }
+                setTimeout(() => {
+                    document.body.style.overflowY = "scroll";
+                    setIsScrollingDone(true);
+                }, 8000);
+            }
+        }, {
+            threshold: 1,
+        });
+        if (boxesRef.current && !isScrollingDone) {
+            if (window.innerWidth <= 768) {
+                observer.observe(boxesRef.current);
+            }
         }
-    },[boxesRef]);
+        else if (isScrollingDone && boxesRef.current) {
+            observer.unobserve(boxesRef.current);
+        }
+        return () => {
+            observer.unobserve(boxesRef.current);
+        }
+    }, [boxesRef,isScrollingDone]);
     function scrollWithTimeout() {
 
     }
