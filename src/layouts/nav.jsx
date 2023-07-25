@@ -1,22 +1,25 @@
 import { forwardRef } from "react";
-import { Link } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 import { NavButton } from "src/components/nav-button";
-
 const NavWithRef = forwardRef((props, ref) => {
-  function scrollToItem(e,item) {
+  const path = useLocation().pathname;
+  function scrollToItem(e, item) {
     props.toggleNav();
     document.querySelector(item).scrollIntoView({ behavior: "smooth" });
   }
   return (
     <nav ref={ref}>
-       {props.isNavOpened ? <NavButton toggleNav={props.toggleNav}/> : null}
+      {props.isNavOpened ? <NavButton toggleNav={props.toggleNav} /> : null}
       <Link to='/'>Home</Link>
       <Link>Try It Out</Link>
       <Link to='/about-us'>About Us</Link>
-      <Link>FAQ</Link>
-      <Link onClick={(e) => { scrollToItem(e,".pricing__box") }}>Pricing</Link>
-      <Link onClick={(e) => { scrollToItem(e,".contact-section__form-container") }}>Contact</Link>
-
+      <Link to='/faq'>FAQ</Link>
+      {path === "/" ?
+        <>
+          <Link onClick={(e) => { scrollToItem(e, ".pricing__box") }}>Pricing</Link>
+          <Link onClick={(e) => { scrollToItem(e, ".contact-section__form-container") }}>Contact</Link>
+        </> : null
+      }
     </nav>
   )
 })
