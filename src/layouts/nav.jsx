@@ -20,6 +20,8 @@ const NavWithRef = forwardRef((props, ref) => {
           <Link onClick={(e) => { scrollToItem(e, ".contact-section__form-container") }}>Contact</Link>
         </> : null
       }
+      <Link to='/sign-up'>Sign Up</Link>
+      <Link to='/sign-in'>Login</Link>
     </nav>
   )
 })

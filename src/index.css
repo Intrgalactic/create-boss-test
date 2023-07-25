@@ -639,7 +639,7 @@ footer {
   min-height: 90vh;
   color:white;
   background-color: #0B6CFF;
-  margin-bottom:100px;
+  padding-bottom:100px;
 }
 .about-us-section__container .section-heading,.faq-container .section-heading{ 
   text-shadow: 0px 2px 2px black;
@@ -735,11 +735,62 @@ footer {
   font-family:NexaHeavy;
   margin-block:0;
   padding-bottom: 50px;
+  width: 80%;
+  padding-inline:10%;
   background-color: #004FC5;
   text-shadow: 0px 2px 2px black;
 }
 .plus-sign {
   font-size:3em;
+}
+.sign-in-page,.sign-up-page {
+  background-color: white;
+}
+.auth-container {
+  min-height: 90vh;
+  padding-block:50px;
+}
+.auth-container .section-heading {
+  text-shadow: none;
+  color:black;
+}
+.auth-form form a {
+  display:block;
+  color:black;
+  text-decoration: none;
+  width: 70%;
+  margin: auto;
+  font-size:1.3em;
+  font-family:NexaHeavy;
+}
+.auth-form {
+  padding-block:40px;
+  box-shadow: 0px 4px 20px 10px rgba(0,0,0,0.25);
+  width: 30vw;
+  margin:auto;
+  border-radius: 30px;
+}
+.auth-form form {
+  display:flex;
+  flex-wrap: wrap;
+  gap:40px;
+}
+.auth-form form .call-to-action-btn {
+  margin:auto;
+  border-radius: 30px;
+  height: 70px;
+}
+.auth-form form input{
+  padding-inline:10%;
+  display:block;
+  border-radius: 10px;
+  font-family:NexaHeavy;
+  font-size:1.5em;
+  width: 70%;
+  background-color: #D9D9D9;
+  border:3px solid black;
+  height: 60px;
+  margin:auto;
 }
 @media only screen and (max-width:768px) {
   header {
@@ -987,7 +1038,7 @@ footer {
     width: 100%;
     padding-bottom: 25px;
   }
-
+  
   .contact-section__container {
     display: block;
   }
@@ -1396,8 +1447,11 @@ footer {
     height: 90px;
     font-size: 1.2em;
   }
-  .about-us-section__container .section-heading {
+  .about-us-section__container .section-heading,.faq-container .section-heading {
     font-size:1.3em;
+  }
+  .section-heading-description {
+    font-size:1em;
   }
   .about-us-section__content {
 
