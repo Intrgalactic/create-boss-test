@@ -1,8 +1,13 @@
+import { useRef, useState } from "react";
 import { ContentContainer } from "./content-container";
 import { FaqRecord } from "./faq-record";
+import { SearchBar } from "./search-bar";
 import { SectionHeading } from "./section-heading";
 
 export function FaqContainer() {
+
+    const [filter,setFilter] = useState('');
+    const regEx = new RegExp(filter,"i");
     const faqData = [
         {
           question: "What services do you offer in speech conversion?",
@@ -65,12 +70,14 @@ export function FaqContainer() {
           answer: "We understand the importance of choosing the right services. Reach out to us with your requirements, and we'll be happy to provide personalized recommendations and address any concerns you may have."
         }
       ];
+    const faqFilteredData = faqData.filter(item => regEx.test(item.question) || regEx.test(item.answer) );
     return (
         <div className="faq-container">
             <SectionHeading heading="Your Speech Conversion Questions, Answered!"/>
             <p className="section-heading-description">Find answers to common questions and make informed decisions for your speech conversion journey.</p>
+            <SearchBar setFilter={setFilter}/>
             <ContentContainer containerClass="faq-container__records-container">
-                {faqData.map((item,index) => (
+                {faqFilteredData.map((item,index) => (
                     <FaqRecord question={item.question} answer={item.answer} key={index}/>
                 ))}
             </ContentContainer>
