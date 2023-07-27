@@ -1,12 +1,12 @@
-import { EmailAuthProvider, signInWithCredential, signInWithEmailAndPassword } from "firebase/auth";
+import { EmailAuthProvider, signInWithCredential } from "firebase/auth";
 import { useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContainer } from "src/components/auth-container";
 import { AuthForm } from "src/components/auth-form";
 import { CtaButton } from "src/components/cta-button";
 import Footer from "src/layouts/footer";
 import Header from "src/layouts/header";
-import { getFirebaseErr, validateCallback, validateForm } from "src/utils/utilities";
+import { fetchUrl, getFirebaseErr, validateCallback, validateForm } from "src/utils/utilities";
 import { auth } from "../../firebase.js";
 import Loader from "src/layouts/loader.jsx";
 export default function SignIn() {
@@ -17,13 +17,22 @@ export default function SignIn() {
         email: "",
         password: "",
     })
+    const navigate = useNavigate();
     function validateLoginForm(e) {
         e.preventDefault();
-        console.log(userData);
         const userCredentials = EmailAuthProvider.credential(userData.current.email,userData.current.password);
         if (validateForm(userData.current,setValidateErr)) {
             setLoadingState(true);
-            signInWithCredential(auth,userCredentials)
+            signInWithCredential(auth,userCredentials).then(async () => {
+                setLoadingState(false);
+                const userData = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}get-user?email=${auth.currentUser.email}`);
+                if (userData.isNew) {
+                    navigate('/onboard');
+                }
+                else {
+                    navigate('/dashboard');
+                }
+            })
             .catch(err => {
                 console.log(err.message);
                 validateCallback([getFirebaseErr],err.message,setFirebaseError);

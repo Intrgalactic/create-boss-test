@@ -43,11 +43,10 @@ export default function SignUp() {
     }
 
     function createAccount() {
-        console.log(`${import.meta.env.VITE_SERVER_FETCH_URL}create-user?name=${userPersonalData.current.name}&lastName=${userPersonalData.current.lastName}&email=${userPersonalData.current.email}&userName=${userPersonalData.current.userName}`);
         createUserWithEmailAndPassword(auth, userPersonalData.current.email, userPersonalData.current.password).then(() => {
             fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}create-user`, {
                 method: "POST",
-                body: `name=${userPersonalData.current.name}&lastName=${userPersonalData.current.lastName}&email=${userPersonalData.current.email}&userName=${userPersonalData.current.userName}&isPaying=false`,
+                body: `name=${userPersonalData.current.name}&lastName=${userPersonalData.current.lastName}&email=${userPersonalData.current.email}&userName=${userPersonalData.current.userName}&isPaying=false&isNew=true`,
                 headers: {
                     "Content-type": "application/x-www-form-urlencoded"
                 }
@@ -57,7 +56,7 @@ export default function SignUp() {
                         throw Error("Failed To Create Account");
                     }
                     else if (response.status === 201) {
-
+                        navigate('/onboard');
                     }
                 })
                 .catch(err => {

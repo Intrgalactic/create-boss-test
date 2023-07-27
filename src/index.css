@@ -72,7 +72,7 @@ h2 {
   text-shadow: 0px 4px 10px black;
 }
 
-.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading,.about-us-section__container .section-heading,.faq-container .section-heading,.sign-in-page .section-heading,.sign-up-page .section-heading) {
+.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading,.about-us-section__container .section-heading,.faq-container .section-heading,.sign-in-page .section-heading,.sign-up-page .section-heading,.onboard-page .section-heading) {
   width: 60%;
   padding-block: 50px;
   margin: auto;
@@ -902,19 +902,24 @@ footer {
   row-gap:20px;
   height: 400px;
 }
+.onboard-page .loader {
+  backdrop-filter: blur(50px);
+  background-color: rgba(0,0,0,0.9);
+}
 .onboard-page .service-overview__box h3 {
   height: 30px;
 }
 .onboard-page .service-overview-section {
   background-image:none;
   background-color: white;
+  padding-top:0;
 }
-.onboard-page .service-overview-section .section-heading {
+.onboard-page .section-heading  {
   color:black;
   text-shadow: none;
-  padding-top:0px;
-  padding-bottom: 100px;
+  padding-bottom:50px;
   width: 90%;
+  margin:auto;
 }
 .onboard-page .service-overview-section__boxes-container {
   width: 90vw;
@@ -931,6 +936,17 @@ footer {
   margin:auto;
   width: 150px;
   background-color: #00A3FF;
+}
+.onboard-page .pricing-section__boxes-container {
+  padding-top:0px;
+}
+.onboard-container {
+  min-height: 90vh;
+  padding-block:50px;
+  height: fit-content;
+}
+.onboard-page .carousel-button {
+  filter:sepia(1) brightness(0%);
 }
 @keyframes lds-ellipsis1 {
   0% {
