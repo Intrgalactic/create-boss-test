@@ -1251,7 +1251,7 @@ footer {
 
   form label {
     width: calc(60% + 40px);
-    font-size: 0.7em;
+    font-size: 0.8em;
   }
 
   textarea {
@@ -1381,6 +1381,10 @@ footer {
   .onboard-page .service-overview__box {
     margin-inline:0;
   }
+  .auth-form form input:not(.auth-form form label input){
+    text-shadow: 0px 0px 10px black;
+    height: 40px;
+  }
 }
 
 @media only screen and (width < 512px) {
@@ -1463,6 +1467,14 @@ footer {
   }
   .onboard-page .content-box p {
     height:90px;
+  }
+  .auth-form form input:not(.auth-form form label input){
+    text-shadow: 0px 0px 5px black;
+    height: 40px;
+    font-size:0.85em;
+  }
+  .auth-form form {
+    gap:20px;
   }
 }
 
@@ -1573,6 +1585,9 @@ footer {
   }
   .onboard-page .service-overview__box {
     width: 30vw;
+  }
+  .auth-form form input:not(.auth-form form label input) {
+    font-size:1em;
   }
 }
 

@@ -22,7 +22,6 @@ export default function SignUp() {
     const [loadingState, setLoadingState] = useState(false);
     const userPersonalData = useRef({
         name: "",
-        lastName: "",
         userName: "",
         email: "",
         password: "",
@@ -88,7 +87,6 @@ export default function SignUp() {
                 <AuthContainer heading="Sign Up To CreateBoss">
                     <AuthForm>
                         <input type="text" placeholder="Your Name" onChange={(e) => userPersonalData.current.name = e.target.value} required />
-                        <input type="text" placeholder="Your Last Name" onChange={(e) => userPersonalData.current.lastName = e.target.value} required />
                         <input type="text" placeholder="Your Username" onChange={(e) => userPersonalData.current.userName = e.target.value} required />
                         <input type="email" placeholder="Your E-Mail" onChange={(e) => userPersonalData.current.email = e.target.value} required />
                         <input type="password" placeholder="Your Password" onChange={(e) => userPersonalData.current.password = e.target.value} required />
