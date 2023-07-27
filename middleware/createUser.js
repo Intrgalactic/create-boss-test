@@ -2,7 +2,7 @@ const asyncHandler = require('express-async-handler');
 
 const createUser = (collection) => {
     return asyncHandler(async(req,res) => {
-        if (req.body.name !== undefined && req.body.lastName !== undefined && req.body.userName !== undefined && req.body.email !== undefined && req.body.isPaying !== undefined && req.body.isNew !== undefined) {
+        if (req.body.name !== 'undefined' && req.body.userName !== 'undefined' && req.body.email !== 'undefined' && req.body.isPaying !== 'undefined' && req.body.isNew !== 'undefined') {
             const query = req.body;
             try {
                 collection.insertOne(query).then(() => {
