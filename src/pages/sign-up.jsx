@@ -29,11 +29,7 @@ export default function SignUp() {
         secondPassword: "",
         isChecked: false
     });
-    useEffect(() => {
-        if (isLogged) {
-            navigate('/');
-        }
-    })
+  
     function validateSignUpForm(e) {
         e.preventDefault();
         if (validateForm(userPersonalData.current, setValidateErr)) {
