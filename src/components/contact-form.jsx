@@ -1,4 +1,5 @@
 import { CtaButton } from "./cta-button";
+import { TermsCheckbox } from "./terms-label";
 
 export function ContactForm() {
     return (
@@ -9,10 +10,7 @@ export function ContactForm() {
             <textarea placeholder="Inquiry">
 
             </textarea>
-            <label>
-                <input type="checkbox"/>
-                <p>have read the cancellation policy and agree with the terms and conditions.</p>
-            </label>
+            <TermsCheckbox/>
             <CtaButton text="Send"/>
         </form>
     )

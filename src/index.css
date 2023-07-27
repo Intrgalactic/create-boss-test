@@ -42,7 +42,7 @@ body {
   background-color: #000020;
 }
 
-header,
+header,.dashboard-header,
 .hero-section,
 .service-overview-section,
 .benefits-section,
@@ -51,7 +51,12 @@ header,
 .contact-section,.about-us-section__content {
   padding-inline: 10vw;
 }
-
+.onboard-page .service-overview-section {
+  padding-inline:0;
+}
+.onboard-page {
+  background-color: white;
+}
 h1,
 h2,
 h3,
@@ -77,7 +82,9 @@ header {
   background-color: #0B32FF;
   position: relative;
 }
-
+.dashboard-header {
+  background-color: rgba(7,121,255,0.4);
+}
 header nav a {
   color: white;
   text-decoration: none;
@@ -490,7 +497,7 @@ textarea {
   margin-bottom: 15px;
 }
 
-.contact-section__form-container form label {
+form label {
   display: flex;
   width: calc(80% + 40px);
   margin: auto;
@@ -500,12 +507,16 @@ textarea {
   text-align: left;
   margin-bottom: 15px;
 }
-
+form label:hover {
+  cursor: pointer;
+}
 input[type="checkbox"] {
   box-shadow: 0px 0px 4px 5px rgba(0, 0, 0, 0.125) inset;
   height: 40px;
   width: 50px;
+  max-width: 50px;
   min-width: 43px;
+  max-height: 40px;
   min-height: 34px;
   -webkit-appearance: initial;
   appearance: initial;
@@ -768,7 +779,7 @@ footer {
 .auth-form {
   padding-block:40px;
   box-shadow: 0px 4px 20px 10px rgba(0,0,0,0.25);
-  width: 30vw;
+  width: 40vw;
   margin:auto;
   border-radius: 30px;
 }
@@ -777,22 +788,36 @@ footer {
   flex-wrap: wrap;
   gap:40px;
 }
+.auth-form form input::placeholder {
+  color:white;
+  opacity: 1;
+}
+.auth-form form label {
+  color:black;
+
+}
 .auth-form form .call-to-action-btn {
   margin:auto;
   border-radius: 30px;
   height: 70px;
 }
-.auth-form form input{
+.auth-form form input:not(.auth-form form label input){
   padding-inline:10%;
   display:block;
   border-radius: 10px;
   font-family:NexaHeavy;
   font-size:1.5em;
   width: 70%;
-  background-color: #D9D9D9;
-  border:3px solid black;
+  color:white;
+  background-color: #0B6CFF;
+  border:none;
+  border:3px solid #0B32FF;
+  text-shadow: 0px 0px 10px black;
   height: 60px;
   margin:auto;
+}
+.auth-form form input[type="checkbox"] {
+  max-width: 20px;
 }
 .sign-up-page footer {
   padding-top:50px;
@@ -826,6 +851,7 @@ footer {
   color:red;
   font-family:NexaHeavy;
   font-size:1.5em;
+  width: 80%;
   margin:auto;
 }
 .loader {
@@ -870,6 +896,41 @@ footer {
 .lds-ellipsis div:nth-child(4) {
   left: 56px;
   animation: lds-ellipsis3 0.6s infinite;
+}
+.onboard-page .service-overview__box {
+  background-color: #0057FF;
+  row-gap:20px;
+  height: 400px;
+}
+.onboard-page .service-overview__box h3 {
+  height: 30px;
+}
+.onboard-page .service-overview-section {
+  background-image:none;
+  background-color: white;
+}
+.onboard-page .service-overview-section .section-heading {
+  color:black;
+  text-shadow: none;
+  padding-top:0px;
+  padding-bottom: 100px;
+  width: 90%;
+}
+.onboard-page .service-overview-section__boxes-container {
+  width: 90vw;
+  column-gap: 0;
+  justify-content: space-between;
+}
+.onboard-page .content-box p {
+  height: 140px;
+  width: 100%;
+}
+
+.onboard-page .service-overview__box .call-to-action-btn {
+  height: 50px;
+  margin:auto;
+  width: 150px;
+  background-color: #00A3FF;
 }
 @keyframes lds-ellipsis1 {
   0% {
@@ -1138,7 +1199,7 @@ footer {
     font-size: 0.9em;
   }
 
-  .section-heading:not(.benefits-section .section-heading,.about-us-section__container .section-heading,.faq-container,.sign-in-page .section-heading,.sign-up-page .section-heading ) {
+  .section-heading:not(.benefits-section .section-heading,.about-us-section__container .section-heading,.faq-container,.sign-in-page .section-heading,.sign-up-page .section-heading,.onboard-page .section-heading ) {
     width: 100%;
     padding-bottom: 25px;
   }
@@ -1172,7 +1233,7 @@ footer {
     min-width: 60%;
   }
 
-  .contact-section__form-container form label {
+  form label {
     width: calc(60% + 40px);
     font-size: 0.7em;
   }
@@ -1288,16 +1349,34 @@ footer {
     width: 200px;
     height: 50px;
   }
+  .auth-form {
+    width: 80vw;
+  }
+  .auth-form form input {
+    height: 40px;
+    font-size:1em;
+  }
+  .auth-form form a,.auth-form__err {
+    font-size:1em;
+  }
+  .onboard-page .content-box p {
+    font-size:0.9em;
+  }
+  .onboard-page .service-overview__box {
+    margin-inline:0;
+  }
 }
 
-@media only screen and (max-width:470px) {
-  header {
+@media only screen and (width < 512px) {
+  header,.dashboard-header {
     height: 10vh;
     min-height: 70px;
     background-color: #0B32FF;
-
   }
-  header .visible {
+  .dashboard-header {
+    background-color: rgba(7,121,255,0.4);
+  }
+  .dashboard-header .visible,header .visible {
     width: 100vw;
     display:block;
     position: fixed;  
@@ -1362,14 +1441,20 @@ footer {
   .auth-form form a {
     font-size:1em;
   }
-  
+  .onboard-page .service-overview__box {
+    height: 330px;
+    row-gap: 30px;
+  }
+  .onboard-page .content-box p {
+    height:90px;
+  }
 }
 
 @media only screen and (min-width:512px) and (max-width:768px) {
   .hero-section__container h1 {
     font-size: 2em;
   }
-
+  
   .hero-section__container p {
     font-size: 1.2em;
   }
@@ -1466,6 +1551,13 @@ footer {
   .pricing__box-price-details {
     font-size: 1.5em;
   }
+  .onboard-page .service-overview-section__boxes-container {
+    justify-content: center;
+    column-gap:40px;
+  }
+  .onboard-page .service-overview__box {
+    width: 30vw;
+  }
 }
 
 @media only screen and (width > 768px) and (max-width:1440px) {
@@ -1473,11 +1565,11 @@ footer {
     flex-wrap: wrap;
   }
 
-  header nav {
+  .dashboard-header nav,header nav {
     column-gap: 50px;
   }
 
-  header nav a {
+  .dashboard-header nav a,header nav a {
     font-size: 1.1em;
   }
 
@@ -1581,7 +1673,7 @@ footer {
     height: 90px;
     font-size: 1.2em;
   }
-  .about-us-section__container .section-heading,.faq-container .section-heading {
+  .about-us-section__container .section-heading,.faq-container .section-heading,.onboard-page .section-heading {
     font-size:1.3em;
   }
   .section-heading-description {
@@ -1599,8 +1691,15 @@ footer {
   .about-us-section__content p {
     width: 100%;
   }
+
   .auth-form {
-    width: 50vw;
+    width: 70vw;
+  }
+  .auth-form form input {
+    height: 50px;
+  }
+  .auth-form__err,.auth-form form a {
+    font-size: 1.2em;
   }
 }
 

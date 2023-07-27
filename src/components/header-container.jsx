@@ -20,7 +20,6 @@ export function HeaderContainer() {
         }
         setIsNavOpened(!isNavOpened);
     }
-    console.log(isNavOpened);
     return (
         <div className="header__container">
             <img src={logo} alt="createBoss logo" width="112px" height="48px" />

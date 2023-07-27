@@ -7,8 +7,9 @@ import { authContext } from './context/authContext'
 import SignIn from './pages/sign-in'
 import SignUp from './pages/sign-up'
 import { useEffect, useState } from 'react'
-import { onAuthStateChanged } from 'firebase/auth'
+import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '../firebase.js';
+import OnBoard from './pages/onboard'
 function App() {
   const [isLogged, setIsLogged] = useState();
   useEffect(() => {
@@ -20,7 +21,12 @@ function App() {
         setIsLogged(false);
       }
     })
-  },[setIsLogged]);
+  },[setIsLogged,auth]);
+
+  function logOutUser() {
+    signOut(auth);
+  }
+
   return (
     <Routes>
       <Route exact path="/" element={<authContext.Provider value={isLogged}><Home/></authContext.Provider>}/>
@@ -28,6 +34,7 @@ function App() {
       <Route exact path="/sign-in" element={<authContext.Provider value={isLogged}><SignIn/></authContext.Provider>}/>
       <Route exact path="/sign-up" element={<authContext.Provider value={isLogged}><SignUp/></authContext.Provider>}/>
       <Route exact path="/faq" element={<authContext.Provider value={isLogged}><Faq/></authContext.Provider>}/>
+      <Route exact path="/onboard" element={<authContext.Provider value={isLogged}><OnBoard/></authContext.Provider>}/>
     </Routes>
   )
 }
