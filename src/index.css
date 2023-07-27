@@ -1250,7 +1250,7 @@ footer {
   }
 
   form label {
-    width: calc(60% + 40px);
+    max-width: 95%;
     font-size: 0.8em;
   }
 
@@ -1475,6 +1475,9 @@ footer {
   }
   .auth-form form {
     gap:20px;
+  }
+  .auth-container {
+    min-height: 80vh;
   }
 }
 
