@@ -15,7 +15,7 @@ import { useContext } from "react";
 import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase.js";
-import { fetchUrl } from "src/utils/utilities.js";
+import { checkIsLoggedAndFetch, fetchUrl } from "src/utils/utilities.js";
 import { PricingContainer } from "src/components/pricing-container.jsx";
 import Loader from "src/layouts/loader.jsx";
 import { ContentContainer } from "src/components/content-container.jsx";
@@ -31,19 +31,8 @@ export default function OnBoard() {
         [textToSpeechImage, webpTextToSpeechImage]
     ];
     useEffect(() => {
-        if (isLogged === false) {
-            navigate('/sign-in');
-        }
-        else if (auth.currentUser !== null) {
-            (async function () {
-                const userData = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}get-user?email=${auth.currentUser.email}`);
-                setLoadingState(false);
-                setIsPaying(userData.isPaying);
-                console.log(isPaying);
-            }());
-        }
+        checkIsLoggedAndFetch(isLogged,auth,setLoadingState,setIsPaying,navigate);
     }, [isLogged, setIsPaying]);
-    console.log(isPaying);
     return (
         <div className="onboard-page">
             <DashboardHeader />

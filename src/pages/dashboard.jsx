@@ -13,7 +13,11 @@ import routeImage from 'src/assets/images/route.png';
 import webpRouteImage from 'src/assets/images/route.webp';
 import { DashboardSelectButton } from "src/components/dashboard-select-button";
 import { planDetailsData, dashboardActionsData, audioSpeedOptions, voiceGenderOptions, languagesData } from "src/utils/dashboard-static-data";
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { authContext } from "src/context/authContext";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../../firebase.js";
+import { checkIsLoggedAndFetch } from "src/utils/utilities.js";
 
 export default function Dashboard() {
     const [audioSpeed, setAudioSpeed] = useState('1');
@@ -24,7 +28,10 @@ export default function Dashboard() {
     const [STTLanguageFilter, setSTTLanguageFilter] = useState();
     const TTSfilterRegEx = new RegExp(TTSLanguageFilter, "i");
     const STTfilterRegEx = new RegExp(STTLanguageFilter, "i");
-
+    const isLogged = useContext(authContext);
+    const navigate = useNavigate();
+    const [isPaying, setIsPaying] = useState(false);
+    const [loadingState, setLoadingState] = useState(true);
     function setTTSOptionsToDefault() {
         setAudioSpeed("1");
         setVoiceGender("Male");
@@ -35,6 +42,14 @@ export default function Dashboard() {
     }
     const filteredTTSLanguagesData = languagesData.filter(obj => TTSfilterRegEx.test(obj.optgroup));
     const filteredSTTLanguagesData = languagesData.filter(obj => STTfilterRegEx.test(obj.optgroup));
+
+    useEffect(() => {
+        checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPaying, navigate);
+       
+        if (isPaying === false) {
+            navigate('/onboard');
+        }
+    }, [isLogged, setIsPaying]);
 
     return (
         <div className="dashboard">
@@ -79,7 +94,7 @@ export default function Dashboard() {
                     <DashboardBox heading="Speech To Text Settings">
                         <DashboardBoxContent>
                             <DashboardSettingsRecord description="Set To Default" >
-                                <CtaButton text="Set" action={setSTTOptionsToDefault}/>
+                                <CtaButton text="Set" action={setSTTOptionsToDefault} />
                             </DashboardSettingsRecord>
                             <DashboardSettingsRecord description="Set Language">
                                 <DashboardSelectButton text={STTLanguage} options={filteredSTTLanguagesData} setOption={setSTTLanguage} setFilter={setSTTLanguageFilter} />

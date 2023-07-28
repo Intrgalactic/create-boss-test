@@ -2054,12 +2054,12 @@ footer {
 
   .dashboard-header nav,
   header nav {
-    column-gap: 50px;
+    column-gap: 15px;
   }
 
   .dashboard-header nav a,
   header nav a {
-    font-size: 1.1em;
+    font-size: 1em;
   }
 
   .hero-section {

@@ -134,3 +134,17 @@ export async function fetchUrl(url) {
     const data = await fetch(url).then(res => res.json()).then(data => {return data});
     return data;
 }
+
+export function checkIsLoggedAndFetch(isLogged,auth,setLoadingState,setIsPaying,navigate) {
+    if (isLogged === false) {
+        navigate('/sign-in');
+    }
+    
+    else if (auth.currentUser !== null) {
+        (async function () {
+            const userData = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}get-user?email=${auth.currentUser.email}`);
+            setLoadingState(false);
+            setIsPaying(userData.isPaying);
+        }());
+    }
+}

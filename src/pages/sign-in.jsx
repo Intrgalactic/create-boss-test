@@ -34,7 +34,6 @@ export default function SignIn() {
                 }
             })
             .catch(err => {
-                console.log(err.message);
                 validateCallback([getFirebaseErr],err.message,setFirebaseError);
                 setLoadingState(false);
             })
