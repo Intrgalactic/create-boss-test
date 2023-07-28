@@ -1018,15 +1018,13 @@ footer {
   background-color: white;
 }
 
-.dashboard-header nav a {
-  color: black;
-}
 
 .dashboard__container {
   min-height: 90vh;
   padding-bottom: 50px;
   background-color: #0066FF;
   padding-inline: 10%;
+  height: fit-content;
 }
 
 .dashboard__container-row {
