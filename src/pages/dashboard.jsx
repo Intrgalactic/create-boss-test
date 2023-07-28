@@ -44,11 +44,7 @@ export default function Dashboard() {
     const filteredSTTLanguagesData = languagesData.filter(obj => STTfilterRegEx.test(obj.optgroup));
 
     useEffect(() => {
-        checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPaying, navigate);
        
-        if (isPaying === false) {
-            navigate('/onboard');
-        }
     }, [isLogged, setIsPaying]);
 
     return (
