@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '../firebase.js';
 import OnBoard from './pages/onboard'
+import Dashboard from './pages/dashboard'
 function App() {
   const [isLogged, setIsLogged] = useState();
   useEffect(() => {
@@ -35,6 +36,7 @@ function App() {
       <Route exact path="/sign-up" element={<authContext.Provider value={isLogged}><SignUp/></authContext.Provider>}/>
       <Route exact path="/faq" element={<authContext.Provider value={isLogged}><Faq/></authContext.Provider>}/>
       <Route exact path="/onboard" element={<authContext.Provider value={isLogged}><OnBoard/></authContext.Provider>}/>
+      <Route exact path="/dashboard" element={<authContext.Provider value={isLogged}><Dashboard/></authContext.Provider>}/>
     </Routes>
   )
 }
