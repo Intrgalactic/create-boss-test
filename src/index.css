@@ -1308,6 +1308,7 @@ footer {
 .dashboard__container-welcome-heading p {
   font-family: NexaRegular;
   text-shadow: 0px 4px 4px black;
+  text-align: left;
 }
 
 .dashboard__container-welcome-heading .section-heading {
@@ -1350,13 +1351,15 @@ footer {
   max-width: 100%;
   border-radius: 0;
 }
-
+.text-to-speech-dashboard {
+  background-image: url('assets/images/dashboard-bg.png');
+  background-size: 100% 100%;
+  min-height: 100vh;
+}
 .text-to-speech-dashboard__container {
   min-height: 90vh;
   padding-inline: 10%;
-
-  background-image: url('assets/images/dashboard-service-bg.png');
-  background-size: 100% 100%;
+  margin-left:5vw;
 }
 
 .text-to-speech-dashboard .dashboard-header {
@@ -1364,13 +1367,13 @@ footer {
 }
 
 .dashboard__left-section {
-  padding-top: 50px;
+  padding-top: 40px;
   width: 60vw;
 }
 
 .dashboard__right-section {
   width: 40vw;
-  padding-top: 50px;
+  padding-top: 40px;
 }
 
 .dashboard__left-section .section-heading {
@@ -1403,32 +1406,32 @@ textarea {
 
 .dashboard__service-input-container .section-heading {
   font-size: 1.1em;
+  word-break: keep-all;
   padding-inline: 0;
   margin-inline: 0;
 }
 
 .dashboard__left-section-content-container-main-input {
-  width: 30vw;
-  height: 350px;
+  width: 25vw;
   text-align: left;
 }
 
 .dashboard__left-section-content-container-main-input textarea {
   max-height: 300px;
   height: 300px;
-  min-width: 30vw;
+  min-width: 25vw;
   position: relative;
   padding: 0;
 }
 
 .dashboard__left-section-content-container-control-input {
   height: 50px;
-  width: calc(15vw - 30px);
+  width: calc(12.5vw - 30px);
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   background-color: white;
   align-items: center;
   display: grid;
-  font-family: NexaHeavy;
+  font-family: NexaRegular;
   border-radius: 5px;
 }
 
@@ -1448,7 +1451,7 @@ textarea {
   color: black;
   flex-wrap: wrap;
   justify-content: space-between;
-  max-width: 30vw;
+  max-width: 25vw;
 }
 
 .dashboard__left-section-control-container p {
@@ -1616,7 +1619,7 @@ textarea {
 }
 
 .dashboard__service-options-container {
-  background-color: white;
+  background-color: white;  
   padding-block: 80px;
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   border-radius: 5px;
@@ -1667,6 +1670,9 @@ textarea {
 .dashboard__container div:nth-child(3) .dashboard__box:last-of-type .dashboard__box-content {
   gap:30px;
   padding-block: 30px;
+}
+.text-to-speech-dashboard .section-heading {
+  width: fit-content;
 }
 @keyframes lds-ellipsis1 {
   0% {
@@ -1946,7 +1952,7 @@ textarea {
     font-size: 0.9em;
   }
 
-  .section-heading:not(.benefits-section .section-heading, .about-us-section__container .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading) {
+  .section-heading:not(.benefits-section .section-heading, .about-us-section__container .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading,.text-to-speech-dashboard .section-heading) {
     width: 100%;
     padding-bottom: 25px;
   }
@@ -2158,6 +2164,70 @@ textarea {
   .dashboard__container {
     margin-left: 0;
   }
+  .text-to-speech-dashboard__container {
+    margin-left:0;
+    flex-wrap: wrap;
+    padding-bottom: 40px;
+  }
+  .dashboard__left-section-container,.dashboard__right-section {
+    width: 80vw;
+    justify-content: space-between;
+  }
+  .dashboard__left-section-container {
+    flex-direction: column;
+  }
+  .dashboard__right-section .section-heading:first-of-type:not(.dashboard__service-options-container .section-heading) {
+    text-align: left;
+  }
+  .dashboard__left-section-file-container {
+    width: 40%;
+  }
+  .dashboard__left-section-content-container-main-input {
+    width: 100%;
+  }
+  .dashboard__service-input-container  {
+    width:100%;
+  }
+  .dashboard__left-section-control-container,.dashboard__left-section-file-container {
+    width: 80vw;
+    max-width: 80vw;
+    justify-content: center;
+  }
+  .dashboard__left-section-content-container-main-input textarea {
+    width: 100%;
+    min-width: 100%;
+  }
+  .dashboard__left-section-file-container .dashboard__service-input-container:first-of-type .section-heading {
+    margin-top:40px;
+  }
+  .dashboard__left-section-content-container-control-input,.dashboard__left-section-content-container-control-input button {
+    font-size:1.3em;
+  } 
+  .text-to-speech-dashboard .section-heading {
+    font-size:2em;
+  }
+  .dashboard__service-options-container .section-heading {
+    font-size:1em;
+    width: 80%;
+  }
+  .dashboard__service-options-row .dashboard__select-button {
+    width: fit-content;
+  }
+  .text-to-speech-dashboard .dashboard__service-options-row .call-to-action-btn {
+    width: 100px;
+    height: 50px;
+    font-size: 1em;
+  }
+  .dashboard__service-options-row {
+    width: 100%;
+  }
+  .dashboard__service-input-container .section-heading {
+    font-size:1.5em;
+    text-align: left;
+  }
+  .text-to-speech-dashboard__container {
+    padding-right: 0;
+  }
 }
 
 @media only screen and (width < 512px) {
@@ -2332,6 +2402,9 @@ textarea {
   }
   .dashboard_plan-details-record {
     gap:20px;
+  }
+  .dashboard__container-welcome-heading .section-heading {
+    font-size:1.5em;
   }
 }
 
@@ -2666,6 +2739,41 @@ textarea {
   }
   .dashboard-header nav {
     font-size: 0.8em;
+  }
+  .text-to-speech-dashboard__container {
+    margin-left: 15vw;
+    flex-wrap: wrap;
+    padding-bottom: 40px;
+  }
+  .dashboard__left-section-container,.dashboard__left-section-container {
+    width: 70vw;
+    justify-content: space-between;
+  }
+  .dashboard__left-section,.dashboard__right-section {
+    width: 70vw;
+  }
+  .dashboard__right-section .section-heading:first-of-type:not(.dashboard__service-options-container .section-heading) {
+    text-align: left;
+  }
+  .dashboard__left-section-file-container {
+    width: 40%;
+  }
+  .dashboard__service-input-container  {
+    width: 100%;
+  }
+  .dashboard__left-section-control-container {
+    width: 70vw;
+    max-width: 70vw;
+    justify-content: center;
+  }
+  .dashboard__left-section-content-container-control-input,.dashboard__left-section-content-container-control-input button {
+    font-size:1.3em;
+  }
+  .dashboard__left-section-content-container {
+    width: 50%;
+  }
+  .text-to-speech-dashboard__container {
+    padding-right: 0;
   }
 }
 
