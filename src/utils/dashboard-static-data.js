@@ -19,29 +19,29 @@ export const planDetailsData = [
         images: [webpCurrentPlanImage, currentplanImage],
         heading: "Current Plan :",
         description: "Starter",
-        imgWidth: "40px",
-        imgHeight: "40px"
+        imgWidth: "27px",
+        imgHeight: "27px"
     },
     {
         images: [webpRecurringImage, recurringImage],
         heading: "Recurring In :",
         description: "31 Days",
-        imgWidth: "36px",
-        imgHeight: "40px"
+        imgWidth: "25px",
+        imgHeight: "27px"
     },
     {
         images: [webpAutorenewImage, autorenewImage],
         heading: "Auto - Renew :",
         description: "Yes",
-        imgWidth: "44.44px",
-        imgHeight: "40px"
+        imgWidth: "31px",
+        imgHeight: "27px"
     },
     {
         images: [boughtatImage, webpBoughtatImage],
         heading: "Bought At :",
         description: "25.07.2023",
-        imgWidth: "57.14px",
-        imgHeight: "40px"
+        imgWidth: "38px",
+        imgHeight: "27px"
     }
 ]
 export const dashboardActionsData = [
@@ -76,6 +76,7 @@ export const dashboardActionsData = [
 
 ]
 export const audioSpeedOptions = ["1","1.25","1.5","1.75","2" ];
+export const voicePitchOptions = ["-20","-15","-10","-5","0","5","10","15","20" ];
 export const voiceGenderOptions = ["Male","Female"];
 export const languagesData = [
     {

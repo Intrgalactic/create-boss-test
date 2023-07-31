@@ -44,14 +44,17 @@ export default function Dashboard() {
     const filteredSTTLanguagesData = languagesData.filter(obj => STTfilterRegEx.test(obj.optgroup));
 
     useEffect(() => {
-       
+
     }, [isLogged, setIsPaying]);
 
     return (
         <div className="dashboard">
             <DashboardHeader />
             <ContentContainer containerClass="dashboard__container">
-                <SectionHeading heading="Welcome, DisplayName" />
+                <div className="dashboard__container-welcome-heading">
+                    <SectionHeading heading="Welcome, Mateusz" />
+                    <p>Start Off By Selecting Service You Would Like To Use</p>
+                </div>
                 <ContentContainer containerClass="dashboard__container-row">
                     <DashboardBox heading="Current Plan Details">
                         <DashboardBoxContent>
@@ -65,8 +68,8 @@ export default function Dashboard() {
                     </DashboardBox>
                     <DashboardBox heading="Actions">
                         <DashboardBoxContent>
-                            <DashboardActionsRecord heading="Speech And Text" actions={dashboardActionsData.slice(0, 2)} images={[webpRouteImage, routeImage]} imgWidth="42px" imgHeight="42px" alt="route" />
-                            <DashboardActionsRecord heading="Videos" actions={dashboardActionsData.slice(2, 4)} images={[webpVideoImage, videoImage]} imgWidth="60px" imgHeight="42px" alt="camera" />
+                            <DashboardActionsRecord heading="Speech And Text" actions={dashboardActionsData.slice(0, 2)} images={[webpRouteImage, routeImage]} imgWidth="27px" imgHeight="27px" alt="route" />
+                            <DashboardActionsRecord heading="Videos" actions={dashboardActionsData.slice(2, 4)} images={[webpVideoImage, videoImage]} imgWidth="38px" imgHeight="27px" alt="camera" />
                         </DashboardBoxContent>
                     </DashboardBox>
                 </ContentContainer>

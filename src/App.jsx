@@ -11,6 +11,7 @@ import { onAuthStateChanged, signOut } from 'firebase/auth'
 import { auth } from '../firebase.js';
 import OnBoard from './pages/onboard'
 import Dashboard from './pages/dashboard'
+import TTSDashboard from './pages/text-to-speech-dashboard'
 function App() {
   const [isLogged, setIsLogged] = useState();
   useEffect(() => {
@@ -22,7 +23,7 @@ function App() {
         setIsLogged(false);
       }
     })
-  },[setIsLogged,auth]);
+  }, [setIsLogged, auth]);
 
   function logOutUser() {
     signOut(auth);
@@ -30,13 +31,16 @@ function App() {
 
   return (
     <Routes>
-      <Route exact path="/" element={<authContext.Provider value={isLogged}><Home/></authContext.Provider>}/>
-      <Route exact path="/about-us" element={<authContext.Provider value={isLogged}><AboutUs/></authContext.Provider>}/>
-      <Route exact path="/sign-in" element={<authContext.Provider value={isLogged}><SignIn/></authContext.Provider>}/>
-      <Route exact path="/sign-up" element={<authContext.Provider value={isLogged}><SignUp/></authContext.Provider>}/>
-      <Route exact path="/faq" element={<authContext.Provider value={isLogged}><Faq/></authContext.Provider>}/>
-      <Route exact path="/onboard" element={<authContext.Provider value={isLogged}><OnBoard/></authContext.Provider>}/>
+      <Route exact path="/" element={<authContext.Provider value={isLogged}><Home /></authContext.Provider>} />
+      <Route exact path="/about-us" element={<authContext.Provider value={isLogged}><AboutUs /></authContext.Provider>} />
+      <Route exact path="/sign-in" element={<authContext.Provider value={isLogged}><SignIn /></authContext.Provider>} />
+      <Route exact path="/sign-up" element={<authContext.Provider value={isLogged}><SignUp /></authContext.Provider>} />
+      <Route exact path="/faq" element={<authContext.Provider value={isLogged}><Faq /></authContext.Provider>} />
+      <Route exact path="/onboard" element={<authContext.Provider value={isLogged}><OnBoard /></authContext.Provider>} />
       <Route exact path="/dashboard" element={<authContext.Provider value={isLogged}><Dashboard/></authContext.Provider>}/>
+      <Route exact path="/dashboard/services/text-to-speech" element={<authContext.Provider value={isLogged}><TTSDashboard /></authContext.Provider>} />
+
+
     </Routes>
   )
 }
