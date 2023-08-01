@@ -3,6 +3,7 @@ const asyncHandler = require("express-async-handler");
 const listVoices = require('./listVoices');
 const languageDetect = require('languagedetect');
 const lngDetector = new languageDetect();
+const fs = require('fs');
 const formatEncoding = require('../utils/formatters/formatEncoding');
 const formidable = require('formidable');
 const textToSpeech = () => {
@@ -10,7 +11,6 @@ const textToSpeech = () => {
         const textToSpeech = require('@google-cloud/text-to-speech');
         const gender = req.body.gender.toUpperCase();
         const pitch = parseInt(req.body.pitch);
-        const fs = require('fs');
         const util = require('util');
         const environment = formatEncoding(req.body.effectsProfileId);
         const client = new textToSpeech.TextToSpeechClient();
