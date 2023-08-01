@@ -32,7 +32,6 @@ app.use(express.urlencoded({
 }));
 
 app.get('/', cors(corsOptions), (req, res) => {
-    listVoices('en-US');
     res.send("OK");
 })
 app.post('/create-user', cors(corsOptions), createUser(usersCollection));

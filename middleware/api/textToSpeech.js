@@ -43,8 +43,17 @@ const textToSpeech = () => {
         // Write the binary audio content to a local file
         const writeFile = util.promisify(fs.writeFile);
         await writeFile(`output.${req.body.audioEncoding.toLowerCase()}`, response.audioContent, 'binary');
-
-        sendToStorage(`output.${req.body.audioEncoding.toLowerCase()}`);
+        switch(req.body.audioEncoding) {
+            case "MP3" : contentType = "audio/mpeg";
+                break;
+            case "OGG" : contentType = "audio/ogg";
+                break;
+            case "WAV" : contentType = "audio/wav";
+                break;
+            default :
+                contentType = "audio/mpeg";
+        }
+        sendToStorage(`output.${req.body.audioEncoding.toLowerCase()}`,contentType);
         res.status(200).send("Synthesizing Completed");
         console.log('Audio content written to file: output.mp3');
     });

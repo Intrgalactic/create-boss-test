@@ -1,8 +1,10 @@
 const { Storage } = require('@google-cloud/storage');
 const asyncHandler = require('express-async-handler');
+const { readFile } = require('fs');
 const path = require('path');
+const fs = require('fs');
 
-const sendToStorage = async (filename) => {
+const sendToStorage = async (filename, contentType) => {
     try {
         const googleCloudStorage = new Storage({
             keyFileName: path.join(__dirname, "../../config/google.json"),
@@ -11,8 +13,14 @@ const sendToStorage = async (filename) => {
         const mainBucket = googleCloudStorage.bucket("create-boss");
         const file = mainBucket.file(filename);
 
-        await file.save(path.join(__dirname,'../../output.mp3'));
-  
+        const stream = fs.createReadStream(filename);
+
+        const options = {
+            contentType
+        }
+
+        stream.pipe(file.createWriteStream(options));
+      
     }
     catch (err) {
         return err;
