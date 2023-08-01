@@ -8,7 +8,6 @@ const cors = require('cors');
 const key = require('./google-key/key.json');
 const multer = require('multer');
 const fs = require('fs');
-const path = require('path');
 dotenv.config();
 
 const corsOptions = {
