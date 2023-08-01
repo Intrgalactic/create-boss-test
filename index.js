@@ -7,7 +7,8 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const key = require('./google-key/key.json');
 const multer = require('multer');
-
+const fs = require('fs');
+const path = require('path');
 dotenv.config();
 
 const corsOptions = {
@@ -35,7 +36,7 @@ app.post('/create-user', cors(corsOptions), createUser(usersCollection));
 app.get('/get-user', cors(corsOptions), getUser(usersCollection));
 
 app.get('/api/text-to-speech/:file', cors(corsOptions), function (req, res) {
-    let resolve = require('path').resolve;
+    let resolve = path.resolve;
     res.download(resolve(`./${req.params.file}`));
 });
 app.listen(process.env.PORT || 4000, () => {

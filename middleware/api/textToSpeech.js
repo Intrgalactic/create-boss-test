@@ -4,6 +4,7 @@ const listVoices = require('./listVoices');
 const languageDetect = require('languagedetect');
 const lngDetector = new languageDetect();
 const fs = require('fs');
+
 const formatEncoding = require('../utils/formatters/formatEncoding');
 const formidable = require('formidable');
 const textToSpeech = () => {
