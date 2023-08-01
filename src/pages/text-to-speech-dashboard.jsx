@@ -85,20 +85,22 @@ export default function TTSDashboard() {
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
-            if (file) {
+            if (file && file.type === "text/plain") {
                 const data = new FormData();
-                data.append('file', file, file.name);
+              
                 const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}`;
                 const queryParams = Object.fromEntries(new URLSearchParams(queryString));
                 for (const [key, value] of Object.entries(queryParams)) {
                     data.append(key, value);
                 }
-           
+                data.append('file', file, file.name);
+                console.log(data);
                 sendData(data);
             }
-            else {
+            else if (!file) {
                 sendData(`code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}`);
             }
+           
         }
     }
     function downloadFile() {
@@ -109,9 +111,7 @@ export default function TTSDashboard() {
             await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, {
                 method: "POST",
                 body: data,
-                headers: {
-                    "Content-type": "application/x-www-form-urlencoded"
-                }
+                
             }).then(async () => {
                 const rawFileResponse = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/output.${outputExtension.toLowerCase()}`);
                 const file = await rawFileResponse.blob();

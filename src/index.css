@@ -1396,7 +1396,7 @@ footer {
 }
 
 .dashboard__service-input-container input,
-textarea {
+.text-to-speech-dashboard textarea {
   width: 100%;
   color:white;
   max-width: 100%;
@@ -1517,7 +1517,11 @@ textarea {
     rgba(0,0,0,0.3);
 
 }
-
+.file-output-container a{
+  color:white;
+  font-family: NexaRegular;
+  text-decoration: none;
+}
 .file-output-container picture {
   height: 40%;
   display: flex;
