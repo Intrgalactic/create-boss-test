@@ -5,10 +5,12 @@ const getUser = require('./middleware/getUser');
 const textToSpeech = require('./middleware/api/textToSpeech');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const key = require('./google-key/key.json');
 const multer = require('multer');
-const fs = require('fs');
+
 dotenv.config();
+
+const multerStorage = multer.memoryStorage();
+const upload = multer({storage: multerStorage});
 
 const corsOptions = {
     origin: process.env.CORS_URL,
@@ -24,7 +26,10 @@ const client = new MongoClient(uri);
 const database = client.db("createBoss");
 const usersCollection = database.collection("users");
 
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ 
+    extended: true,
+    limit: 5000000 
+}));
 
 app.get('/', cors(corsOptions), (req, res) => {
     listVoices('en-US');
@@ -41,7 +46,7 @@ app.get('/api/text-to-speech/:file', cors(corsOptions), function (req, res) {
 app.listen(process.env.PORT || 4000, () => {
     console.log('app listening');
 })
-app.post('/api/text-to-speech',cors(corsOptions), textToSpeech());
+app.post('/api/text-to-speech',upload.single("file"),cors(corsOptions),textToSpeech());
 
 
 
