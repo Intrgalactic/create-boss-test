@@ -10,7 +10,6 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
             textAreaRef.current.value = "";
         }
     }, [isFileAttached]);
-    console.log(isFileAttached);
     return (
         <>
             {isFileAttached ? <div className="textarea-container"><textarea disabled ref={textAreaRef}>

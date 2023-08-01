@@ -9,23 +9,29 @@ import Loader from "./loader";
 import { Picture } from "src/components/picture";
 import inputCheck from 'src/assets/images/input-check.png';
 import webpInputCheck from 'src/assets/images/input-check.webp';
-export default function DashboardLeftSection({ mainAction, headings, controls }) {
-    const [file, setFile] = useState();
+import downloadImage from 'src/assets/images/downloaded.png';
+import webpDownloadImage from 'src/assets/images/downloaded.webp';
+import { Link } from "react-router-dom";
+export default function DashboardLeftSection({ mainAction, headings, controls,setAbleToTranslate,textInput,handleTextChange,isTranslated,downloadFile,file,setFile}) {
     const [isFileAttached, setIsFileAttached] = useState(false);
-    const [textInput, setTextInput] = useState("");
     useEffect(() => {
         if (file) {
             setIsFileAttached(true);
         }
-    }, [setIsFileAttached, file])
+        if (textInput !== "" || file) {
+            setAbleToTranslate("Yes");
+        }
+        else {
+            setAbleToTranslate("No");
+        }
+    }, [setIsFileAttached, file,setAbleToTranslate,textInput]);
     return (
         <div className="dashboard__left-section">
             <SectionHeading heading={headings[0]} />
             <div className="dashboard__left-section-container">
                 <ContentContainer containerClass="dashboard__left-section-content-container">
                     <DashboardServiceInputContainer heading={headings[1]} inputClass="dashboard__left-section-content-container-main-input">
-                        <DashboardServiceOutput isFileAttached={isFileAttached} setTextInput={setTextInput} />
-                      
+                        <DashboardServiceOutput isFileAttached={isFileAttached} setTextInput={handleTextChange} />
                     </DashboardServiceInputContainer>
                 </ContentContainer>
                 <ContentContainer containerClass="dashboard__left-section-file-container">
@@ -37,11 +43,17 @@ export default function DashboardLeftSection({ mainAction, headings, controls })
                             {!isFileAttached && !textInput ? <><Loader />
                                 <p>Waiting...</p>
                                 <p>For Manual Input Or File</p>
-                            </> : <>
+                            </> : !isTranslated ? <>
                                 <Picture images={[webpInputCheck, inputCheck]} imgWidth="64px" imgHeight="62px" alt="check mark" />
                                 <p>Ready</p>
                                 <p>Ready To Process</p>
-                            </>}
+                            </> : 
+                            <>
+                            <Picture images={[webpDownloadImage,downloadImage]} imgWidth="64px" imgHeight="62px" alt="check mark" />
+                                <p>Translating Completed</p>
+                                <Link onClick={downloadFile}>Download</Link>
+                            </>
+                            }
                         </div>
                     </DashboardServiceInputContainer>
                 </ContentContainer>

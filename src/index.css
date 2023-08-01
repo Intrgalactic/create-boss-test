@@ -1190,7 +1190,7 @@ footer {
 }
 
 .dashboard_settings-record select optgroup {
-  background-color: white;
+  background-color: rgba(0,0,0,0.3);
 
   height: 40px;
   color: black;
@@ -1203,7 +1203,7 @@ footer {
 
 .dashboard_settings-record select optgroup option {
   color: black;
-  background-color: white;
+  background-color: rgba(0,0,0,0.3);
 }
 
 .dashboard__actions-record-heading .section-heading {
@@ -1398,6 +1398,7 @@ footer {
 .dashboard__service-input-container input,
 textarea {
   width: 100%;
+  color:white;
   max-width: 100%;
   margin: 0;
   border-radius: 5px;
@@ -1419,6 +1420,7 @@ textarea {
 .dashboard__left-section-content-container-main-input textarea {
   max-height: 300px;
   height: 300px;
+  background-color: rgba(0,0,0,0.3);
   min-width: 25vw;
   position: relative;
   padding: 0;
@@ -1428,7 +1430,7 @@ textarea {
   height: 50px;
   width: calc(12.5vw - 30px);
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
-  background-color: white;
+  background-color: rgba(0,0,0,0.3);
   align-items: center;
   display: grid;
   font-family: NexaRegular;
@@ -1439,6 +1441,7 @@ textarea {
   height: 100%;
   background-color: transparent;
   border-radius: 5px;
+  color:white;
   border: none;
   font-family: NexaHeavy;
 }
@@ -1457,6 +1460,7 @@ textarea {
 .dashboard__left-section-control-container p {
   width: 80%;
   margin: auto;
+  color:white;
 }
 
 .dashboard__left-section-file-container .section-heading {
@@ -1464,7 +1468,8 @@ textarea {
 }
 
 .dashboard__left-section-file-container input {
-  background-color: white;
+  background-color: transparent;
+  opacity: 0;
   position: relative;
 }
 
@@ -1489,9 +1494,10 @@ textarea {
   color: black;
   font-family: NexaHeavy;
   border-radius: 5px;
+  color:white;
   height: 50px;
   box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5), 0px 4px 20px 1px rgba(0, 0, 0, 0.5) inset;
-  background-color: white;
+  background-color: rgba(0, 0, 0, 0.25);
 }
 
 .file-input-container:hover:after {
@@ -1506,10 +1512,9 @@ textarea {
   position: relative;
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   border-radius: 5px;
-  color: black;
   height: calc(250px - 46.4px);
   background-color:
-    white;
+    rgba(0,0,0,0.3);
 
 }
 
@@ -1546,7 +1551,7 @@ textarea {
   height: 30%;
   font-family: NexaHeavy;
   width: 80%;
-  color: black;
+  color: white;
   margin: auto;
 }
 
@@ -1611,7 +1616,7 @@ textarea {
 .dashboard__service-options-container .section-heading {
   font-size: 1.1em;
   text-shadow: none;
-  color: black;
+  color: white;
   width: 80%;
   margin: auto;
   margin-bottom: 40px;
@@ -1619,20 +1624,20 @@ textarea {
 }
 
 .dashboard__service-options-container {
-  background-color: white;  
+  background-color: rgba(0,0,0,0.3);  
   padding-block: 80px;
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   border-radius: 5px;
 }
 
 .dashboard__service-option-button {
-  color: black;
+  color: white;
   font-family: NexaHeavy;
 }
 
 .text-to-speech-dashboard .dashboard__select-button {
   width: 150px;
-  color: black;
+  color: white;
   font-size: 0.8em;
 }
 

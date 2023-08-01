@@ -41,7 +41,7 @@ export default function SignUp() {
         createUserWithEmailAndPassword(auth, userPersonalData.current.email, userPersonalData.current.password).then(() => {
             fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}create-user`, {
                 method: "POST",
-                body: `name=${userPersonalData.current.name}&email=${userPersonalData.current.email}&userName=${userPersonalData.current.userName}&isPaying=false&isNew=true`,
+                body: `name=${userPersonalData.current.name}&email=${userPersonalData.current.email}&userName=${userPersonalData.current.userName}&isPaying=true&isNew=true`,
                 headers: {
                     "Content-type": "application/x-www-form-urlencoded"
                 }

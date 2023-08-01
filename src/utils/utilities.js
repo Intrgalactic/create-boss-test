@@ -148,3 +148,4 @@ export function checkIsLoggedAndFetch(isLogged,auth,setLoadingState,setIsPaying,
         }());
     }
 }
+

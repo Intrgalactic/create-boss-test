@@ -9,7 +9,7 @@ export function FileInputContainer({file,setFile,textInput}) {
     },[file]);
     return (
         <div className='file-input-container' onClick={() => { document.querySelector("input[type=file]").click() }} ref={fileRef} >
-            {textInput === "" ? <input type="file" onChange={(e) => {setFile(e.target.files[0].name)}} accept="text/plain"/> : <input type="file" disabled/>}
+            {textInput === "" ? <input type="file" onChange={(e) => {setFile(e.target.files[0])}} accept="text/plain"/> : <input type="file" disabled/>}
         </div>
     )
 }

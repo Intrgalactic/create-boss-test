@@ -78,225 +78,283 @@ export const dashboardActionsData = [
 export const audioSpeedOptions = ["1","1.25","1.5","1.75","2" ];
 export const voicePitchOptions = ["-20","-15","-10","-5","0","5","10","15","20" ];
 export const voiceGenderOptions = ["Male","Female"];
+export const speakersTypeOptions = ["Home","Wearables","Headphones","Small Speaker","Medium Speaker","Car","Handset Devices","Telephony"];
+export const outputExtensionOptions = ["MP3","OGG","WAV"];
+
 export const languagesData = [
-    {
-      optgroup: "Afrikaans",
-      options: ["Afrikaans (South Africa)"]
-    },
-    {
-      optgroup: "Arabic",
-      options: ["Arabic"]
-    },
-    {
-      optgroup: "Basque",
-      options: ["Basque (Spain)"]
-    },
-    {
-      optgroup: "Bengali",
-      options: ["Bengali (India)"]
-    },
-    {
-      optgroup: "Bulgarian",
-      options: ["Bulgarian (Bulgaria)"]
-    },
-    {
-      optgroup: "Catalan",
-      options: ["Catalan (Spain)"]
-    },
-    {
-      optgroup: "Chinese",
-      options: ["Chinese (Hong Kong)", "Mandarin Chinese"]
-    },
-    {
-      optgroup: "Czech",
-      options: ["Czech (Czech Republic)"]
-    },
-    {
-      optgroup: "Danish",
-      options: ["Danish (Denmark)"]
-    },
-    {
-      optgroup: "Dutch",
-      options: ["Dutch (Belgium)", "Dutch (Netherlands)"]
-    },
-    {
-      optgroup: "English",
-      options: ["English (Australia)", "English (India)", "English (UK)", "English (US)"]
-    },
-    {
-      optgroup: "Filipino",
-      options: ["Filipino (Philippines)"]
-    },
-    {
-      optgroup: "Finnish",
-      options: ["Finnish (Finland)"]
-    },
-    {
-      optgroup: "French",
-      options: ["French (Canada)", "French (France)"]
-    },
-    {
-      optgroup: "Galician",
-      options: ["Galician (Spain)"]
-    },
-    {
-      optgroup: "German",
-      options: ["German (Germany)"]
-    },
-    {
-      optgroup: "Greek",
-      options: ["Greek (Greece)"]
-    },
-    {
-      optgroup: "Gujarati",
-      options: ["Gujarati (India)"]
-    },
-    {
-      optgroup: "Hebrew",
-      options: ["Hebrew (Israel)"]
-    },
-    {
-      optgroup: "Hindi",
-      options: ["Hindi (India)"]
-    },
-    {
-      optgroup: "Hungarian",
-      options: ["Hungarian (Hungary)"]
-    },
-    {
-      optgroup: "Icelandic",
-      options: ["Icelandic (Iceland)"]
-    },
-    {
-      optgroup: "Indonesian",
-      options: ["Indonesian (Indonesia)"]
-    },
-    {
-      optgroup: "Italian",
-      options: ["Italian (Italy)"]
-    },
-    {
-      optgroup: "Japanese",
-      options: ["Japanese (Japan)"]
-    },
-    {
-      optgroup: "Kannada",
-      options: ["Kannada (India)"]
-    },
-    {
-      optgroup: "Korean",
-      options: ["Korean (South Korea)"]
-    },
-    {
-      optgroup: "Latvian",
-      options: ["Latvian (Latvia)"]
-    },
-    {
-      optgroup: "Lithuanian",
-      options: ["Lithuanian (Lithuania)"]
-    },
-    {
-      optgroup: "Malay",
-      options: ["Malay (Malaysia)"]
-    },
-    {
-      optgroup: "Malayalam",
-      options: ["Malayalam (India)"]
-    },
-    {
-      optgroup: "Mandarin Chinese",
-      options: ["Mandarin Chinese"]
-    },
-    {
-      optgroup: "Marathi",
-      options: ["Marathi (India)"]
-    },
-    {
-      optgroup: "Norwegian",
-      options: ["Norwegian (Norway)"]
-    },
-    {
-      optgroup: "Polish",
-      options: ["Polish (Poland)"]
-    },
-    {
-      optgroup: "Portuguese",
-      options: ["Portuguese (Brazil)", "Portuguese (Portugal)"]
-    },
-    {
-      optgroup: "Punjabi",
-      options: ["Punjabi (India)"]
-    },
-    {
-      optgroup: "Romanian",
-      options: ["Romanian (Romania)"]
-    },
-    {
-      optgroup: "Russian",
-      options: ["Russian (Russia)"]
-    },
-    {
-      optgroup: "Serbian",
-      options: ["Serbian (Serbia)"]
-    },
-    {
-      optgroup: "Sinhala",
-      options: ["Sinhala (Sri Lanka)"]
-    },
-    {
-      optgroup: "Slovak",
-      options: ["Slovak (Slovakia)"]
-    },
-    {
-      optgroup: "Slovenian",
-      options: ["Slovenian (Slovenia)"]
-    },
-    {
-      optgroup: "Spanish",
-      options: ["Spanish (Spain)", "Spanish (US)"]
-    },
-    {
-      optgroup: "Swahili",
-      options: ["Swahili (Kenya)"]
-    },
-    {
-      optgroup: "Swedish",
-      options: ["Swedish (Sweden)"]
-    },
-    {
-      optgroup: "Tamil",
-      options: ["Tamil (India)"]
-    },
-    {
-      optgroup: "Telugu",
-      options: ["Telugu (India)"]
-    },
-    {
-      optgroup: "Thai",
-      options: ["Thai (Thailand)"]
-    },
-    {
-      optgroup: "Turkish",
-      options: ["Turkish (Turkey)"]
-    },
-    {
-      optgroup: "Ukrainian",
-      options: ["Ukrainian (Ukraine)"]
-    },
-    {
-      optgroup: "Urdu",
-      options: ["Urdu (Pakistan)"]
-    },
-    {
-      optgroup: "Vietnamese",
-      options: ["Vietnamese (Vietnam)"]
-    },
-    {
-      optgroup: "Welsh",
-      options: ["Welsh (UK)"]
-    },
-    {
-      optgroup: "Zulu",
-      options: ["Zulu (South Africa)"]
-    },
-  ];
+  {
+    optgroup: "Afrikaans",
+    options: ["Afrikaans (South Africa)"],
+    code: ["af-ZA"],
+  },
+  {
+    optgroup: "Arabic",
+    options: ["Arabic"],
+    code: ["ar"],
+  },
+  {
+    optgroup: "Basque",
+    options: ["Basque (Spain)"],
+    code: ["eu-ES"],
+  },
+  {
+    optgroup: "Bengali",
+    options: ["Bengali (India)"],
+    code: ["bn-IN"],
+  },
+  {
+    optgroup: "Bulgarian",
+    options: ["Bulgarian (Bulgaria)"],
+    code: ["bg-BG"],
+  },
+  {
+    optgroup: "Catalan",
+    options: ["Catalan (Spain)"],
+    code: ["ca-ES"],
+  },
+  {
+    optgroup: "Chinese",
+    options: ["Chinese (Hong Kong)", "Mandarin Chinese"],
+    code: ["zh-HK", "zh"],
+  },
+  {
+    optgroup: "Czech",
+    options: ["Czech (Czech Republic)"],
+    code: ["cs-CZ"],
+  },
+  {
+    optgroup: "Danish",
+    options: ["Danish (Denmark)"],
+    code: ["da-DK"],
+  },
+  {
+    optgroup: "Dutch",
+    options: ["Dutch (Belgium)", "Dutch (Netherlands)"],
+    code: ["nl-BE", "nl-NL"],
+  },
+  {
+    optgroup: "English",
+    options: ["English (Australia)", "English (India)", "English (UK)", "English (US)"],
+    code: ["en-AU", "en-IN", "en-GB", "en-US"],
+  },
+  {
+    optgroup: "Filipino",
+    options: ["Filipino (Philippines)"],
+    code: ["fil-PH"],
+  },
+  {
+    optgroup: "Finnish",
+    options: ["Finnish (Finland)"],
+    code: ["fi-FI"],
+  },
+  {
+    optgroup: "French",
+    options: ["French (Canada)", "French (France)"],
+    code: ["fr-CA", "fr-FR"],
+  },
+  {
+    optgroup: "Galician",
+    options: ["Galician (Spain)"],
+    code: ["gl-ES"],
+  },
+  {
+    optgroup: "German",
+    options: ["German (Germany)"],
+    code: ["de-DE"],
+  },
+  {
+    optgroup: "Greek",
+    options: ["Greek (Greece)"],
+    code: ["el-GR"],
+  },
+  {
+    optgroup: "Gujarati",
+    options: ["Gujarati (India)"],
+    code: ["gu-IN"],
+  },
+  {
+    optgroup: "Hebrew",
+    options: ["Hebrew (Israel)"],
+    code: ["he-IL"],
+  },
+  {
+    optgroup: "Hindi",
+    options: ["Hindi (India)"],
+    code: ["hi-IN"],
+  },
+  {
+    optgroup: "Hungarian",
+    options: ["Hungarian (Hungary)"],
+    code: ["hu-HU"],
+  },
+  {
+    optgroup: "Icelandic",
+    options: ["Icelandic (Iceland)"],
+    code: ["is-IS"],
+  },
+  {
+    optgroup: "Indonesian",
+    options: ["Indonesian (Indonesia)"],
+    code: ["id-ID"],
+  },
+  {
+    optgroup: "Italian",
+    options: ["Italian (Italy)"],
+    code: ["it-IT"],
+  },
+  {
+    optgroup: "Japanese",
+    options: ["Japanese (Japan)"],
+    code: ["ja-JP"],
+  },
+  {
+    optgroup: "Kannada",
+    options: ["Kannada (India)"],
+    code: ["kn-IN"],
+  },
+  {
+    optgroup: "Korean",
+    options: ["Korean (South Korea)"],
+    code: ["ko-KR"],
+  },
+  {
+    optgroup: "Latvian",
+    options: ["Latvian (Latvia)"],
+    code: ["lv-LV"],
+  },
+  {
+    optgroup: "Lithuanian",
+    options: ["Lithuanian (Lithuania)"],
+    code: ["lt-LT"],
+  },
+  {
+    optgroup: "Malay",
+    options: ["Malay (Malaysia)"],
+    code: ["ms-MY"],
+  },
+  {
+    optgroup: "Malayalam",
+    options: ["Malayalam (India)"],
+    code: ["ml-IN"],
+  },
+  {
+    optgroup: "Mandarin Chinese",
+    options: ["Mandarin Chinese"],
+    code: ["zh"],
+  },
+  {
+    optgroup: "Marathi",
+    options: ["Marathi (India)"],
+    code: ["mr-IN"],
+  },
+  {
+    optgroup: "Norwegian",
+    options: ["Norwegian (Norway)"],
+    code: ["no-NO"],
+  },
+  {
+    optgroup: "Polish",
+    options: ["Polish (Poland)"],
+    code: ["pl-PL"],
+  },
+  {
+    optgroup: "Portuguese",
+    options: ["Portuguese (Brazil)", "Portuguese (Portugal)"],
+    code: ["pt-BR", "pt-PT"],
+  },
+  {
+    optgroup: "Punjabi",
+    options: ["Punjabi (India)"],
+    code: ["pa-IN"],
+  },
+  {
+    optgroup: "Romanian",
+    options: ["Romanian (Romania)"],
+    code: ["ro-RO"],
+  },
+  {
+    optgroup: "Russian",
+    options: ["Russian (Russia)"],
+    code: ["ru-RU"],
+  },
+  {
+    optgroup: "Serbian",
+    options: ["Serbian (Serbia)"],
+    code: ["sr-RS"],
+  },
+  {
+    optgroup: "Sinhala",
+    options: ["Sinhala (Sri Lanka)"],
+    code: ["si-LK"],
+  },
+  {
+    optgroup: "Slovak",
+    options: ["Slovak (Slovakia)"],
+    code: ["sk-SK"],
+  },
+  {
+    optgroup: "Slovenian",
+    options: ["Slovenian (Slovenia)"],
+    code: ["sl-SI"],
+  },
+  {
+    optgroup: "Spanish",
+    options: ["Spanish (Spain)", "Spanish (US)"],
+    code: ["es-ES", "es-US"],
+  },
+  {
+    optgroup: "Swahili",
+    options: ["Swahili (Kenya)"],
+    code: ["sw-KE"],
+  },
+  {
+    optgroup: "Swedish",
+    options: ["Swedish (Sweden)"],
+    code: ["sv-SE"],
+  },
+  {
+    optgroup: "Tamil",
+    options: ["Tamil (India)"],
+    code: ["ta-IN"],
+  },
+  {
+    optgroup: "Telugu",
+    options: ["Telugu (India)"],
+    code: ["te-IN"],
+  },
+  {
+    optgroup: "Thai",
+    options: ["Thai (Thailand)"],
+    code: ["th-TH"],
+  },
+  {
+    optgroup: "Turkish",
+    options: ["Turkish (Turkey)"],
+    code: ["tr-TR"],
+  },
+  {
+    optgroup: "Ukrainian",
+    options: ["Ukrainian (Ukraine)"],
+    code: ["uk-UA"],
+  },
+  {
+    optgroup: "Urdu",
+    options: ["Urdu (Pakistan)"],
+    code: ["ur-PK"],
+  },
+  {
+    optgroup: "Vietnamese",
+    options: ["Vietnamese (Vietnam)"],
+    code: ["vi-VN"],
+  },
+  {
+    optgroup: "Welsh",
+    options: ["Welsh (UK)"],
+    code: ["cy-GB"],
+  },
+  {
+    optgroup: "Zulu",
+    options: ["Zulu (South Africa)"],
+    code: ["zu-ZA"],
+  },
+];
