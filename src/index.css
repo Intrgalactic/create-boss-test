@@ -1404,7 +1404,12 @@ footer {
   border-radius: 5px;
   box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
 }
-
+.text-to-speech-dashboard .dashboard__select-box-option, .text-to-speech-dashboard .search-bar{
+  background-color: black;
+}
+.text-to-speech-dashboard .dashboard__select-box-optgroup {
+  background-color: rgba(77, 14, 255, 1);
+}
 .dashboard__service-input-container .section-heading {
   font-size: 1.1em;
   word-break: keep-all;
@@ -1657,7 +1662,8 @@ footer {
 }
 
 .dashboard__service-options-row:first-of-type .dashboard__service-option-button:last-of-type .visible-list {
-  height: 150px;
+  height: fit-content;
+  max-height: 150px;
 }
 
 .dashboard__service-options-row {
@@ -1669,8 +1675,8 @@ footer {
   flex-wrap: wrap;
 }
 
-.attached-file:after {
-  content: "Attached";
+.input-dragged:after {
+  content: "Drop";
 }
 
 .text-to-speech-dashboard .dashboard__select-box p {
@@ -2236,6 +2242,9 @@ footer {
   }
   .text-to-speech-dashboard__container {
     padding-right: 0;
+  }
+  .dashboard__service-option-button p {
+    font-size: 0.7em;
   }
 }
 

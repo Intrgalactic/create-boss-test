@@ -23,9 +23,13 @@ export default function TTSDashboard() {
     const controls = [`Text Length: ${textInput.length} / 10 000`, `Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`, "Translate"];
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
+    const [languageFilter,setLanguageFilter] = useState();
+    const languageFilterRegEx = new RegExp(languageFilter, "i");
     function setAllOptions() {
 
     }
+    const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
+
     const firstServiceOptionsRowActions = [
         {
             text: audioSpeed,
@@ -41,8 +45,9 @@ export default function TTSDashboard() {
         },
         {
             text: language,
-            options: languagesData,
+            options: filteredLanguagesData,
             setOption: setLanguageProperties,
+            setFilter: setLanguageFilter,
             heading: "Language",
         },
     ]
@@ -87,7 +92,6 @@ export default function TTSDashboard() {
             setLoadingState(true);
             if (file && file.type === "text/plain") {
                 const data = new FormData();
-              
                 const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}`;
                 const queryParams = Object.fromEntries(new URLSearchParams(queryString));
                 for (const [key, value] of Object.entries(queryParams)) {
@@ -98,21 +102,33 @@ export default function TTSDashboard() {
                 sendData(data);
             }
             else if (!file) {
-                sendData(`code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}`);
+                sendData(`code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}`, "application/x-www-form-urlencoded");
             }
-           
+
         }
     }
     function downloadFile() {
         fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
     }
-    async function sendData(data) {
-        try {
-            await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, {
+    async function sendData(data, type) {
+        var options;
+        if (type) {
+            options = {
                 method: "POST",
                 body: data,
-                
-            }).then(async () => {
+                headers: {
+                    "Content-Type": type
+                }
+            }
+        }
+        else {
+            options = {
+                method: "POST",
+                body: data,
+            }
+        }
+        try {
+            await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`,options).then(async () => {
                 const rawFileResponse = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/output.${outputExtension.toLowerCase()}`);
                 const file = await rawFileResponse.blob();
                 setFilePath(file);
