@@ -6,12 +6,15 @@ const lngDetector = new languageDetect();
 const fs = require('fs');
 const formatEncoding = require('../utils/formatters/formatEncoding');
 const sendToStorage = require('./sendToStorage');
-const textToSpeech = () => {
+const textToSpeech = (storage) => {
     return asyncHandler(async (req, res) => {
         var textToSynthetize;
         var contentType;
+        var outputFileName = "output";
+        console.log(req.body);
         if (req.file) {
            textToSynthetize = req.file.buffer.toString("utf-8");
+           outputFileName = req.file.originalname;
         }
         else {
             textToSynthetize = req.body.text;
@@ -40,9 +43,6 @@ const textToSpeech = () => {
         };
 
         const [response] = await client.synthesizeSpeech(request);
-        // Write the binary audio content to a local file
-        const writeFile = util.promisify(fs.writeFile);
-        await writeFile(`output.${req.body.audioEncoding.toLowerCase()}`, response.audioContent, 'binary');
         switch(req.body.audioEncoding) {
             case "MP3" : contentType = "audio/mpeg";
                 break;
@@ -53,7 +53,8 @@ const textToSpeech = () => {
             default :
                 contentType = "audio/mpeg";
         }
-        sendToStorage(`output.${req.body.audioEncoding.toLowerCase()}`,contentType);
+        
+        await sendToStorage(`${outputFileName}.${req.body.audioEncoding.toLowerCase()}`,response.audioContent,contentType,storage);
         res.status(200).send("Synthesizing Completed");
         console.log('Audio content written to file: output.mp3');
     });

@@ -1,26 +1,31 @@
-const { Storage } = require('@google-cloud/storage');
-const asyncHandler = require('express-async-handler');
-const { readFile } = require('fs');
-const path = require('path');
-const fs = require('fs');
 
-const sendToStorage = async (filename, contentType) => {
+const sendToStorage = async (filename, audioData, contentType,storage) => {
     try {
-        const googleCloudStorage = new Storage({
-            keyFileName: path.join(__dirname, "../../config/google.json"),
-            projectId: 'animated-alloy-236515'
-        })
-        const mainBucket = googleCloudStorage.bucket("create-boss");
+  
+        const mainBucket = storage.bucket("create-boss");
         const file = mainBucket.file(filename);
 
-        const stream = fs.createReadStream(filename);
+        const stream = file.createWriteStream({
+            metadata: {
+                contentType: contentType
+            },
+            resumable: false,
+            overwrite: true
+        });
 
-        const options = {
-            contentType
-        }
+        stream.on('error', (err) => {
+            console.error('Error writing audio to storage:', err);
+        });
 
-        stream.pipe(file.createWriteStream(options));
-      
+        stream.on('finish', () => {
+            console.log('Audio data has been written to Google Cloud Storage.');
+        });
+
+        stream.write(audioData);
+        stream.end();
+
+        return true;
+
     }
     catch (err) {
         return err;
