@@ -10,7 +10,7 @@ const textToSpeech = (storage) => {
     return asyncHandler(async (req, res) => {
         var textToSynthetize;
         var contentType;
-        var outputFileName = "output";
+        var outputFileName = "output.mp3";
         console.log(req.body);
         if (req.file) {
            textToSynthetize = req.file.buffer.toString("utf-8");
@@ -54,7 +54,7 @@ const textToSpeech = (storage) => {
                 contentType = "audio/mpeg";
         }
         
-        await sendToStorage(`${outputFileName}.${req.body.audioEncoding.toLowerCase()}`,response.audioContent,contentType,storage);
+        await sendToStorage(`${outputFileName.substring(0,outputFileName.indexOf('.'))}.${req.body.audioEncoding.toLowerCase()}`,response.audioContent,contentType,storage);
         res.status(200).send("Synthesizing Completed");
         console.log('Audio content written to file: output.mp3');
     });

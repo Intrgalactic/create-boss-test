@@ -3,6 +3,7 @@ const app = express();
 const createUser = require('./middleware/db/createUser');
 const getUser = require('./middleware/db/getUser');
 const textToSpeech = require('./middleware/api/textToSpeech');
+const downloadFile = require('./middleware/api/downloadFile');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const multer = require('multer');
@@ -43,29 +44,13 @@ app.post('/create-user', cors(corsOptions), createUser(usersCollection));
 
 app.get('/get-user', cors(corsOptions), getUser(usersCollection));
 
-app.get('/api/text-to-speech/:filename', cors(corsOptions), async function (req, res) {
+app.get('/api/text-to-speech/get/:filename', cors(corsOptions),downloadFile(googleCloudStorage));
 
+app.get('/api/text-to-speech/delete/:filename', cors(corsOptions), function (req, res) {
     const filename = req.params.filename;
+    googleCloudStorage.bucket('create-boss').file(filename).delete();
+})
 
-    try {
-        // Get the file from Google Cloud Storage
-        const file = googleCloudStorage.bucket('create-boss').file(filename);
-
-        // Download the file to a local buffer
-        const [fileBuffer] = await file.download();
-
-        // Set the appropriate Content-Type header
-        res.set('Content-Type', file.metadata.contentType);
-
-        // Serve the file for download using res.download()
-        file.createReadStream().pipe(res);
-        
-    } catch (err) {
-        console.error('Error downloading the file:', err);
-        res.status(500).send('Error downloading the file.');
-    }
-
-});
 app.listen(process.env.PORT || 4000, () => {
     console.log('app listening');
 })
