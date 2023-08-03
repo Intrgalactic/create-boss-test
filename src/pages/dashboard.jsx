@@ -16,6 +16,8 @@ import { planDetailsData, dashboardActionsData, audioSpeedOptions, voiceGenderOp
 import { useContext, useEffect, useState } from "react";
 import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
+import { BarChart, Bar, Tooltip, Legend, XAxis, ResponsiveContainer, CartesianGrid, YAxis, LineChart, Line } from "recharts";
+import { PureComponent } from "react";
 import { auth } from "../../firebase.js";
 import { checkIsLoggedAndFetch } from "src/utils/utilities.js";
 
@@ -46,7 +48,58 @@ export default function Dashboard() {
     useEffect(() => {
 
     }, [isLogged, setIsPaying]);
-
+    const data = [
+        {
+          name: '1.06',
+          STT: 4000,
+          TTS: 2400,
+          STV: 2400,
+          SFV: 421,
+        },
+        {
+          name: '8.06',
+          TTS: 3000,
+          STT: 1398,
+          STV: 2210,
+          SFV: 720,
+        },
+        {
+          name: '15.06',
+          TTS: 2000,
+          STT: 9800,
+          STV: 3290,
+          SFV: 240,
+        },
+        {
+          name: '23.06',
+          TTS: 2780,
+          STT: 3908,
+          STV: 2400,
+          SFV: 1940,
+        },
+        {
+          name: '30.6',
+          TTS: 1890,
+          STT: 4800,
+          STV: 3181,
+          SFV: 2002,
+        },
+        {
+          name: '7.07',
+          TTS: 2390,
+          STT: 3800,
+          STV: 2500,
+          SFV: 230,
+        },
+        {
+          name: '15.07',
+          TTS: 3490,
+          STT: 4300,
+          STV: 2100,
+          SFV: 1230
+        },
+      ];
+      
     return (
         <div className="dashboard">
             <DashboardHeader />
@@ -64,7 +117,20 @@ export default function Dashboard() {
                         </DashboardBoxContent>
                     </DashboardBox>
                     <DashboardBox heading="Service Usage Overview">
-                        <DashboardBoxContent></DashboardBoxContent>
+                        <DashboardBoxContent boxClass="weekly-usage-chart-box">
+                            <SectionHeading heading="Weekly Usage" />
+                            <ResponsiveContainer width="90%" height="60%">
+                                <LineChart data={data}
+                                    margin={{ right: 30, left: 20, bottom: 5 }}>
+                                    <XAxis dataKey="name" axisLine={false} style={{fontFamily:"NexaHeavy"}} tick={{fill:"white"}} />
+                                    <Tooltip style={{backgroundColor:"transparent"}}/>
+                                    <Line type="monotone" dataKey="STT" stroke="#0059ff" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="TTS" stroke="#7800ff" strokeWidth={3}/>
+                                    <Line type="monotone" dataKey="STV" stroke="#e000ff" strokeWidth={3} />
+                                    <Line type="monotone" dataKey="SFV" stroke="#ffb200" strokeWidth={3}/>
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </DashboardBoxContent>
                     </DashboardBox>
                     <DashboardBox heading="Actions">
                         <DashboardBoxContent>

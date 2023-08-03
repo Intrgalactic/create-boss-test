@@ -1081,6 +1081,7 @@ footer {
   margin: auto;
   justify-content: flex-start;
   gap: 30px;
+  width: 90vw;
 }
 
 .dashboard__box {
@@ -1125,7 +1126,7 @@ footer {
   display: flex;
   font-family: NexaHeavy;
   justify-content: space-around;
-  font-size: 1.2em;
+  font-size: 1em;
   align-items: center;
   padding-inline: 30px;
   gap:20px;
@@ -1255,9 +1256,19 @@ footer {
 .dashboard__container-row:first-of-type .dashboard__box:last-of-type .dashboard__box-content {
   padding-block: 30px;
 }
-
 .dashboard__select-button {
   position: relative;
+}
+
+.weekly-usage-chart-box {
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  min-height: 375px;
+  padding-bottom:25px ;
+}
+.weekly-usage-chart-box .section-heading {
+  padding-inline:30px;
 }
 
 .dashboard__select-box {
@@ -2821,6 +2832,7 @@ footer {
   .text-to-speech-dashboard__container {
     padding-right: 0;
   }
+
 }
 
 @media only screen and (width>768px) and (max-width:1024px) {
