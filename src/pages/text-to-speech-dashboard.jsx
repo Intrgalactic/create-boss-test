@@ -23,7 +23,8 @@ export default function TTSDashboard() {
     const controls = [`Text Length: ${textInput.length} / 10 000`, `Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`, "Translate"];
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
-    const [languageFilter,setLanguageFilter] = useState();
+    const [errorAtDownload, setErrorAtDownload] = useState();
+    const [languageFilter, setLanguageFilter] = useState();
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     function setAllOptions() {
 
@@ -82,7 +83,8 @@ export default function TTSDashboard() {
         setLanguageCode(code);
     }
     function handleTextChange(e) {
-        if (isTranslated) {
+        if (isTranslated || errorAtDownload) {
+            setErrorAtDownload(false);
             setIsTranslated(false);
         }
         setTextInput(e);
@@ -98,7 +100,6 @@ export default function TTSDashboard() {
                     data.append(key, value);
                 }
                 data.append('file', file, file.name);
-                console.log(data);
                 sendData(data);
             }
             else if (!file) {
@@ -107,8 +108,9 @@ export default function TTSDashboard() {
 
         }
     }
-    function downloadFile() {
-        fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
+    async function downloadFile() {
+        (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
+        (file && file.name) ? fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/delete/${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/delete/output.${outputExtension.toLowerCase()}`)
     }
     async function sendData(data, type) {
         var options;
@@ -128,24 +130,44 @@ export default function TTSDashboard() {
             }
         }
         try {
-            await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`,options).then(async () => {
-                const rawFileResponse = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/output.${outputExtension.toLowerCase()}`);
-                const file = await rawFileResponse.blob();
-                setFilePath(file);
-                setIsTranslated(true);
-                setLoadingState(false);
+            await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, options).then(async (res) => {
+                var rawFileResponse;
+                if (res.status === 200) {
+                    if (file) {
+                        const fileName = file.name.substring(0, file.name.indexOf('.'));
+                        if (file.name) {
+                            rawFileResponse = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get/${fileName}.${outputExtension.toLowerCase()}`).catch(err => {
+                                setLoadingState(false);
+                                setErrorAtDownload(err.message);
+                            });
+                        }
+                    }
+
+                    else {
+                        rawFileResponse = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get/output.${outputExtension.toLowerCase()}`).catch(err => {
+                            setLoadingState(false);
+                            setErrorAtDownload(err.message);
+                        });;
+                    }
+
+                    const fileToDownload = await rawFileResponse.blob();
+                    setFilePath(fileToDownload);
+                    setIsTranslated(true);
+                    setLoadingState(false);
+                }
             })
 
         }
         catch (err) {
-            console.log(err);
+            setLoadingState(false);
+            setErrorAtDownload(err.message);
         }
     }
     return (
         <div className="text-to-speech-dashboard">
             <DashboardHeader />
             <ContentContainer containerClass="text-to-speech-dashboard__container">
-                <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Your Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextChange} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} />
+                <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Your Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextChange} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
                 <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
                     <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
                     <DashboardServiceOptionsRow actions={secondServiceOptionsRowActions} />

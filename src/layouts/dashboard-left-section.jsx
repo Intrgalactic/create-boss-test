@@ -11,8 +11,12 @@ import inputCheck from 'src/assets/images/input-check.png';
 import webpInputCheck from 'src/assets/images/input-check.webp';
 import downloadImage from 'src/assets/images/downloaded.png';
 import webpDownloadImage from 'src/assets/images/downloaded.webp';
+import errorImage from 'src/assets/images/error.png';
+import webpErrorImage from 'src/assets/images/error.webp';
 import { Link } from "react-router-dom";
-export default function DashboardLeftSection({ mainAction, headings, controls,setAbleToTranslate,textInput,handleTextChange,isTranslated,downloadFile,file,setFile}) {
+import { FileOutputContent } from "src/components/file-output-container-content";
+
+export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload,setErrorAtDownload}) {
     const [isFileAttached, setIsFileAttached] = useState(false);
     useEffect(() => {
         if (file) {
@@ -24,7 +28,7 @@ export default function DashboardLeftSection({ mainAction, headings, controls,se
         else {
             setAbleToTranslate("No");
         }
-    }, [setIsFileAttached, file,setAbleToTranslate,textInput]);
+    }, [setIsFileAttached, file, setAbleToTranslate, textInput]);
     return (
         <div className="dashboard__left-section">
             <SectionHeading heading={headings[0]} />
@@ -40,19 +44,23 @@ export default function DashboardLeftSection({ mainAction, headings, controls,se
                     </DashboardServiceInputContainer>
                     <DashboardServiceInputContainer heading={headings[3]}>
                         <div className='file-output-container'>
-                            {!isFileAttached && !textInput ? <><Loader />
-                                <p>Waiting...</p>
-                                <p>For Manual Input Or File</p>
-                            </> : !isTranslated ? <>
-                                <Picture images={[webpInputCheck, inputCheck]} imgWidth="64px" imgHeight="62px" alt="check mark" />
-                                <p>Ready</p>
-                                <p>Ready To Process</p>
-                            </> : 
-                            <>
-                            <Picture images={[webpDownloadImage,downloadImage]} imgWidth="64px" imgHeight="62px" alt="check mark" />
-                                <p>Translating Completed</p>
-                                <Link onClick={downloadFile}>Download</Link>
-                            </>
+                            {errorAtDownload ?
+                                <FileOutputContent images={[webpErrorImage, errorImage]} imgHeight="64px" imgWidth="64px" alt="error" firstText="Error at downloading" >
+                                    <p>Please try again by attaching new file or input text again</p>
+                                </FileOutputContent>
+                                : !isFileAttached && !textInput ? <>
+                                    <Loader />
+                                    <p>Waiting...</p>
+                                    <p>For Manual Input Or File</p>
+                                </> : !isTranslated ?
+                                    <FileOutputContent images={[webpInputCheck, inputCheck]} imgWidth="64px" imgHeight="62px" alt="check mark" firstText="Ready">
+                                        <p>Ready To Process</p>
+                                    </FileOutputContent>
+
+                                    :
+                                    <FileOutputContent images={[webpDownloadImage, downloadImage]} imgWidth="64px" imgHeight="62px" alt="check mark" firstText="Translating Completed">
+                                        <Link onClick={downloadFile}>Download</Link>
+                                    </FileOutputContent>
                             }
                         </div>
                     </DashboardServiceInputContainer>
