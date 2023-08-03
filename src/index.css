@@ -1731,8 +1731,10 @@ footer {
   .nav-button {
     display: block;
   }
-
-  header .visible {
+  .dashboard-header .header__container {
+    padding-top: 0;
+  }
+  header .visible,.dashboard-header .visible {
     width: 50vw;
     display: block;
     position: fixed;
@@ -2174,7 +2176,33 @@ footer {
     padding-block: 25px;
   }
   .dashboard-header {
+    display:block;
+    position: relative;
+    width: 100vw;
+    height: 20vh;
+    margin-inline:0;
+    border-radius: 0;
+    margin-block:0;
+  }
+  .dashboard-header nav a::after {
     display:none;
+  }
+  .dashboard-header nav .nav-button::after {
+    left:0;
+  }
+  .dashboard-header nav {
+    height: 100%;
+    margin-top: 0;
+    display:none;
+  }
+  .dashboard-header .header__container {
+    display:flex;
+    width: 80%;
+    justify-content: flex-start;
+    margin:auto;
+  }
+  .dashboard-header img {
+    width: 30%;
   }
   .dashboard__container {
     margin-left: 0;

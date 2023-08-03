@@ -49,14 +49,14 @@ export const dashboardActionsData = [
         images: [webpMessageImage,messageImage],
         imgHeight: "22px",
         imgWidth: "22px",
-        link: "speech-to-text",
+        link: "services/speech-to-text",
         linkDescription: "Speech To Text"
     },
     {
         images: [microphoneImage,webpMicrophoneImage],
         imgHeight: "22px",
         imgWidth: "16px",
-        link: "text-to-speech",
+        link: "services/text-to-speech",
         linkDescription: "Text To Speech"
     },
     {

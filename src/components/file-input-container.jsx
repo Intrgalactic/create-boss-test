@@ -7,15 +7,17 @@ export function FileInputContainer({ file, setFile, textInput }) {
         fileRef.current.addEventListener('dragover', handleFileInputDrag);
         fileRef.current.addEventListener('dragleave', removeDragEffect)
         fileRef.current.addEventListener('dragend', removeDragEffect);
-        fileRef.current.addEventListener('drop',handleFileDrop);
+        fileRef.current.addEventListener('drop', handleFileDrop);
         if (fileRef.current && file) {
             fileRef.current.classList.add("attached-file");
         }
         return () => {
-            fileRef.current.removeEventListener("dragover",handleFileInputDrag);
-            fileRef.current.removeEventListener('dragleave', removeDragEffect)
-            fileRef.current.removeEventListener('dragend', removeDragEffect);
-            fileRef.current.removeEventListener('drop',handleFileDrop);
+            if (fileRef.current) {
+                fileRef.current.removeEventListener("dragover", handleFileInputDrag);
+                fileRef.current.removeEventListener('dragleave', removeDragEffect)
+                fileRef.current.removeEventListener('dragend', removeDragEffect);
+                fileRef.current.removeEventListener('drop', handleFileDrop); 
+            }
         }
     }, [file, setFile]);
 
