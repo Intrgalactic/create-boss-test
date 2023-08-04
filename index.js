@@ -50,7 +50,7 @@ app.get('/api/text-to-speech/delete/:filename', cors(corsOptions), function (req
     const filename = req.params.filename;
     googleCloudStorage.bucket('create-boss').file(filename).delete();
 })
-
+app.get('/api/speech-to-text',cors(corsOptions))
 app.listen(process.env.PORT || 4000, () => {
     console.log('app listening');
 })
