@@ -1,4 +1,4 @@
-import { TestimonialsContainer } from "src/components/testimonials-container";
+import { TestimonialsContainer } from "src/components/testimonials/testimonials-container";
 
 export default function Testimonials() {
     return (

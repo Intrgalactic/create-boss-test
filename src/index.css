@@ -193,6 +193,10 @@ header nav,
   height: 972px;
   background-size: 100% 100%;
   background-image: url('assets/images/hero.jpg');
+  background-image: image-set(
+    url('assets/images/hero.webp') type('image/webp'),
+    url('assets/images/hero.jpg') type('image/jpeg') 
+  );
   background-position-x: center;
 
 }
@@ -1062,8 +1066,12 @@ footer {
   filter: sepia(1) brightness(0%);
 }
 
-.dashboard {
-  background-image: url('assets/images/dashboard-bg.png');
+.dashboard,.text-to-speech-dashboard {
+  background-image: url('assets/images/dashboard-bg.jpg');
+  background-image: image-set(
+    url('assets/images/dashboard-bg.webp') type('image/webp'),
+    url('assets/images/dashboard-bg.jpg') type('image/jpeg'),
+  );
   background-size: 100% 100%;
 }
 
@@ -1276,7 +1284,6 @@ footer {
   width: 100%;
   top: 95%;
   left: 0;
-  max-height: fit-content;
   scrollbar-width: none;
   overflow-y: scroll;
   overflow-x: hidden;
@@ -1329,7 +1336,7 @@ footer {
 }
 
 .dashboard__select-box-optgroup {
-  background-color: rgba(77, 14, 255, 0.7);
+  background-color: rgba(77, 14, 255, 1);
   font-size: 0.8em;
 
 }
@@ -1363,8 +1370,6 @@ footer {
   border-radius: 0;
 }
 .text-to-speech-dashboard {
-  background-image: url('assets/images/dashboard-bg.png');
-  background-size: 100% 100%;
   min-height: 100vh;
 }
 .text-to-speech-dashboard__container {
@@ -1419,7 +1424,7 @@ footer {
   background-color: black;
 }
 .text-to-speech-dashboard .dashboard__select-box-optgroup {
-  background-color: rgba(77, 14, 255, 1);
+  background-color: #004FC5;
 }
 .dashboard__service-input-container .section-heading {
   font-size: 1.1em;
@@ -1857,6 +1862,10 @@ footer {
     background-position: center;
     background-repeat: no-repeat;
     background-image: url('assets/images/mobile-hero.jpg');
+    background-image: image-set(
+      url('assets/images/mobile-hero.webp') type('image/webp'),
+      url('assets/images/mobile-hero.jpg') type('image/jpeg')
+    );
     background-size: 100% 100%;
   }
 
@@ -1879,8 +1888,22 @@ footer {
 
   .service-overview-section {
     background-size: 150% 100%;
+    background-image: url('assets/images/mobile-service-overview.jpg');
+    background-image: image-set(
+      url('assets/images/mobile-service-overview.webp') type('image/webp'),
+      url('assets/images/mobile-service-overview.jpg') type('image/jpeg')
+    );
   }
-
+  .contact-section {
+    background-image: url('assets/images/mobile-contact-bg.jpg');
+    background-image: image-set(
+      url('assets/images/mobile-contact-bg.webp') type('image/webp'),
+      url('assets/images/mobile-contact-bg.jpg') type('image/jpeg')
+    );
+  }
+  .benefits-section {
+    background-size: 150% 100%;
+  }
   .benefits-section__boxes-container {
     width: 80vw;
   }
@@ -2176,7 +2199,14 @@ footer {
   .dashboard__container-row {
     display: block;
   }
-
+  .dashboard {
+    background-image: url('assets/images/mobile-dashboard-bg.jpg');
+    background-image: image-set(
+      url('assets/images/mobile-dashboard-bg.webp') type('image/webp'),
+      url('assets/images/mobile-dashboard-bg.jpg') type('image/jpeg'),
+    );
+    background-size: 100% 100%;
+  }
   .dashboard__box {
     width: 80vw;
   }
@@ -2284,6 +2314,10 @@ footer {
   }
   .dashboard__service-option-button p {
     font-size: 0.7em;
+  }
+  .dashboard__select-box {
+    max-height: 150px;
+    font-size:0.7em
   }
 }
 

@@ -1,8 +1,8 @@
 import { EmailAuthProvider, signInWithCredential } from "firebase/auth";
 import { useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { AuthContainer } from "src/components/auth-container";
-import { AuthForm } from "src/components/auth-form";
+import { AuthContainer } from "src/components/auth/auth-container.jsx";
+import { AuthForm } from "src/components/auth/auth-form";
 import { CtaButton } from "src/components/cta-button";
 import Footer from "src/layouts/footer";
 import Header from "src/layouts/header";

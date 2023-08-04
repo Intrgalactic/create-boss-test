@@ -1,4 +1,4 @@
-import { ContactContainer } from "src/components/contact-container";
+import { ContactContainer } from "src/components/contact/contact-container";
 
 export default function Contact() {
     return (

@@ -1,14 +1,15 @@
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
-import DashboardHeader from "src/layouts/dashboard-header";
-import DashboardLeftSection from "src/layouts/dashboard-left-section";
-import DashboardRightSection from "src/layouts/dashboard-right-section";
-import DashboardServiceOptionsRow from "src/layouts/dashboard-service-options-row";
+const DashboardHeader = lazy(() => import('src/layouts/dashboards/dashboard-header'));
+const DashboardLeftSection = lazy(() => import('src/layouts/dashboards/dashboard-left-section'));
+const DashboardRightSection = lazy(() => import('src/layouts/dashboards/dashboard-right-section'));
+const DashboardServiceOptionsRow = lazy(() => import('src/layouts/dashboards/service-options/dashboard-service-options-row'));
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
 import { speakersTypeOptions, audioSpeedOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
 import { handleTextChange } from "src/utils/utilities";
+
 export default function TTSDashboard() {
 
     const [audioSpeed, setAudioSpeed] = useState("1.0");
@@ -134,15 +135,17 @@ export default function TTSDashboard() {
     }
     return (
         <div className="text-to-speech-dashboard">
-            <DashboardHeader />
-            <ContentContainer containerClass="text-to-speech-dashboard__container">
-                <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
-                <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
-                    <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
-                    <DashboardServiceOptionsRow actions={secondServiceOptionsRowActions} />
-                </DashboardRightSection>
-            </ContentContainer>
-            {loadingState === true && <Loader />}
+            <Suspense fallback={<Loader />}>
+                <DashboardHeader />
+                <ContentContainer containerClass="text-to-speech-dashboard__container">
+                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
+                    <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
+                        <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
+                        <DashboardServiceOptionsRow actions={secondServiceOptionsRowActions} />
+                    </DashboardRightSection>
+                </ContentContainer>
+                {loadingState === true && <Loader />}
+            </Suspense>
         </div>
     )
 }

@@ -1,4 +1,4 @@
-import { FaqContainer } from "src/components/faq-container";
+import { FaqContainer } from "src/components/faq/faq-container";
 import Footer from "src/layouts/footer";
 import Header from "src/layouts/header";
 

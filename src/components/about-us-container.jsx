@@ -1,10 +1,9 @@
 import { SectionHeading } from "./section-heading";
 import about from 'src/assets/images/about-us.png';
 import webpAbout from 'src/assets/images/about-us.webp';
-import { ContentBox } from "./content-box";
-import { ContactContainer } from "./contact-container";
 import { ContentContainer } from "./content-container";
 import { Picture } from "./picture";
+
 export function AboutUsContainer() {
     return (
         <div className="about-us-section__container">

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
-import DashboardHeader from "src/layouts/dashboard-header";
-import DashboardLeftSection from "src/layouts/dashboard-left-section";
-import DashboardRightSection from "src/layouts/dashboard-right-section";
-import DashboardServiceOptionsRow from "src/layouts/dashboard-service-options-row";
+import DashboardHeader from "src/layouts/dashboards/dashboard-header";
+import DashboardLeftSection from "src/layouts/dashboards/dashboard-left-section";
+import DashboardRightSection from "src/layouts/dashboards/dashboard-right-section";
+import DashboardServiceOptionsRow from "src/layouts/dashboards/service-options/dashboard-service-options-row";
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
 import {languagesData, outputExtensionOptions, } from "src/utils/dashboard-static-data";

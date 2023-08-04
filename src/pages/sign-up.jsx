@@ -1,8 +1,8 @@
 import { createUserWithEmailAndPassword, deleteUser, sendEmailVerification, updateProfile } from "firebase/auth";
 import { Suspense, lazy, useContext, useEffect, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { AuthContainer } from "src/components/auth-container";
-import { AuthForm } from "src/components/auth-form";
+import { AuthContainer } from "src/components/auth/auth-container.jsx";
+import { AuthForm } from "src/components/auth/auth-form";
 import Header from "src/layouts/header";
 import { getFirebaseErr, validateCallback, validateForm } from "src/utils/utilities";
 import { auth } from "../../firebase.js";

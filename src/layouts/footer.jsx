@@ -1,4 +1,4 @@
-import { FooterContainer } from "src/components/footer-container";
+import { FooterContainer } from "src/components/footer/footer-container";
 import Callout from "./callout";
 import { useLocation } from "react-router-dom";
 export default function Footer() {

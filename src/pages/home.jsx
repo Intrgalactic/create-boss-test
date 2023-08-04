@@ -15,25 +15,29 @@ import subtitlesToVideoImage from 'src/assets/images/subtitles-to-video.png';
 import webpSubtitlesToVideoImage from 'src/assets/images/subtitles-to-video.webp';
 import subtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.png';
 import webpSubtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.webp';
+import { Suspense } from 'react';
+import Loader from 'src/layouts/loader';
 export default function Home() {
     const imagePaths = [
         [subtitlesFromVideoImage, webpSubtitlesFromVideoImage],
         [subtitlesToVideoImage, webpSubtitlesToVideoImage],
         [speechToTextImage, webpSpeechToTextImage],
         [textToSpeechImage, webpTextToSpeechImage]
-      ];
+    ];
     return (
         <>
-            <Header />
-            <Hero />
-            <ServiceOverview>
-                <ServiceOverviewContainer heading="Time and Streamline Your Workflow with Our Services" imagePaths={imagePaths} />
-            </ServiceOverview>
-            <Benefits />
-            <Testimonials />
-            <Pricing />
-            <Contact />
-            <Footer />
+            <Suspense fallback={<Loader />}>
+                <Header />
+                <Hero />
+                <ServiceOverview>
+                    <ServiceOverviewContainer heading="Time and Streamline Your Workflow with Our Services" imagePaths={imagePaths} />
+                </ServiceOverview>
+                <Benefits />
+                <Testimonials />
+                <Pricing />
+                <Contact />
+                <Footer />
+            </Suspense>
         </>
     )
 }

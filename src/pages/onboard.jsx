@@ -9,14 +9,14 @@ import subtitlesToVideoImage from 'src/assets/images/onboard-subtitles-to-video.
 import webpSubtitlesToVideoImage from 'src/assets/images/onboard-subtitles-to-video.webp';
 import subtitlesFromVideoImage from 'src/assets/images/onboard-subtitles-from-video.png';
 import webpSubtitlesFromVideoImage from 'src/assets/images/onboard-subtitles-from-video.webp';
-import DashboardHeader from "src/layouts/dashboard-header";
+import DashboardHeader from "src/layouts/dashboards/dashboard-header.jsx";
 import { useEffect, useState } from "react";
 import { useContext } from "react";
 import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase.js";
 import { checkIsLoggedAndFetch, fetchUrl } from "src/utils/utilities.js";
-import { PricingContainer } from "src/components/pricing-container.jsx";
+import { PricingContainer } from "src/components/pricing/pricing-container.jsx";
 import Loader from "src/layouts/loader.jsx";
 import { ContentContainer } from "src/components/content-container.jsx";
 export default function OnBoard() {

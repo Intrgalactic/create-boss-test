@@ -1,4 +1,4 @@
-import { PricingContainer } from "src/components/pricing-container";
+import { PricingContainer } from "src/components/pricing/pricing-container";
 
 export default function Pricing() {
     return (

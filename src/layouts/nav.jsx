@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom"
-import { NavButton } from "src/components/nav-button";
+import { NavButton } from "src/components/header/nav-button.jsx";
 import { useContext } from "react";
 import { authContext } from "src/context/authContext";
 import { logOutUser } from "src/utils/utilities";
