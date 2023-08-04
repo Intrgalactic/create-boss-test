@@ -1,19 +1,9 @@
-import { Suspense, lazy, useEffect, useState } from "react";
+import {useEffect, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
-
-const DashboardServiceInputContainer = lazy(() => import('src/components/dashboard/boxes/dashboard-service-input-container').then(module => {
-    return { default: module.DashboardServiceInputContainer }
-}))
-const DashboardServiceOutput = lazy(() => import('src/components/dashboard/files/dashboard-service-output').then(module => {
-    return { default: module.DashboardServiceOutput }
-}))
-const FileInputContainer = lazy(() => import('src/components/dashboard/files/file-input-container').then(module => {
-    return { default: module.FileInputContainer }
-}))
-const FileOutputContent = lazy(() => import('src/components/dashboard/files/file-output-container-content').then(module => {
-    return { default: module.FileOutputContent }
-}))
-
+import { DashboardServiceInputContainer } from "src/components/dashboard/boxes/dashboard-service-input-container";
+import { DashboardServiceOutput } from "src/components/dashboard/files/dashboard-service-output";
+import { FileInputContainer } from "src/components/dashboard/files/file-input-container";
+import { FileOutputContent } from "src/components/dashboard/files/file-output-container-content";
 import { SectionHeading } from "src/components/section-heading";
 import Loader from "../loader";
 import inputCheck from 'src/assets/images/input-check.png';
@@ -39,7 +29,6 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
         }
     }, [setIsFileAttached, file, setAbleToTranslate, textInput]);
     return (
-        <Suspense fallback={<Loader />}>
             <div className="dashboard__left-section">
                 <SectionHeading heading={headings[0]} />
                 <div className="dashboard__left-section-container">
@@ -86,6 +75,5 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
                     </ContentContainer>
                 </div>
             </div>
-        </Suspense>
     )
 }
