@@ -149,3 +149,67 @@ export function checkIsLoggedAndFetch(isLogged,auth,setLoadingState,setIsPaying,
     }
 }
 
+export async function sendData(fetchUrl,data, type,states,stateSetters) {
+    var options;
+    if (type) {
+        options = {
+            method: "POST",
+            body: data,
+            headers: {
+                "Content-Type" : type
+            }
+        }
+    }
+    else {
+        options = {
+            method: "POST",
+            body: data,
+        }
+    }
+    console.log(options);
+    try {
+        await fetch(`${fetchUrl}`, options).then(async (res) => {
+            var rawFileResponse;
+            if (res.status === 200) {
+                if (states.file) {
+                    const fileName = states.file.name.substring(0, states.file.name.indexOf('.'));
+                    if (states.file.name) {
+                        rawFileResponse = await fetch(`${fetchUrl}/get/${fileName}.${states.outputExtension.toLowerCase()}`).catch(err => {
+                            stateSetters.setLoadingState(false);
+                            stateSetters.setErrorAtDownload(err.message);
+                        });
+                    }
+                }
+
+                else {
+                    rawFileResponse = await fetch(`${fetchUrl}/get/output.${states.outputExtension.toLowerCase()}`).catch(err => {
+                        stateSetters.setLoadingState(false);
+                        stateSetters.setErrorAtDownload(err.message);
+                    });;
+                }
+
+                const fileToDownload = await rawFileResponse.blob();
+                stateSetters.setFilePath(fileToDownload);
+                stateSetters.setIsTranslated(true);
+                stateSetters.setLoadingState(false);
+            }
+        })
+
+    }
+    catch (err) {
+        console.log(err);
+        stateSetters.setLoadingState(false);
+        stateSetters.setErrorAtDownload(err.message);
+    }
+}
+
+export function setLanguageProperties(setLanguage,setLanguageCode,code, name) {
+    setLanguage(name);
+    setLanguageCode(code);
+}
+export function handleTextChange(e,states,stateSetters) {
+    if (states.setIsTranslated || states.errorAtDownload) {
+        stateSetters.setErrorAtDownload(false);
+        stateSetters.setIsTranslated(false);
+    }
+}

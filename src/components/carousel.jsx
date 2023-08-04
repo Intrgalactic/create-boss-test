@@ -19,41 +19,12 @@ export const Carousel = forwardRef((props, ref) => {
         setWindowSize(window.innerWidth);
     }
     function scrollToNextElem(e) {
-
         const elementsToScroll = ref.current.querySelector("div").childNodes;
         if (e.target.classList.contains("left-carousel-button") && scrollCount - 1 >= 0) {
-            if (window.innerWidth > 768 && scrollCount - 2 >= 0) {
-                if (elementsToScroll[0].classList.contains("pricing__box") && windowSize > 1024) {
-                    scrollToElem(3, elementsToScroll, "-")
-                }
-                else if (elementsToScroll[0].classList.contains("pricing__box")) {
-                    scrollToElem(1, elementsToScroll, "-");
-                }
-                else {
-                    scrollToElem(2, elementsToScroll, "-");
-                }
-            }
-
-            else {
-                scrollToElem(1, elementsToScroll, "-");
-            }
-
+            checkClassListAndScroll(elementsToScroll)
         }
         else if (e.target.classList.contains("right-carousel-button") && scrollCount + 1 < elementsToScroll.length) {
-            if (scrollCount === 0 && window.innerWidth > 768) {
-                if (elementsToScroll[0].classList.contains("pricing__box") && windowSize > 1024) {
-                    scrollToElem(3, elementsToScroll, "+")
-                }
-                else if (elementsToScroll[0].classList.contains("pricing__box")) {
-                    scrollToElem(1, elementsToScroll, "+");
-                }
-                else {
-                    scrollToElem(2, elementsToScroll, "+");
-                }
-            }
-            else {
-                scrollToElem(1, elementsToScroll, "+");
-            }
+            checkClassListAndScroll(elementsToScroll);
         }
         else {
             e.target.classList.contains("right-carousel-button") ? elementsToScroll[0].scrollIntoView({ behavior: "smooth", block: "center", inline: "center" }) : elementsToScroll[elementsToScroll.length - 1].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
@@ -68,6 +39,22 @@ export const Carousel = forwardRef((props, ref) => {
         else {
             elementsToScroll[scrollCount - it].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
             setScrollCount(count => count - it);
+        }
+    }
+    function checkClassListAndScroll(elementsToScroll) {
+        if (scrollCount === 0 && window.innerWidth > 768) {
+            if (elementsToScroll[0].classList.contains("pricing__box") && windowSize > 1024) {
+                scrollToElem(3, elementsToScroll, "+")
+            }
+            else if (elementsToScroll[0].classList.contains("pricing__box")) {
+                scrollToElem(1, elementsToScroll, "+");
+            }
+            else {
+                scrollToElem(2, elementsToScroll, "+");
+            }
+        }
+        else {
+            scrollToElem(1, elementsToScroll, "+");
         }
     }
     return (

@@ -7,6 +7,8 @@ import DashboardServiceOptionsRow from "src/layouts/dashboard-service-options-ro
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
 import { speakersTypeOptions, audioSpeedOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions } from "src/utils/dashboard-static-data";
+import { sendData, setLanguageProperties } from "src/utils/utilities";
+import { handleTextChange } from "src/utils/utilities";
 export default function TTSDashboard() {
 
     const [audioSpeed, setAudioSpeed] = useState("1.0");
@@ -26,6 +28,12 @@ export default function TTSDashboard() {
     const [errorAtDownload, setErrorAtDownload] = useState();
     const [languageFilter, setLanguageFilter] = useState();
     const languageFilterRegEx = new RegExp(languageFilter, "i");
+    const stateSetters = {
+        setLoadingState: setLoadingState,
+        setErrorAtDownload: setErrorAtDownload,
+        setFilePath: setFilePath,
+        setIsTranslated: setIsTranslated
+    }
     function setAllOptions() {
 
     }
@@ -47,7 +55,7 @@ export default function TTSDashboard() {
         {
             text: language,
             options: filteredLanguagesData,
-            setOption: setLanguageProperties,
+            setOption: setLanguageProps,
             setFilter: setLanguageFilter,
             heading: "Language",
         },
@@ -78,32 +86,44 @@ export default function TTSDashboard() {
             heading: "Apply Changes",
         }
     ]
-    function setLanguageProperties(code, name) {
-        setLanguage(name);
-        setLanguageCode(code);
+    function setLanguageProps(code, name) {
+        setLanguageProperties(setLanguage, setLanguageCode, code, name);
     }
-    function handleTextChange(e) {
-        if (isTranslated || errorAtDownload) {
-            setErrorAtDownload(false);
-            setIsTranslated(false);
-        }
+    function handleTextInput(e) {
+        handleTextChange(e, {
+            isTranslated: isTranslated,
+            errorAtDownload: errorAtDownload
+        }, {
+            setErrorAtDownload: setErrorAtDownload,
+            setIsTranslated: setIsTranslated
+
+        })
         setTextInput(e);
     }
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
-            if (file && file.type === "text/plain") {
-                const data = new FormData();
-                const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}`;
-                const queryParams = Object.fromEntries(new URLSearchParams(queryString));
-                for (const [key, value] of Object.entries(queryParams)) {
-                    data.append(key, value);
+            if (file) {
+                if (file.type === "text/plain" || file.type === "application/rtf" || file.type === "application/vnd.oasis.opendocument.text" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf" || file.type === "application/msword") {
+                    const data = new FormData();
+                    const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}`;
+                    const queryParams = Object.fromEntries(new URLSearchParams(queryString));
+                    for (const [key, value] of Object.entries(queryParams)) {
+                        data.append(key, value);
+                    }
+                    data.append('file', file, file.name);
+                    data.append('fileType', file.type);
+                    sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, data, false, {
+                        file: file,
+                        outputExtension: outputExtension
+                    }, stateSetters);
                 }
-                data.append('file', file, file.name);
-                sendData(data);
             }
             else if (!file) {
-                sendData(`code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}`, "application/x-www-form-urlencoded");
+                sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}`, "application/x-www-form-urlencoded", {
+                    file: file,
+                    outputExtension: outputExtension
+                }, stateSetters);
             }
 
         }
@@ -112,62 +132,11 @@ export default function TTSDashboard() {
         (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
         (file && file.name) ? fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/delete/${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/delete/output.${outputExtension.toLowerCase()}`)
     }
-    async function sendData(data, type) {
-        var options;
-        if (type) {
-            options = {
-                method: "POST",
-                body: data,
-                headers: {
-                    "Content-Type": type
-                }
-            }
-        }
-        else {
-            options = {
-                method: "POST",
-                body: data,
-            }
-        }
-        try {
-            await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, options).then(async (res) => {
-                var rawFileResponse;
-                if (res.status === 200) {
-                    if (file) {
-                        const fileName = file.name.substring(0, file.name.indexOf('.'));
-                        if (file.name) {
-                            rawFileResponse = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get/${fileName}.${outputExtension.toLowerCase()}`).catch(err => {
-                                setLoadingState(false);
-                                setErrorAtDownload(err.message);
-                            });
-                        }
-                    }
-
-                    else {
-                        rawFileResponse = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get/output.${outputExtension.toLowerCase()}`).catch(err => {
-                            setLoadingState(false);
-                            setErrorAtDownload(err.message);
-                        });;
-                    }
-
-                    const fileToDownload = await rawFileResponse.blob();
-                    setFilePath(fileToDownload);
-                    setIsTranslated(true);
-                    setLoadingState(false);
-                }
-            })
-
-        }
-        catch (err) {
-            setLoadingState(false);
-            setErrorAtDownload(err.message);
-        }
-    }
     return (
         <div className="text-to-speech-dashboard">
             <DashboardHeader />
             <ContentContainer containerClass="text-to-speech-dashboard__container">
-                <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Your Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextChange} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
+                <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
                 <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
                     <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
                     <DashboardServiceOptionsRow actions={secondServiceOptionsRowActions} />
@@ -177,3 +146,6 @@ export default function TTSDashboard() {
         </div>
     )
 }
+
+
+
