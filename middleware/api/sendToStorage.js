@@ -1,7 +1,6 @@
 
 const sendToStorage = async (filename, audioData, contentType,storage) => {
     try {
-  
         const mainBucket = storage.bucket("create-boss");
         const file = mainBucket.file(filename);
 
@@ -21,7 +20,7 @@ const sendToStorage = async (filename, audioData, contentType,storage) => {
             console.log('Audio data has been written to Google Cloud Storage.');
         });
 
-        stream.write(audioData);
+        await stream.write(audioData);
         stream.end();
 
         return true;

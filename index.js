@@ -7,6 +7,7 @@ const downloadFile = require('./middleware/api/downloadFile');
 const dotenv = require('dotenv');
 const cors = require('cors');
 const multer = require('multer');
+const speechToText = require('./middleware/api/speechToText');
 const { Storage } = require('@google-cloud/storage');
 
 dotenv.config();
@@ -50,7 +51,7 @@ app.get('/api/text-to-speech/delete/:filename', cors(corsOptions), function (req
     const filename = req.params.filename;
     googleCloudStorage.bucket('create-boss').file(filename).delete();
 })
-app.get('/api/speech-to-text',cors(corsOptions))
+app.post('/api/speech-to-text',upload.single('file'),cors(corsOptions),speechToText(googleCloudStorage));
 app.listen(process.env.PORT || 4000, () => {
     console.log('app listening');
 })
