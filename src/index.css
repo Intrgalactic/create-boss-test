@@ -1422,6 +1422,7 @@ footer {
 }
 .text-to-speech-dashboard .textarea-container textarea {
   padding:20px;
+  max-width:80vw;
 }
 .text-to-speech-dashboard .dashboard__select-box-option, .text-to-speech-dashboard .search-bar{
   background-color: black;
