@@ -182,6 +182,7 @@ export async function sendData(fetchUrl,data, type,states,stateSetters) {
                 }
 
                 else {
+                    console.log(states.outputExtension);
                     rawFileResponse = await fetch(`${fetchUrl}/get/output.${states.outputExtension.toLowerCase()}`).catch(err => {
                         stateSetters.setLoadingState(false);
                         stateSetters.setErrorAtDownload(err.message);

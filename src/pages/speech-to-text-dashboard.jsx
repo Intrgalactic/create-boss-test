@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 import DashboardHeader from "src/layouts/dashboards/dashboard-header";
 import DashboardLeftSection from "src/layouts/dashboards/dashboard-left-section";
@@ -6,19 +6,15 @@ import DashboardRightSection from "src/layouts/dashboards/dashboard-right-sectio
 import DashboardServiceOptionsRow from "src/layouts/dashboards/service-options/dashboard-service-options-row";
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
-import {languagesData, outputExtensionOptions, } from "src/utils/dashboard-static-data";
-import { handleTextChange, sendData, setLanguageProperties } from "src/utils/utilities";
+import {STTOutputExtensionOptions, languagesData, outputExtensionOptions } from "src/utils/dashboard-static-data";
+import { sendData, setLanguageProperties } from "src/utils/utilities";
 
 export default function STTDashboard() {
 
-    const [audioSpeed, setAudioSpeed] = useState("1.0");
-    const [voicePitch, setVoicePitch] = useState("0");
     const [language, setLanguage] = useState("English (US)");
     const [languageCode, setLanguageCode] = useState("en-US");
-    const [voiceGender, setVoiceGender] = useState('Male');
-    const [speakersType, setSpeakersType] = useState('Home');
     const [ableToTranslate, setAbleToTranslate] = useState('No');
-    const [outputExtension, setOutputExtension] = useState("Txt");
+    const [outputExtension, setOutputExtension] = useState("TXT");
     const [textInput, setTextInput] = useState("");
     const [isTranslated, setIsTranslated] = useState(false);
     const [filePath, setFilePath] = useState('');
@@ -34,9 +30,7 @@ export default function STTDashboard() {
         setFilePath:setFilePath,
         setIsTranslated:setIsTranslated
     }
-    function setAllOptions() {
-
-    }
+    console.log(file);
     const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
 
     const firstServiceOptionsRowActions = [
@@ -48,11 +42,11 @@ export default function STTDashboard() {
             heading: "Language",
         },
         {
-            type: "set-to-default-btn",
-            text: "Set",
-            setOption: setAllOptions,
-            heading: "Apply Changes",
-        }
+            text: outputExtension,
+            options: STTOutputExtensionOptions,
+            setOption: setOutputExtension,
+            heading: "Output Extension",
+        },
     ]
     function setLanguageProps(code,name) {
         setLanguageProperties(setLanguage,setLanguageCode,code,name);
@@ -60,10 +54,11 @@ export default function STTDashboard() {
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
-            if (file && file.type === "text/plain") {
+            if (file && file.type === "audio/mpeg") {
                 const data = new FormData();
                 data.append('file', file, file.name);
                 data.append('code',languageCode);
+                data.append('audioEncoding',outputExtension);
                 sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/speech-to-text`,data,false,{
                     file: file,
                     outputExtension: outputExtension
@@ -80,7 +75,7 @@ export default function STTDashboard() {
         <div className="text-to-speech-dashboard">
             <DashboardHeader />
             <ContentContainer containerClass="text-to-speech-dashboard__container">
-                <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
+                <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
                 <DashboardRightSection configurationHeading="Default Configuration Is Set To English Language">
                     <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
                 </DashboardRightSection>

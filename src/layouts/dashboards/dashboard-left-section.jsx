@@ -28,6 +28,7 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
             setAbleToTranslate("No");
         }
     }, [setIsFileAttached, file, setAbleToTranslate, textInput]);
+    console.log(isFileAttached);
     return (
             <div className="dashboard__left-section">
                 <SectionHeading heading={headings[0]} />
@@ -45,7 +46,7 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
                             <div className='file-output-container'>
                                 {errorAtDownload ?
                                     <FileOutputContent images={[webpErrorImage, errorImage]} imgHeight="64px" imgWidth="64px" alt="error" firstText="Error at downloading" >
-                                        <p>Please try again by attaching new file or input text again</p>
+                                        <p>Please try again</p>
                                     </FileOutputContent>
                                     : !isFileAttached && !textInput ? <>
                                         <Loader />

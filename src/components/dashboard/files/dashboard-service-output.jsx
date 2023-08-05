@@ -18,9 +18,9 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
                     <Picture images={[webpFileImage, fileImage]} imgWidth="128px" imgHeight="128px" alt="file" />
                     <p>The File Got Attached</p>
                     <p>Refresh The Page To Input Manually</p>
-                </div></div> : <textarea ref={textAreaRef} onChange={(e) => { setTextInput(e.target.value) }}>
+                </div></div> : <div className="textarea-container"><textarea ref={textAreaRef} onChange={(e) => { setTextInput(e.target.value) }} /></div>
 
-            </textarea>}
+            }
         </>
     )
 }

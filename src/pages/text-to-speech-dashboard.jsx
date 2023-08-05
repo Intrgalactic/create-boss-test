@@ -6,13 +6,12 @@ const DashboardRightSection = lazy(() => import('src/layouts/dashboards/dashboar
 const DashboardServiceOptionsRow = lazy(() => import('src/layouts/dashboards/service-options/dashboard-service-options-row'));
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
-import { speakersTypeOptions, audioSpeedOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions } from "src/utils/dashboard-static-data";
+import { speakersTypeOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
 import { handleTextChange } from "src/utils/utilities";
 
 export default function TTSDashboard() {
 
-    const [audioSpeed, setAudioSpeed] = useState("1.0");
     const [voicePitch, setVoicePitch] = useState("0");
     const [language, setLanguage] = useState("English (US)");
     const [languageCode, setLanguageCode] = useState("en-US");
@@ -41,12 +40,6 @@ export default function TTSDashboard() {
     const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
 
     const firstServiceOptionsRowActions = [
-        {
-            text: audioSpeed,
-            options: audioSpeedOptions,
-            setOption: setAudioSpeed,
-            heading: "Voice Speed",
-        },
         {
             text: voicePitch,
             options: voicePitchOptions,
@@ -105,7 +98,7 @@ export default function TTSDashboard() {
         if (textInput || file) {
             setLoadingState(true);
             if (file) {
-                if (file.type === "text/plain" || file.type === "application/rtf" || file.type === "application/vnd.oasis.opendocument.text" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf" || file.type === "application/msword") {
+                if (file.type === "text/plain" || file.type === "application/vnd.oasis.opendocument.text" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf" || file.type === "application/msword") {
                     const data = new FormData();
                     const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}`;
                     const queryParams = Object.fromEntries(new URLSearchParams(queryString));
