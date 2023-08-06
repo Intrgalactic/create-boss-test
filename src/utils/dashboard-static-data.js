@@ -75,7 +75,7 @@ export const dashboardActionsData = [
     },
 
 ]
-export const audioSpeedOptions = ["1","1.25","1.5","1.75","2" ];
+export const audioSpeedOptions = ["0.5","0.75","1","1.25","1.5","1.75","2" ];
 export const voicePitchOptions = ["-20","-15","-10","-5","0","5","10","15","20" ];
 export const voiceGenderOptions = ["Male","Female"];
 export const speakersTypeOptions = ["Home","Wearables","Headphones","Small Speaker","Medium Speaker","Car","Handset Devices","Telephony"];

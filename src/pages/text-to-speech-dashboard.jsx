@@ -6,7 +6,7 @@ const DashboardRightSection = lazy(() => import('src/layouts/dashboards/dashboar
 const DashboardServiceOptionsRow = lazy(() => import('src/layouts/dashboards/service-options/dashboard-service-options-row'));
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
-import { speakersTypeOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions } from "src/utils/dashboard-static-data";
+import { speakersTypeOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions,audioSpeedOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
 import { handleTextChange } from "src/utils/utilities";
 
@@ -14,6 +14,7 @@ export default function TTSDashboard() {
 
     const [voicePitch, setVoicePitch] = useState("0");
     const [language, setLanguage] = useState("English (US)");
+    const [audioSpeed, setAudioSpeed] = useState('1');
     const [languageCode, setLanguageCode] = useState("en-US");
     const [voiceGender, setVoiceGender] = useState('Male');
     const [speakersType, setSpeakersType] = useState('Home');
@@ -50,6 +51,12 @@ export default function TTSDashboard() {
             setFilter: setLanguageFilter,
             heading: "Language",
         },
+        {
+            text: audioSpeed,
+            options: audioSpeedOptions,
+            setOption: setAudioSpeed,
+            heading: "Audio Speed"
+        }
     ]
     const secondServiceOptionsRowActions = [
         {
@@ -71,6 +78,7 @@ export default function TTSDashboard() {
             heading: "Output Extension",
         }
     ]
+    console.log(outputExtension);
     function setLanguageProps(code, name) {
         setLanguageProperties(setLanguage, setLanguageCode, code, name);
     }
@@ -91,7 +99,7 @@ export default function TTSDashboard() {
             if (file) {
                 if (file.type === "text/plain" || file.type === "application/vnd.oasis.opendocument.text" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf" || file.type === "application/msword") {
                     const data = new FormData();
-                    const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}`;
+                    const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&speakingRate=${audioSpeed}`;
                     const queryParams = Object.fromEntries(new URLSearchParams(queryString));
                     for (const [key, value] of Object.entries(queryParams)) {
                         data.append(key, value);
@@ -105,7 +113,7 @@ export default function TTSDashboard() {
                 }
             }
             else if (!file) {
-                sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}`, "application/x-www-form-urlencoded", {
+                sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}&speakingRate=${audioSpeed}`, "application/x-www-form-urlencoded", {
                     file: file,
                     outputExtension: outputExtension
                 }, stateSetters);
@@ -115,7 +123,6 @@ export default function TTSDashboard() {
     }
 
     async function downloadFile() {
-        console.log(outputExtension);
         (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
     }
     return (
@@ -123,7 +130,7 @@ export default function TTSDashboard() {
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
-                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
+                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text"/>
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
                         <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
                         <DashboardServiceOptionsRow actions={secondServiceOptionsRowActions} />

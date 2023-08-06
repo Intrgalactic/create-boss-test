@@ -77,7 +77,7 @@ h2 {
   text-shadow: 0px 4px 10px black;
 }
 
-.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading) {
+.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading,.speech-to-text-dashboard__container .section-heading) {
   width: 60%;
   padding-block: 50px;
   margin: auto;
@@ -1066,7 +1066,7 @@ footer {
   filter: sepia(1) brightness(0%);
 }
 
-.dashboard,.text-to-speech-dashboard {
+.dashboard,.text-to-speech-dashboard,.speech-to-text-dashboard {
   background-image: url('assets/images/dashboard-bg.jpg');
   background-image: image-set(
     url('assets/images/dashboard-bg.webp') type('image/webp'),
@@ -1369,16 +1369,16 @@ footer {
   max-width: 100%;
   border-radius: 0;
 }
-.text-to-speech-dashboard {
+.text-to-speech-dashboard,.speech-to-text-dashboard {
   min-height: 100vh;
 }
-.text-to-speech-dashboard__container {
+.text-to-speech-dashboard__container,.speech-to-text-dashboard__container {
   min-height: 90vh;
   padding-inline: 10%;
   margin-left:5vw;
 }
 
-.text-to-speech-dashboard .dashboard-header {
+.text-to-speech-dashboard .dashboard-header,.speech-to-text-dashboard .dashboard-header {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
@@ -1412,22 +1412,22 @@ footer {
 }
 
 .dashboard__service-input-container input,
-.text-to-speech-dashboard textarea {
-  width: 100%;
+.text-to-speech-dashboard textarea,.speech-to-text-dashboard .textarea {
   color:white;
-  max-width: 100%;
+  max-width: 25vw;
   margin: 0;
   border-radius: 5px;
-  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
 }
-.text-to-speech-dashboard .textarea-container textarea {
+
+.text-to-speech-dashboard .textarea-container textarea,.speech-to-text-dashboard .textarea-container textarea {
   padding:20px;
   font-size:0.8em;
 }
-.text-to-speech-dashboard .dashboard__select-box-option, .text-to-speech-dashboard .search-bar{
+.text-to-speech-dashboard .dashboard__select-box-option, .text-to-speech-dashboard .search-bar,.speech-to-text-dashboard .dashboard__select-box-option, .speech-to-text-dashboard .search-bar{
   background-color: black;
 }
-.text-to-speech-dashboard .dashboard__select-box-optgroup {
+.text-to-speech-dashboard .dashboard__select-box-optgroup,.speech-to-text-dashboard .dashboard__select-box-optgroup {
   background-color: #004FC5;
 }
 .dashboard__service-input-container .section-heading {
@@ -1438,11 +1438,11 @@ footer {
 }
 
 .dashboard__left-section-content-container-main-input {
-  width: 25vw;
+  width: calc(25vw + 40px);
   text-align: left;
 }
 
-.dashboard__left-section-content-container-main-input textarea {
+.dashboard__left-section-content-container-main-input textarea,.speech-to-text-dashboard .textarea-container{
   max-height: 260px;
   height: 260px;
   background-color: rgba(0,0,0,0.3);
@@ -1450,11 +1450,24 @@ footer {
   position: relative;
   padding: 0;
 }
-
+.speech-to-text-dashboard .textarea-container {
+  padding-block:20px;
+  border-radius: 5px;
+  display:grid;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+}
+.speech-to-text-dashboard .textarea-container img {
+  background-color: rgba(255,255,255,1);
+  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  border-radius: 50%;
+}
 .dashboard__left-section-content-container-control-input {
-  height: 50px;
+  height: 70px;
   width: calc(12.5vw - 30px);
-  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   background-color: rgba(0,0,0,0.3);
   align-items: center;
   display: grid;
@@ -1479,7 +1492,7 @@ footer {
   color: black;
   flex-wrap: wrap;
   justify-content: space-between;
-  max-width: 25vw;
+  max-width: calc(25vw + 40px);
 }
 
 .dashboard__left-section-control-container p {
@@ -1521,7 +1534,7 @@ footer {
   border-radius: 5px;
   color:white;
   height: 50px;
-  box-shadow: 0px 0px 5px rgba(255, 255, 255, 0.5), 0px 4px 20px 1px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 1px rgba(0, 0, 0, 0.5) inset;
   background-color: rgba(0, 0, 0, 0.25);
 }
 
@@ -1535,7 +1548,7 @@ footer {
 
 .file-output-container {
   position: relative;
-  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   border-radius: 5px;
   height: calc(250px - 46.4px);
   background-color:
@@ -1576,7 +1589,7 @@ footer {
 }
 
 .file-output-container p,
-.dashboard__left-section-content-container-main-input-file-alert p {
+.dashboard__left-section-content-container-main-input-file-alert p,.speech-to-text-dashboard .textarea-container p:first-of-type {
   height: 30%;
   font-family: NexaHeavy;
   width: 80%;
@@ -1598,7 +1611,7 @@ footer {
 }
 
 .file-output-container p:last-of-type,
-.dashboard__left-section-content-container-main-input-file-alert p:last-of-type {
+.dashboard__left-section-content-container-main-input-file-alert p:last-of-type,.speech-to-text-dashboard .textarea-container p:last-of-type {
   font-family: NexaRegular;
 }
 
@@ -1614,7 +1627,7 @@ footer {
   background: #456EFF;
 }
 
-.text-to-speech-dashboard__container {
+.text-to-speech-dashboard__container,.speech-to-text-dashboard__container {
   display: flex;
 }
 
@@ -1655,7 +1668,7 @@ footer {
 .dashboard__service-options-container {
   background-color: rgba(0,0,0,0.3);  
   padding-block: 80px;
-  box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   border-radius: 5px;
 }
 
@@ -1664,27 +1677,24 @@ footer {
   font-family: NexaHeavy;
 }
 
-.text-to-speech-dashboard .dashboard__select-button {
+.text-to-speech-dashboard .dashboard__select-button,.speech-to-text-dashboard .dashboard__select-button {
   width: 150px;
   color: white;
   font-size: 0.8em;
 }
 
-.text-to-speech-dashboard .dashboard__service-options-row .call-to-action-btn {
+.text-to-speech-dashboard .dashboard__service-options-row .call-to-action-btn,.speech-to-text-dashboard .dashboard__service-options-row .call-to-action-btn {
   width: 150px;
   border-radius: 5px;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 0px 10px 5px rgba(0, 0, 0, 0.25) inset;
   height: 65px;
 }
 
-.text-to-speech-dashboard .visible-list {
-  height: fit-content;
-}
-
-.dashboard__service-options-row:first-of-type .dashboard__service-option-button:last-of-type .visible-list {
+.text-to-speech-dashboard .visible-list,.speech-to-text-dashboard .visible-list,.dashboard__service-options-row:first-of-type .dashboard__service-option-button:last-of-type .visible-list {
   height: fit-content;
   max-height: 150px;
 }
+
 
 .dashboard__service-options-row {
   justify-content: center;
@@ -1699,14 +1709,14 @@ footer {
   content: "Drop";
 }
 
-.text-to-speech-dashboard .dashboard__select-box p {
+.text-to-speech-dashboard .dashboard__select-box p,.speech-to-text-dashboard .dashboard__select-box p  {
   font-size: 1.3em;
 }
 .dashboard__container div:nth-child(3) .dashboard__box:last-of-type .dashboard__box-content {
   gap:30px;
   padding-block: 30px;
 }
-.text-to-speech-dashboard .section-heading {
+.text-to-speech-dashboard .section-heading,.speech-to-text-dashboard .section-heading  {
   width: fit-content;
 }
 @keyframes lds-ellipsis1 {
@@ -2007,7 +2017,7 @@ footer {
     font-size: 0.9em;
   }
 
-  .section-heading:not(.benefits-section .section-heading, .about-us-section__container .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading,.text-to-speech-dashboard .section-heading) {
+  .section-heading:not(.benefits-section .section-heading, .about-us-section__container .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading,.text-to-speech-dashboard .section-heading,.speech-to-text-dashboard .section-heading) {
     width: 100%;
     padding-bottom: 25px;
   }
@@ -2252,7 +2262,7 @@ footer {
   .dashboard__container {
     margin-left: 0;
   }
-  .text-to-speech-dashboard__container {
+  .text-to-speech-dashboard__container,.speech-to-text-dashboard__container {
     margin-left:0;
     flex-wrap: wrap;
     padding-bottom: 40px;
@@ -2292,7 +2302,7 @@ footer {
   .dashboard__left-section-content-container-control-input,.dashboard__left-section-content-container-control-input button {
     font-size:1.3em;
   } 
-  .text-to-speech-dashboard .section-heading {
+  .text-to-speech-dashboard .section-heading,.speech-to-text-dashboard .section-heading {
     font-size:2em;
   }
   .dashboard__service-options-container .section-heading {
@@ -2302,7 +2312,7 @@ footer {
   .dashboard__service-options-row .dashboard__select-button {
     width: fit-content;
   }
-  .text-to-speech-dashboard .dashboard__service-options-row .call-to-action-btn {
+  .text-to-speech-dashboard .dashboard__service-options-row .call-to-action-btn,.speech-to-text-dashboard .dashboard__service-options-row .call-to-action-btn {
     width: 100px;
     height: 50px;
     font-size: 1em;
@@ -2314,7 +2324,7 @@ footer {
     font-size:1.5em;
     text-align: left;
   }
-  .text-to-speech-dashboard__container {
+  .text-to-speech-dashboard__container,.speech-to-text-dashboard__container {
     padding-right: 0;
   }
   .dashboard__service-option-button p {
@@ -2839,7 +2849,7 @@ footer {
   .dashboard-header nav {
     font-size: 0.8em;
   }
-  .text-to-speech-dashboard__container {
+  .text-to-speech-dashboard__container,.speech-to-text-dashboard__container {
     margin-left: 15vw;
     flex-wrap: wrap;
     padding-bottom: 40px;
@@ -2871,7 +2881,7 @@ footer {
   .dashboard__left-section-content-container {
     width: 50%;
   }
-  .text-to-speech-dashboard__container {
+  .text-to-speech-dashboard__container,.speech-to-text-dashboard__container {
     padding-right: 0;
   }
 

@@ -1,6 +1,6 @@
 import { useEffect, useRef} from "react";
 
-export function FileInputContainer({ file, setFile, textInput }) {
+export function FileInputContainer({ file, setFile, textInput,acceptedFormats }) {
     const fileRef = useRef();
     const fileInputRef = useRef();
     useEffect(() => {
@@ -39,7 +39,7 @@ export function FileInputContainer({ file, setFile, textInput }) {
     }
     return (
         <div className='file-input-container' onClick={() => { document.querySelector("input[type=file]").click() }} ref={fileRef} >
-           <input type="file" onChange={(e) => { setFile(e.target.files[0]) }} accept="text/plain,application/rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text" ref={fileInputRef} /> 
+           <input type="file" onChange={(e) => { setFile(e.target.files[0]) }} accept={acceptedFormats} ref={fileInputRef} /> 
         </div>
     )
 }

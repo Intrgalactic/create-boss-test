@@ -5,7 +5,7 @@ export const DashboardOptionsSelect = forwardRef((props, ref) => {
     return (
         <div className="dashboard__select-box" ref={ref}>
             {typeof (props.options[0]) === "string" ? props.options.map((option, index) => (
-                <div className="dashboard__select-box-option" key={index} onClick={(e) => { props.setOption(e.target.innerHTML), props.toggleList() }}>
+                <div className="dashboard__select-box-option" key={index} onClick={(e) => {props.setOption(e.target.childNodes[0].data), props.toggleList() }}>
                     <p>{option}</p>
                 </div>
             )) :
@@ -15,7 +15,7 @@ export const DashboardOptionsSelect = forwardRef((props, ref) => {
                     <div className="dashboard__select-box-optgroup" key={index}>
                         <p className="select-box-optgroup-p">{optgroup.optgroup}</p>
                         {optgroup.options.map((option, index) =>
-                            <div className="dashboard__select-box-option" key={index} onClick={(e) => { props.setOption(e.target.getAttribute("aria-details"),e.target.innerHTML), props.toggleList() }}>
+                            <div className="dashboard__select-box-option" key={index} onClick={(e) => {props.setOption(e.target.getAttribute("aria-details"),e.target.childNodes[0].data), props.toggleList() }}>
                                 <p aria-details={optgroup.code[index]} >{option}</p>
                             </div>
                         )}

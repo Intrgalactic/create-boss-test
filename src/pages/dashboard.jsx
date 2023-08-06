@@ -28,7 +28,7 @@ import { useNavigate } from "react-router-dom";
 import { Tooltip, XAxis, ResponsiveContainer, LineChart, Line } from "recharts";
 import { PureComponent } from "react";
 import { auth } from "../../firebase.js";
-import { checkIsLoggedAndFetch } from "src/utils/utilities.js";
+import { checkIsLoggedAndFetch, setLanguageProperties } from "src/utils/utilities.js";
 import Loader from "src/layouts/loader.jsx";
 
 export default function Dashboard() {
@@ -36,6 +36,8 @@ export default function Dashboard() {
     const [voiceGender, setVoiceGender] = useState('Male');
     const [TTSLanguage, setTSSLanguage] = useState("English (US)");
     const [STTLanguage, setSTTLanguage] = useState("English (US)");
+    const [TTSLanguageCode, setTSSLanguageCode] = useState("en-US");
+    const [STTLanguageCode, setSTTLanguageCode] = useState("en-US");
     const [TTSLanguageFilter, setTTSLanguageFilter] = useState();
     const [STTLanguageFilter, setSTTLanguageFilter] = useState();
     const TTSfilterRegEx = new RegExp(TTSLanguageFilter, "i");
@@ -109,7 +111,12 @@ export default function Dashboard() {
             SFV: 1230
         },
     ];
-
+    function setTTSLanguageProps(code,name) {
+        setLanguageProperties(setTSSLanguage,setTSSLanguageCode,code,name);
+    }
+    function setSTTLanguageProps(code,name) {
+        setLanguageProperties(setSTTLanguage,setSTTLanguageCode,code,name);
+    }
     return (
         <div className="dashboard">
             <Suspense fallback={<Loader />}>
@@ -157,7 +164,7 @@ export default function Dashboard() {
                                     <CtaButton text="Set" action={setTTSOptionsToDefault} />
                                 </DashboardSettingsRecord>
                                 <DashboardSettingsRecord description="Set Language">
-                                    <DashboardSelectButton text={TTSLanguage} options={filteredTTSLanguagesData} setOption={setTSSLanguage} setFilter={setTTSLanguageFilter} />
+                                    <DashboardSelectButton text={TTSLanguage} options={filteredTTSLanguagesData} setOption={setTTSLanguageProps} setFilter={setTTSLanguageFilter} />
                                 </DashboardSettingsRecord>
                                 <DashboardSettingsRecord description="Set Voice Speed">
                                     <DashboardSelectButton text={audioSpeed} options={audioSpeedOptions} setOption={setAudioSpeed} />
@@ -173,7 +180,7 @@ export default function Dashboard() {
                                     <CtaButton text="Set" action={setSTTOptionsToDefault} />
                                 </DashboardSettingsRecord>
                                 <DashboardSettingsRecord description="Set Language">
-                                    <DashboardSelectButton text={STTLanguage} options={filteredSTTLanguagesData} setOption={setSTTLanguage} setFilter={setSTTLanguageFilter} />
+                                    <DashboardSelectButton text={STTLanguage} options={filteredSTTLanguagesData} setOption={setSTTLanguageProps} setFilter={setSTTLanguageFilter} />
                                 </DashboardSettingsRecord>
                             </DashboardBoxContent>
                         </DashboardBox>

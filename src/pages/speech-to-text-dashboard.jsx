@@ -54,8 +54,8 @@ export default function STTDashboard() {
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
-            if (file && file.type === "audio/mpeg") {
-                const data = new FormData();
+            if ((file) && (file.type === "audio/mpeg" || file.type === "video/ogg" || file.type === "audio/wav")) {
+                const data = new FormData()
                 data.append('file', file, file.name);
                 data.append('code',languageCode);
                 data.append('audioEncoding',outputExtension);
@@ -68,14 +68,13 @@ export default function STTDashboard() {
     }
     async function downloadFile() {
         (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
-        (file && file.name) ? fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/speech-to-text/delete/${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/delete/output.${outputExtension.toLowerCase()}`)
     }
 
     return (
-        <div className="text-to-speech-dashboard">
+        <div className="speech-to-text-dashboard">
             <DashboardHeader />
-            <ContentContainer containerClass="text-to-speech-dashboard__container">
-                <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} />
+            <ContentContainer containerClass="speech-to-text-dashboard__container">
+                <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg"/>
                 <DashboardRightSection configurationHeading="Default Configuration Is Set To English Language">
                     <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
                 </DashboardRightSection>

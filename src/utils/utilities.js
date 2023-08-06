@@ -166,10 +166,10 @@ export async function sendData(fetchUrl,data, type,states,stateSetters) {
             body: data,
         }
     }
-    console.log(options);
     try {
         await fetch(`${fetchUrl}`, options).then(async (res) => {
             var rawFileResponse;
+            
             if (res.status === 200) {
                 if (states.file) {
                     const fileName = states.file.name.substring(0, states.file.name.indexOf('.'));

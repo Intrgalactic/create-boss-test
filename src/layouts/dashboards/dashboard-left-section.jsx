@@ -15,7 +15,7 @@ import webpErrorImage from 'src/assets/images/error.webp';
 import { Link } from "react-router-dom";
 
 
-export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload, setErrorAtDownload }) {
+export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload, setErrorAtDownload,acceptedFormats }) {
     const [isFileAttached, setIsFileAttached] = useState(false);
     useEffect(() => {
         if (file) {
@@ -40,7 +40,7 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
                     </ContentContainer>
                     <ContentContainer containerClass="dashboard__left-section-file-container">
                         <DashboardServiceInputContainer heading={headings[2]}>
-                            <FileInputContainer file={file} setFile={setFile} textInput={textInput} />
+                            <FileInputContainer file={file} setFile={setFile} textInput={textInput} acceptedFormats={acceptedFormats} />
                         </DashboardServiceInputContainer>
                         <DashboardServiceInputContainer heading={headings[3]}>
                             <div className='file-output-container'>
