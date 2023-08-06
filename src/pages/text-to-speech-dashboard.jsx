@@ -34,9 +34,6 @@ export default function TTSDashboard() {
         setFilePath: setFilePath,
         setIsTranslated: setIsTranslated
     }
-    function setAllOptions() {
-
-    }
     const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
 
     const firstServiceOptionsRowActions = [
@@ -72,12 +69,6 @@ export default function TTSDashboard() {
             options: outputExtensionOptions,
             setOption: setOutputExtension,
             heading: "Output Extension",
-        },
-        {
-            type: "set-to-default-btn",
-            text: "Set",
-            setOption: setAllOptions,
-            heading: "Apply Changes",
         }
     ]
     function setLanguageProps(code, name) {
@@ -122,9 +113,10 @@ export default function TTSDashboard() {
 
         }
     }
+
     async function downloadFile() {
+        console.log(outputExtension);
         (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
-        (file && file.name) ? fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/delete/${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/delete/output.${outputExtension.toLowerCase()}`)
     }
     return (
         <div className="text-to-speech-dashboard">

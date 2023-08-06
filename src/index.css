@@ -1422,6 +1422,7 @@ footer {
 }
 .text-to-speech-dashboard .textarea-container textarea {
   padding:20px;
+  font-size:0.8em;
 }
 .text-to-speech-dashboard .dashboard__select-box-option, .text-to-speech-dashboard .search-bar{
   background-color: black;
@@ -2281,8 +2282,9 @@ footer {
     justify-content: center;
   }
   .dashboard__left-section-content-container-main-input textarea {
-    width: 100%;
-    min-width: 100%;
+    width: calc(100% - 40px);
+    min-width: calc(100% - 40px);
+    max-width: calc(100% - 40px);
   }
   .dashboard__left-section-file-container .dashboard__service-input-container:first-of-type .section-heading {
     margin-top:40px;
@@ -2499,6 +2501,9 @@ footer {
   }
   .dashboard__container-welcome-heading .section-heading {
     font-size:1.5em;
+  }
+  .dashboard__left-section-control-container p {
+    font-size:0.8em;
   }
 }
 

@@ -173,6 +173,7 @@ export async function sendData(fetchUrl,data, type,states,stateSetters) {
             if (res.status === 200) {
                 if (states.file) {
                     const fileName = states.file.name.substring(0, states.file.name.indexOf('.'));
+                    console.log(`${fetchUrl}/get/${fileName}.${states.outputExtension.toLowerCase()}`);
                     if (states.file.name) {
                         rawFileResponse = await fetch(`${fetchUrl}/get/${fileName}.${states.outputExtension.toLowerCase()}`).catch(err => {
                             stateSetters.setLoadingState(false);
@@ -193,6 +194,13 @@ export async function sendData(fetchUrl,data, type,states,stateSetters) {
                 stateSetters.setFilePath(fileToDownload);
                 stateSetters.setIsTranslated(true);
                 stateSetters.setLoadingState(false);
+                stateSetters.setErrorAtDownload(false);
+                if (states.file) {
+                    fetch(`${fetchUrl}/delete/${states.file.name.substring(0, states.file.name.indexOf('.'))}.${states.outputExtension.toLowerCase()}`)
+                }
+                else {
+                    fetch(`${fetchUrl}/delete/output.${states.outputExtension.toLowerCase()}`)
+                }
             }
         })
 
