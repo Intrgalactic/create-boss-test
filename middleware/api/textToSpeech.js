@@ -13,54 +13,67 @@ const fileTypes = [
 ];
 const setContentType = require('../utils/setContentType');
 const parseFile = require('../utils/fileParser');
+const spellCheck = require('../utils/spellCheck');
 
 const textToSpeech = (storage) => {
     return asyncHandler(async (req, res) => {
         var textToSynthetize;
         var contentType;
         var outputFileName = "output.mp3";
+        try {
+            if (req.file) {
+                outputFileName = req.file.originalname;
+                textToSynthetize = await getTextToSynthetize(req.file, req)
+            }
+            else {
+                textToSynthetize = req.body.text;
+            }
 
-        if (req.file) {
-            outputFileName = req.file.originalname;
-            textToSynthetize = await getTextToSynthetize(req.file,req);
+            const textToSpeech = require('@google-cloud/text-to-speech');
+            const gender = req.body.gender.toUpperCase();
+            const pitch = parseInt(req.body.pitch);
+            const environment = formatEncoding(req.body.effectsProfileId)
+            const client = new textToSpeech.TextToSpeechClient();
+            const voices = await listVoices(client, req.body.gender.toUpperCase(), req.body.code)
+            const [voiceVariants, voiceTechnologyType] = await selectBestVoice(voices)
+            if (req.file) {
+                var audioEncoding = req.file.mimetype === "audio/mpeg" ? "MP3" : req.file.mimetype === "audio/ogg" ? "OGG_OPUS" : "MULAW";
+            }
+            else {
+                var audioEncoding = "MP3";
+            }
+            const speakingRate = parseFloat(req.body.speakingRate);
+
+            const request = {
+                input: { text: textToSynthetize },
+                voice: { languageCode: req.body.code, ssmlGender: gender, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
+                audioConfig: { audioEncoding: audioEncoding, pitch: pitch, effectsProfileId: [environment],speakingRate:speakingRate },
+            };
+
+            const [response] = await client.synthesizeSpeech(request);
+            
+            contentType = await setContentType(req.body.audioEncoding)
+            await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}.${req.body.audioEncoding.toLowerCase()}`, response.audioContent, contentType, storage)
+
+            res.status(200).send("Synthesizing Completed");
         }
-        else {
-            textToSynthetize = req.body.text;
+        catch (err) {
+            res.status(400).send(err.message);
         }
-
-        const textToSpeech = require('@google-cloud/text-to-speech');
-        const gender = req.body.gender.toUpperCase();
-        const pitch = parseInt(req.body.pitch);
-        const environment = formatEncoding(req.body.effectsProfileId);
-        const client = new textToSpeech.TextToSpeechClient();
-        const voices = await listVoices(client, req.body.gender.toUpperCase(), req.body.code);
-
-        const [voiceVariants,voiceTechnologyType] = await selectBestVoice(voices);
-
-        const request = {
-            input: { text: textToSynthetize },
-            voice: { languageCode: req.body.code, ssmlGender: gender, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
-            audioConfig: { audioEncoding: "MP3", pitch: pitch, effectsProfileId: [environment] },
-        };
-
-        const [response] = await client.synthesizeSpeech(request);
-        contentType = await setContentType(req.body.audioEncoding);
-        await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}.${req.body.audioEncoding.toLowerCase()}`, response.audioContent, contentType, storage);
-        
-        res.status(200).send("Synthesizing Completed");
-
     });
 }
 
 
-async function getTextToSynthetize(file,req) {
+async function getTextToSynthetize(file, req) {
     var textToSynthetize = "";
     if (file) {
         const fileBuffer = file.buffer;
         outputFileName = file.originalname;
         for (const i in fileTypes) {
             if (fileTypes[i] === file.mimetype) {
-                textToSynthetize = await parseFile(fileBuffer, file.mimetype);
+                textToSynthetize = await parseFile(fileBuffer, file.mimetype).catch(err => {
+                    throw err;
+                });
                 break;
             }
         }
@@ -82,6 +95,6 @@ function selectBestVoice(voices) {
             }
         }
     }
-    return [voiceVariants,voiceTechnologyType];
+    return [voiceVariants, voiceTechnologyType];
 }
 module.exports = textToSpeech;

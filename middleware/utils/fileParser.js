@@ -32,18 +32,17 @@ const parsePdf = async (fileBuffer) => {
         return data.text;
     } catch (err) {
         console.error('Error parsing PDF:', err);
-        return null;
+        throw err;
     }
 }
 
 async function parseDocx(fileBuffer) {
     try {
         const result = await mammoth.extractRawText({ buffer: fileBuffer });
-        console.log(result);
         return result.value;
     } catch (err) {
         console.error('Error parsing DOCX:', err);
-        return null;
+        throw err;
     }
 }
 
@@ -51,18 +50,14 @@ async function parseOdt(fileBuffer) {
     try {
         const zip = await unzipper.Open.buffer(fileBuffer);
 
-        // Find the content.xml file within the ODT archive
         const contentXmlFile = zip.files.find((file) => file.path === 'content.xml');
         if (!contentXmlFile) {
             throw new Error('No content.xml found in the ODT file.');
         }
 
-        // Extract the content from the content.xml file
         const contentXml = await contentXmlFile.buffer();
 
-        // Convert the XML content to JSON
         const contentJson = xmljs.xml2json(contentXml, { compact: true, spaces: 4 });
-        // Extract the plain text from the JSON representation
         const plainText = getContentFromJson(contentJson);
         return plainText;
     } catch (err) {
@@ -72,31 +67,32 @@ async function parseOdt(fileBuffer) {
 }
 
 function getContentFromJson(contentJson) {
-    // The structure of the ODT content varies based on the file content.
-    // You may need to inspect the JSON structure to find the correct path for the text content.
-    // This example assumes a specific path for demonstration purposes.
-
-    // Replace the following path with the actual path to the text content in your ODT file.
     var textContent = "";
     const textData = JSON.parse(contentJson);
     console.log(textData['office:document-content']['office:body']['office:text']['text:p'][0]["text:span"]);
-    for (let i = 0; i < textData['office:document-content']['office:body']['office:text']['text:p'].length; i++) {
+    for (let i = 0; i < textData['office:document-content']['office:body']['office:text']['text:p'].length - 1; i++) {
         if (typeof (textData['office:document-content']['office:body']['office:text']['text:p'][i]['text:span']) === "object" && textData['office:document-content']['office:body']['office:text']['text:p'][i]['text:span']._text) {
             textContent += `${textData['office:document-content']['office:body']['office:text']['text:p'][i]['text:span']._text}\n`;
         }
         if (Array.isArray(textData['office:document-content']['office:body']['office:text']['text:p'][i]['text:span'])) {
             textContent += `${textData['office:document-content']['office:body']['office:text']['text:p'][i]['text:span'][i]._text}\n`;
         }
+       
     }
-    console.log(textContent);
+    console.log(textData);
     return textContent;
 }
 async function parseDoc(docBuffer) {
+    try {
     const docx = new Docxtemplater();
     docx.loadZip(docBuffer);
 
     const docText = docx.getFullText();
     return docText;
+    }
+    catch(err) {
+        throw err;
+    }
 }
 
 module.exports = parseFile;

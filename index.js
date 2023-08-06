@@ -51,10 +51,15 @@ app.get('/api/text-to-speech/delete/:filename', cors(corsOptions), function (req
     const filename = req.params.filename;
     googleCloudStorage.bucket('create-boss').file(filename).delete();
 })
+app.get('/api/speech-to-text/delete/:filename', cors(corsOptions), function (req, res) {
+    const filename = req.params.filename;
+    googleCloudStorage.bucket('create-boss').file(filename).delete();
+})
 app.post('/api/speech-to-text',upload.single('file'),cors(corsOptions),speechToText(googleCloudStorage));
 app.listen(process.env.PORT || 4000, () => {
     console.log('app listening');
 })
+app.get('/api/speech-to-text/get/:filename', cors(corsOptions),downloadFile(googleCloudStorage));
 app.post('/api/text-to-speech', upload.single("file"), cors(corsOptions), textToSpeech(googleCloudStorage));
 
 
