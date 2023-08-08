@@ -21,7 +21,7 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
     }, [isFileAttached]);
     let audioChunks = [];
 
-    const SILENCE_THRESHOLD = 20; // Adjust this value based on your needs
+    const SILENCE_THRESHOLD = -20; // Adjust this value based on your needs
     let silenceDetected = false;
     let lastVolume = 0;
     async function getUserMedia() {
@@ -64,32 +64,51 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
         }
     }
     function disableRecording() {
-        console.log(recorder);
-        recorder.stop();
-        audioStream.getTracks().forEach(track => track.stop());
-        setAudioStream(null);
-        setIsListening(false);
-
+        if (recorder) {
+          recorder.stop();
+          setRecorder({
+            ...recorder,
+            ondataavailable : null
+          })
+          audioStream.getTracks().forEach(track => track.stop());
+          setAudioStream(null);
+          setIsListening(false);
+      
+          const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+      
+          sendToSpeechToText(audioBlob);
+        }
+      }
+    function sendToSpeechToText(blob) {
+        console.log(blob);
     }
-
     return (
         <>
-            {isFileAttached ? <div className="textarea-container"><textarea disabled ref={textAreaRef}>
-
-            </textarea> <div className="dashboard__left-section-content-container-main-input-file-alert">
-                    <Picture images={[webpFileImage, fileImage]} imgWidth="128px" imgHeight="128px" alt="file" />
-                    <p>The File Got Attached</p>
-                    <p>Refresh The Page To Input Manually</p>
-                </div></div> : path !== "/dashboard/services/speech-to-text" ? <div className="textarea-container"><textarea ref={textAreaRef} onChange={(e) => { setTextInput(e.target.value) }} /></div> :
-                !isFileAttached &&
+            {isFileAttached ?
                 <div className="textarea-container">
-                    {!isListening ? <><span onClick={getUserMedia}><Picture images={[webpRecordImage, recordImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
-                        <p>Click the microphone to record live</p>
-                        <p>Or attach a file</p></> : <>
-                        <span onClick={disableRecording} className="pause-button"><Picture images={[webpPauseImage, pauseImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
-                        <p>Click the pause button to stop recording</p>
-                    </>}
-                </div>
+                    <textarea disabled ref={textAreaRef}>
+                    </textarea>
+                    <div className="dashboard__left-section-content-container-main-input-file-alert">
+                        <Picture images={[webpFileImage, fileImage]} imgWidth="128px" imgHeight="128px" alt="file" />
+                        <p>The File Got Attached</p>
+                        <p>Refresh The Page To Input Manually</p>
+                    </div>
+                </div> : path !== "/dashboard/services/speech-to-text" ?
+                    <div className="textarea-container">
+                        <textarea ref={textAreaRef} onChange={(e) => { setTextInput(e.target.value) }} />
+                    </div> :
+                    !isFileAttached &&
+                    <div className="textarea-container">
+                        {!isListening ?
+                            <>
+                                <span onClick={getUserMedia} className="record-button"><Picture images={[webpRecordImage, recordImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
+                                <p>Click the microphone to record live</p>
+                                <p>Or attach a file</p></> :
+                            <>
+                                <span onClick={disableRecording}><Picture images={[webpPauseImage, pauseImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
+                                <p>Click the pause button to stop recording</p>
+                            </>}
+                    </div>
 
             }
         </>
