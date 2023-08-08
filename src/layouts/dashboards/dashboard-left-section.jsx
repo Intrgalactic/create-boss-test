@@ -40,13 +40,13 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
                     </ContentContainer>
                     <ContentContainer containerClass="dashboard__left-section-file-container">
                         <DashboardServiceInputContainer heading={headings[2]}>
-                            <FileInputContainer file={file} setFile={setFile} textInput={textInput} acceptedFormats={acceptedFormats} />
+                            <FileInputContainer file={file} setFile={setFile} textInput={textInput} acceptedFormats={acceptedFormats} setErrorAtDownload={setErrorAtDownload}/>
                         </DashboardServiceInputContainer>
                         <DashboardServiceInputContainer heading={headings[3]}>
                             <div className='file-output-container'>
                                 {errorAtDownload ?
-                                    <FileOutputContent images={[webpErrorImage, errorImage]} imgHeight="64px" imgWidth="64px" alt="error" firstText="Error at downloading" >
-                                        <p>Please try again</p>
+                                    <FileOutputContent images={[webpErrorImage, errorImage]} imgHeight="64px" imgWidth="64px" alt="error" firstText="Error during the process" >
+                                        <p>{errorAtDownload}</p>
                                     </FileOutputContent>
                                     : !isFileAttached && !textInput ? <>
                                         <Loader />

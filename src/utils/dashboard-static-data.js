@@ -80,7 +80,7 @@ export const voicePitchOptions = ["-20","-15","-10","-5","0","5","10","15","20" 
 export const voiceGenderOptions = ["Male","Female"];
 export const speakersTypeOptions = ["Home","Wearables","Headphones","Small Speaker","Medium Speaker","Car","Handset Devices","Telephony"];
 export const outputExtensionOptions = ["MP3","OGG","WAV"];
-export const STTOutputExtensionOptions = ["TXT","DOC","DOCX","PDF"];
+export const STTOutputExtensionOptions = ["TXT","DOCX","PDF"];
 
 export const languagesData = [
   {

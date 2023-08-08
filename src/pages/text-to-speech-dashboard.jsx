@@ -78,7 +78,6 @@ export default function TTSDashboard() {
             heading: "Output Extension",
         }
     ]
-    console.log(outputExtension);
     function setLanguageProps(code, name) {
         setLanguageProperties(setLanguage, setLanguageCode, code, name);
     }
@@ -97,7 +96,7 @@ export default function TTSDashboard() {
         if (textInput || file) {
             setLoadingState(true);
             if (file) {
-                if (file.type === "text/plain" || file.type === "application/vnd.oasis.opendocument.text" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf" || file.type === "application/msword") {
+                if (file.type === "text/plain" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf" ) {
                     const data = new FormData();
                     const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&speakingRate=${audioSpeed}`;
                     const queryParams = Object.fromEntries(new URLSearchParams(queryString));
@@ -111,6 +110,11 @@ export default function TTSDashboard() {
                         outputExtension: outputExtension
                     }, stateSetters);
                 }
+                else {
+                    setErrorAtDownload("The File Extension Is Not Supported");
+                    setLoadingState(false);
+                    return false;
+                }
             }
             else if (!file) {
                 sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}&speakingRate=${audioSpeed}`, "application/x-www-form-urlencoded", {
@@ -123,6 +127,7 @@ export default function TTSDashboard() {
     }
 
     async function downloadFile() {
+        (file && file.name) ? console.log(filePath, `${file.name.substring(0, file.name.indexOf('.'))}`) : console.log(filePath, `output.${outputExtension.toLowerCase()}`);
         (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
     }
     return (
@@ -130,7 +135,7 @@ export default function TTSDashboard() {
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
-                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/rtf,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.oasis.opendocument.text"/>
+                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
                         <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
                         <DashboardServiceOptionsRow actions={secondServiceOptionsRowActions} />

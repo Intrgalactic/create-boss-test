@@ -171,11 +171,11 @@ export async function sendData(fetchUrl,data, type,states,stateSetters) {
             var rawFileResponse;
             
             if (res.status === 200) {
+                const outputExtension = states.outputExtension.toLowerCase() === "ogg" ? "opus" : states.outputExtension.toLowerCase();
                 if (states.file) {
                     const fileName = states.file.name.substring(0, states.file.name.indexOf('.'));
-                    console.log(`${fetchUrl}/get/${fileName}.${states.outputExtension.toLowerCase()}`);
                     if (states.file.name) {
-                        rawFileResponse = await fetch(`${fetchUrl}/get/${fileName}.${states.outputExtension.toLowerCase()}`).catch(err => {
+                        rawFileResponse = await fetch(`${fetchUrl}/get/${fileName}.${outputExtension}`).catch(err => {
                             stateSetters.setLoadingState(false);
                             stateSetters.setErrorAtDownload(err.message);
                         });
@@ -184,7 +184,7 @@ export async function sendData(fetchUrl,data, type,states,stateSetters) {
 
                 else {
                     console.log(states.outputExtension);
-                    rawFileResponse = await fetch(`${fetchUrl}/get/output.${states.outputExtension.toLowerCase()}`).catch(err => {
+                    rawFileResponse = await fetch(`${fetchUrl}/get/output.${outputExtension}`).catch(err => {
                         stateSetters.setLoadingState(false);
                         stateSetters.setErrorAtDownload(err.message);
                     });;
@@ -196,10 +196,10 @@ export async function sendData(fetchUrl,data, type,states,stateSetters) {
                 stateSetters.setLoadingState(false);
                 stateSetters.setErrorAtDownload(false);
                 if (states.file) {
-                    fetch(`${fetchUrl}/delete/${states.file.name.substring(0, states.file.name.indexOf('.'))}.${states.outputExtension.toLowerCase()}`)
+                    fetch(`${fetchUrl}/delete/${states.file.name.substring(0, states.file.name.indexOf('.'))}.${outputExtension}`)
                 }
                 else {
-                    fetch(`${fetchUrl}/delete/output.${states.outputExtension.toLowerCase()}`)
+                    fetch(`${fetchUrl}/delete/output.${outputExtension}`)
                 }
             }
         })

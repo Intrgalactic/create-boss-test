@@ -30,7 +30,6 @@ export default function STTDashboard() {
         setFilePath:setFilePath,
         setIsTranslated:setIsTranslated
     }
-    console.log(file);
     const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
 
     const firstServiceOptionsRowActions = [
@@ -54,7 +53,7 @@ export default function STTDashboard() {
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
-            if ((file) && (file.type === "audio/mpeg" || file.type === "video/ogg" || file.type === "audio/wav")) {
+            if ((file) && (file.type === "audio/mpeg" || file.type === "video/ogg" || file.type === "audio/wav" || file.type === "audio/ogg")) {
                 const data = new FormData()
                 data.append('file', file, file.name);
                 data.append('code',languageCode);
@@ -64,9 +63,15 @@ export default function STTDashboard() {
                     outputExtension: outputExtension
                 },stateSetters);
             }
+            else {
+                setErrorAtDownload("The File Extension Is Not Supported");
+                setLoadingState(false);
+                return false;
+            }
         }
     }
     async function downloadFile() {
+        console.log(filePath, `${file.name.substring(0, file.name.indexOf('.'))}`);
         (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
     }
 

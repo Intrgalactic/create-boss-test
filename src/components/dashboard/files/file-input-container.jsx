@@ -1,6 +1,6 @@
 import { useEffect, useRef} from "react";
 
-export function FileInputContainer({ file, setFile, textInput,acceptedFormats }) {
+export function FileInputContainer({ file, setFile, textInput,acceptedFormats,setErrorAtDownload }) {
     const fileRef = useRef();
     const fileInputRef = useRef();
     useEffect(() => {
@@ -33,13 +33,17 @@ export function FileInputContainer({ file, setFile, textInput,acceptedFormats })
         event.stopPropagation();
         event.preventDefault();
         const fileList = event.dataTransfer.files;
-        if (fileList.length > 0) {
+        if (fileList[0].size > 1048576 * 15) {
+            setErrorAtDownload("The File Is Too Big");
+            console.log("error");
+        }
+        else if (fileList.length > 0) {
             setFile(fileList[0]);
         }
     }
     return (
         <div className='file-input-container' onClick={() => { document.querySelector("input[type=file]").click() }} ref={fileRef} >
-           <input type="file" onChange={(e) => { setFile(e.target.files[0]) }} accept={acceptedFormats} ref={fileInputRef} /> 
+           <input type="file" onChange={(e) => {setFile(e.target.files[0]) }} accept={acceptedFormats} ref={fileInputRef} /> 
         </div>
     )
 }
