@@ -25,6 +25,7 @@ const uri = process.env.DB_URL;
 
 const { MongoClient } = require('mongodb');
 const path = require('path');
+const bodyParser = require('body-parser');
 const client = new MongoClient(uri);
 const database = client.db("createBoss");
 const usersCollection = database.collection("users");
@@ -37,6 +38,8 @@ app.use(express.urlencoded({
     extended: true,
     limit: 5000000
 }));
+
+app.use(bodyParser.raw({type: "audio/mpeg", limit: "1mb"}));
 
 app.get('/', cors(corsOptions), (req, res) => {
     res.send("OK");

@@ -20,6 +20,8 @@ const textToSpeech = (storage) => {
         var textToSynthetize;
         var contentType;
         var outputFileName = "output.mp3";
+        var sampleRateHertz = 16000;
+        var audioEncoding;
         try {
             if (req.file) {
                 outputFileName = req.file.originalname;
@@ -36,24 +38,21 @@ const textToSpeech = (storage) => {
             const client = new textToSpeech.TextToSpeechClient();
             const voices = await listVoices(client, req.body.gender.toUpperCase(), req.body.code)
             const [voiceVariants, voiceTechnologyType] = await selectBestVoice(voices)
-            if (req.file) {
-                var audioEncoding = req.file.mimetype === "audio/mpeg" ? "MP3" : req.file.mimetype === "audio/ogg" ? "OGG_OPUS" : "MULAW";
-            }
-            else {
-                var audioEncoding = "MP3";
-            }
+            req.body.audioEncoding === "WAV" ? (audioEncoding = "LINEAR16",sampleRateHertz = 24000) :  req.body.audioEncoding === "OGG" ? audioEncoding = "OGG_OPUS" : (audioEncoding = "MP3",sampleRateHertz = 44100);
             const speakingRate = parseFloat(req.body.speakingRate);
+            console.log(audioEncoding,sampleRateHertz);
 
             const request = {
                 input: { text: textToSynthetize },
                 voice: { languageCode: req.body.code, ssmlGender: gender, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
-                audioConfig: { audioEncoding: audioEncoding, pitch: pitch, effectsProfileId: [environment],speakingRate:speakingRate },
+                audioConfig: { audioEncoding: audioEncoding, pitch: pitch, effectsProfileId: [environment],speakingRate:speakingRate,sampleRateHertz:sampleRateHertz },
             };
 
             const [response] = await client.synthesizeSpeech(request);
             
             contentType = await setContentType(req.body.audioEncoding)
-            await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}.${req.body.audioEncoding.toLowerCase()}`, response.audioContent, contentType, storage)
+            const outputExtension = req.body.audioEncoding.toLowerCase() === "ogg" ? "opus" : req.body.audioEncoding.toLowerCase()
+            await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}.${outputExtension}`, response.audioContent, contentType, storage)
 
             res.status(200).send("Synthesizing Completed");
         }

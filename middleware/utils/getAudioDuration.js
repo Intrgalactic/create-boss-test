@@ -1,6 +1,6 @@
 const wavDecoder = require('wav-decoder');
 const nodeID3 = require('node-id3');
-const oggParser = require('ogg-parser');
+const OggParser = require('ogg-parser');
 const mp3Duration = require('mp3-duration');
 async function getAudioDuration(mimeType, buffer) {
     switch (mimeType) {
@@ -19,10 +19,34 @@ function getWavDuration(fileBuffer) {
 }
 
 function getOggDuration(fileBuffer) {
-    const oggData = oggParser.parse(fileBuffer);
-    // Extract the "duration" field from the comments (if available).
-    const durationInSeconds = oggData.comments.duration || 0;
-    return durationInSeconds;
+    const oggParser = new OggParser();
+    
+    let offset = 0;
+    const chunkSize = 1024; // You can adjust the chunk size
+    
+    while (offset < fileBuffer.length) {
+        const end = Math.min(offset + chunkSize, fileBuffer.length);
+        const chunk = fileBuffer.slice(offset, end);
+        
+        // Process the data using the ogg-parser library
+        oggParser.write(chunk);
+        
+        offset = end;
+    }
+    
+    oggParser.end();
+    
+    return new Promise((resolve) => {
+        oggParser.on('data', (tag) => {
+            console.log('Tag Type:', tag.type);
+            console.log('Tag Value:', tag.value);
+        });
+        
+        oggParser.on('end', () => {
+            console.log('Parsing complete');
+            resolve();
+        });
+    });
 }
 
 function getMp3Duration(fileBuffer) {
