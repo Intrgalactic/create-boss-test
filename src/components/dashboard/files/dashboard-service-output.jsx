@@ -20,7 +20,7 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
         if (isFileAttached) {
             textAreaRef.current.value = "";
         }
-        const newSocket = new WebSocket(`${import.meta.env.VITE_SERVER_WEB_SOCKET}`);
+        const newSocket = new WebSocket(`ws://localhost:4000`);
 
         newSocket.onopen = () => {
             console.log("WebSocket connection opened");
