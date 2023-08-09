@@ -7,8 +7,6 @@ function setContentType(audioEncoding) {
             break;
         case "WAV": return "audio/wav";
             break;
-        default:
-            return "audio/mpeg";
         case "TXT": return "text/plain";
             break;
         case "DOCX": return "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
@@ -16,7 +14,8 @@ function setContentType(audioEncoding) {
         case "DOC": return "application/msword";
             break;
         case "PDF": return "application/pdf";
-            break;        
+            break;      
+        default : throw Error("Unknown media type"); 
     }
 }
 

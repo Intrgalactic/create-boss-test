@@ -28,7 +28,7 @@ const sendToStorage = async (filename, data, contentType, storage) => {
                 break;
             case "application/vnd.openxmlformats-officedocument.wordprocessingml.document": saveDOCX(filename, data, stream);
                 break;
-            case "audio/mpeg": saveMP3(filename,data,stream);
+            case "audio/mpeg": saveMP3(filename, data, stream);
                 break;
             default: await stream.write(data); stream.end();
                 break;
@@ -48,70 +48,90 @@ const sendToStorage = async (filename, data, contentType, storage) => {
 
     }
     catch (err) {
-        throw err;
+        throw new Error(err);
     }
 }
 
 module.exports = sendToStorage;
 
 function savePDF(stream, data) {
+    try {
+        const doc = new PDFDocument();
+        const fontPath = path.join(__dirname, '../../misc/fonts/NotoSans-Regular.ttf');
+        doc.font(fontPath);
+        doc.fontSize(8).text(data, 100, 100);
 
-    const doc = new PDFDocument();
-    const fontPath = path.join(__dirname, '../../misc/fonts/NotoSans-Regular.ttf');
-    doc.font(fontPath);
-    doc.fontSize(16).text(data, 100, 100);
-
-    doc.pipe(stream);
-    doc.end();
+        doc.pipe(stream);
+        doc.end();
+    }
+    catch (err) {
+        throw Error(err);
+    }
 }
 
 async function saveDOCX(filename, data, stream) {
-    const docxBuffer = await generateDocxContent(filename, data);
-    stream.write(docxBuffer);
-    stream.end();
+    try {
+        const docxBuffer = await generateDocxContent(filename, data);
+        stream.write(docxBuffer); 
+        stream.end();
+    }
+    catch (err) {
+        throw Error(err);
+    }
 }
 
 function generateDocxContent(filename, data) {
-    const index = filename.lastIndexOf('.');
-    const title = filename.slice(0, index);
+    try {
+        const index = filename.lastIndexOf('.');
+        const title = filename.slice(0, index);
 
-    const doc = new Document({
-        sections: [],
-    });
+        const doc = new Document({
+            sections: [],
+        });
 
-    doc.addSection({
-        properties: {},
-        children: [
-            new Paragraph({
+        doc.addSection({
+            properties: {},
+            children: [
+                new Paragraph({
 
-                children: [
-                    new Paragraph({
-                        children: [
-                            new TextRun({ text: title, bold: true, size: 24 }),
-                        ],
-                    }),
-                    new Paragraph({ text: "", size: 16 }),
-                    new Paragraph({
-                        children: [
+                    children: [
+                        new Paragraph({
+                            children: [
+                                new TextRun({ text: title, bold: true, size: 24 }),
+                            ],
+                        }),
+                        new Paragraph({ text: "", size: 16 }),
+                        new Paragraph({
+                            children: [
 
-                            new TextRun({ text: data, size: 16 })
-                        ]
-                    }),
-                ],
-            }),
-        ],
-    });
-    doc.creator = 'Create-Boss'; // Set the creator of the document
-    doc.title = title; // 
-    const docxBuffer = Packer.toBuffer(doc);
+                                new TextRun({ text: data, size: 16 })
+                            ]
+                        }),
+                    ],
+                }),
+            ],
+        });
+        doc.creator = 'Create-Boss'; // Set the creator of the document
+        doc.title = title; // 
+        const docxBuffer = Packer.toBuffer(doc);
+        return docxBuffer;
+    }
+    catch (err) {
+        throw Error(err);
+    }
     return docxBuffer;
 }
-async function saveMP3(filename,audioData,stream) {
-    const audioBuffer = await encodeMp3(filename,audioData);
-    await stream.write(audioBuffer);
-    stream.end();
+async function saveMP3(filename, audioData, stream) {
+    try {
+        const audioBuffer = await encodeMp3(filename, audioData);
+        await stream.write(audioBuffer);
+        stream.end();
+    }
+    catch(err) {
+        throw Error(err);
+    }
 }
-function encodeMp3(filename,inputBuffer) {
+function encodeMp3(filename, inputBuffer) {
     const outputFormat = filename.slice(filename.lastIndexOf(".") + 1);
     return new Promise((resolve, reject) => {
         const convert = spawn(pathToFfmpeg, [
@@ -119,7 +139,7 @@ function encodeMp3(filename,inputBuffer) {
             '-ar', '44100',
             '-ac', '2',
             '-f', outputFormat,  // Output format
-            '-b:a','320k',
+            '-b:a', '320k',
             'pipe:1',            // Write output to stdout
         ]);
 
