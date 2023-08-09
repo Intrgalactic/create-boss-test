@@ -88,7 +88,25 @@ export default function STTDashboard() {
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
-            if ((file) && (file.type === "audio/mpeg" || file.type === "video/ogg" || file.type === "audio/wav" || file.type === "audio/ogg")) {
+            if ((file) && (
+            file.type === "audio/mpeg" || 
+            file.type === "video/ogg" || 
+            file.type === "audio/wav" || 
+            file.type === "audio/ogg" || 
+            file.type === 'audio/mpeg' ||
+            file.type === 'audio/webm' ||
+            file.type === 'audio/flac' ||
+            file.type === 'audio/amr' ||
+            file.type === 'audio/aac' ||
+            file.type === 'audio/opus' ||
+            file.type === 'audio/weba' ||
+            file.type === 'audio/x-m4a' ||
+            file.type === 'audio/aiff' ||
+            file.type === 'audio/x-ms-wma' ||
+            file.type === 'audio/mpeg' ||
+            file.type === 'video/ogg' ||
+            file.type === 'video/quicktime' ||
+            file.type === 'video/mp4')) {
                 const data = new FormData()
                 data.append('file', file, file.name);
                 data.append('code',languageCode);

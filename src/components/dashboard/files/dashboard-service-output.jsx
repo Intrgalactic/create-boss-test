@@ -7,7 +7,6 @@ import webpRecordImage from 'src/assets/images/record.webp';
 import pauseImage from 'src/assets/images/pause.png';
 import webpPauseImage from 'src/assets/images/pause.webp';
 import { useLocation } from "react-router-dom";
-import { io } from "socket.io-client";
 
 export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
     const textAreaRef = useRef();
@@ -15,24 +14,32 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
     const path = location.pathname;
     const listenButton = useRef();
     const [isListening, setIsListening] = useState();
+    const [socket, setSocket] = useState(null);
 
     useEffect(() => {
         if (isFileAttached) {
             textAreaRef.current.value = "";
         }
+        const newSocket = new WebSocket(`${import.meta.env.VITE_SERVER_WEB_SOCKET}`);
 
-        const socket = io("http://localhost:4000",{ transports: ["websocket"] });
-        console.log(socket);
-        socket.on("connect", async () => {
-            await startListening(socket);
-        });
+        newSocket.onopen = () => {
+            console.log("WebSocket connection opened");
+            setSocket(newSocket);
+        };
 
-        socket.on("transcript", (transcript) => {
-            console.log(transcript);
-        });
+        newSocket.onmessage = (event) => {
+            console.log("Received message:", event.data);
+        };
+
+        newSocket.onclose = () => {
+            console.log("WebSocket connection closed");
+        };
+
         return () => {
-            socket.disconnect();
-        }
+            if (socket) {
+                socket.close();
+            }
+        };
 
     }, [isFileAttached]);
 
@@ -45,41 +52,50 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
         return new MediaRecorder(userMedia);
     }
 
-    async function openMicrophone(microphone, socket) {
-        console.log(socket);
-        await microphone.start(500);
+    async function openMicrophone(socket) {
+        try {
+            const userMedia = await getMicrophone();
+            const microphone = new MediaRecorder(userMedia);
 
-        microphone.onstart = () => {
-            setIsListening(true);
-        };
+            microphone.onstart = () => {
+                setIsListening(true);
+            };
 
-        microphone.onstop = () => {
-            setIsListening(false);
-        };
+            microphone.onstop = () => {
+                setIsListening(false);
+            };
 
-        microphone.ondataavailable = (e) => {
-            console.log("client: sent data to websocket");
-            socket.emit("packet-sent", e.data);
-        };
+            microphone.ondataavailable = (e) => {
+                if (socket.readyState === WebSocket.OPEN) {
+                    console.log("client: sent data to websocket");
+                    socket.send(e.data);
+                }
+            };
+
+            await microphone.start(500);
+
+            return microphone;
+        } catch (error) {
+            console.error("Error opening microphone:", error);
+            return null;
+        }
     }
 
-    async function closeMicrophone(microphone) {
-        microphone.stop();
+    function closeMicrophone(microphone) {
+        if (microphone) {
+            microphone.stop();
+        }
     }
 
     async function startListening(socket) {
-        
-        let microphone;
+        let microphone = null;
 
-        console.log("client: waiting to open microphone");
-        console.log(socket);
         listenButton.current.addEventListener("click", async () => {
             if (!microphone) {
-                microphone = await getMicrophone();
-                await openMicrophone(microphone, socket);
+                microphone = await openMicrophone(socket);
             } else {
-                await closeMicrophone(microphone);
-                microphone = undefined;
+                closeMicrophone(microphone);
+                microphone = null;
             }
         });
     }
