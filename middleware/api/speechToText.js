@@ -25,8 +25,6 @@ const speechToText = (storage) => {
         tier: tier,
         model: "general",
         paragraphs: true,
-        dictation: true,
-        measurements: true,
         smart_format: punctuationOn,
         punctuate: punctuationOn,
         detect_topics: topicsOn,
@@ -45,7 +43,7 @@ const speechToText = (storage) => {
       )
 
       const fullTranscription = response.results.channels[0].alternatives[0].transcript;
-
+        console.log(response.results.channels[0].alternatives[0].transcript);
       if (summarizeOn) {
         summary = response.results.summary;
       }
@@ -60,13 +58,13 @@ const speechToText = (storage) => {
         var diarization = [];
         var copiedDiarization = [];
         addDiarization(response, diarization);
-        for (let i = 0;i<diarization.length;i++) {
+        for (let i = 0; i < diarization.length; i++) {
           var sentences = "";
-          for (let j = 0;j<diarization[i].speakerSentences.length;j++) {
-            sentences+= `${diarization[i].speakerSentences[j]}\n`;
+          for (let j = 0; j < diarization[i].speakerSentences.length; j++) {
+            sentences += `${diarization[i].speakerSentences[j]}\n`;
           }
           copiedDiarization.push([[`${diarization[i].speaker}:\n${sentences}`]])
-        } 
+        }
       }
       diarizeOn ? copiedDiarization = copiedDiarization.join('\n') : null;
       !diarizeOn ? fullSpeechToTextContent = `Transcription:\n\n${fullTranscription}\n` : fullSpeechToTextContent = `Transcription:\n\n${copiedDiarization}\n`
