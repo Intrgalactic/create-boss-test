@@ -6,7 +6,7 @@ import DashboardRightSection from "src/layouts/dashboards/dashboard-right-sectio
 import DashboardServiceOptionsRow from "src/layouts/dashboards/service-options/dashboard-service-options-row";
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
-import {STTOutputExtensionOptions, languagesData, outputExtensionOptions } from "src/utils/dashboard-static-data";
+import {STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
 
 export default function STTDashboard() {
@@ -22,6 +22,11 @@ export default function STTDashboard() {
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
+    const [diarization,setDiarization] = useState("No");
+    const [summarization,setSummarization] = useState('No');
+    const [detectTopic,setDetectTopic] = useState("No");
+    const [punctuation,setPunctuation] = useState('Yes');
+    const [timeStamps,setTimeStamps] = useState("No");
     const [languageFilter, setLanguageFilter] = useState();
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     const stateSetters = {
@@ -30,7 +35,7 @@ export default function STTDashboard() {
         setFilePath:setFilePath,
         setIsTranslated:setIsTranslated
     }
-    const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
+    const filteredLanguagesData = STTlanguageData.filter(obj => languageFilterRegEx.test(obj.optgroup));
 
     const firstServiceOptionsRowActions = [
         {
@@ -46,10 +51,40 @@ export default function STTDashboard() {
             setOption: setOutputExtension,
             heading: "Output Extension",
         },
+        {
+            text: diarization,
+            options: trueFalseOptions,
+            setOption: setDiarization,
+            heading: "Detect Diarization",
+        },
+        {
+            text: summarization,
+            options: trueFalseOptions,
+            setOption: setSummarization,
+            heading: "Summarize",
+        },
+        {
+            text: detectTopic,
+            options: trueFalseOptions,
+            setOption: setDetectTopic,
+            heading: "Topic Detection",
+        },
+        {
+            text: punctuation,
+            options: trueFalseOptions,
+            setOption: setPunctuation,
+            heading: "Punctuation",
+        },
+        {
+            text: timeStamps,
+            options: trueFalseOptions,
+            setOption: setTimeStamps,
+            heading: "Show Timestamps",
+        },
     ]
     function setLanguageProps(code,name) {
         setLanguageProperties(setLanguage,setLanguageCode,code,name);
-    }
+    } 
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
@@ -58,6 +93,11 @@ export default function STTDashboard() {
                 data.append('file', file, file.name);
                 data.append('code',languageCode);
                 data.append('audioEncoding',outputExtension);
+                data.append('punctuationOn',punctuation);
+                data.append('topicsOn',detectTopic);
+                data.append('diarizeOn',diarization);
+                data.append('summarizeOn',summarization)
+                data.append('subtitlesOn',timeStamps);
                 sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/speech-to-text`,data,false,{
                     file: file,
                     outputExtension: outputExtension

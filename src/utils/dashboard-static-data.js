@@ -81,7 +81,133 @@ export const voiceGenderOptions = ["Male","Female"];
 export const speakersTypeOptions = ["Home","Wearables","Headphones","Small Speaker","Medium Speaker","Car","Handset Devices","Telephony"];
 export const outputExtensionOptions = ["MP3","OGG","WAV"];
 export const STTOutputExtensionOptions = ["TXT","DOCX","PDF"];
-
+export const trueFalseOptions = ['Yes','No'];
+export const STTlanguageData = [
+  {
+    optgroup: "Afrikaans",
+    options: ["Afrikaans (South Africa)"],
+    code: ["af-ZA"],
+  },
+  {
+    optgroup: "Danish",
+    options: ["Danish (Denmark)"],
+    code: ["da"],
+  },
+  {
+    optgroup: "English",
+    options: [
+      "English",
+      "English (Australia)",
+      "English (United Kingdom)",
+      "English (India)",
+      "English (New Zealand)",
+      "English (United States)",
+    ],
+    code: [
+      "en",
+      "en-AU",
+      "en-GB",
+      "en-IN",
+      "en-NZ",
+      "en-US",
+    ],
+  },
+  {
+    optgroup: "Spanish",
+    options: [
+      "Spanish (Latin America and the Caribbean)",
+      "Spanish",
+    ],
+    code: [
+      "es-419",
+      "es",
+    ],
+  },
+  {
+    optgroup: "French",
+    options: [
+      "French (Canada)",
+      "French",
+    ],
+    code: [
+      "fr-CA",
+      "fr",
+    ],
+  },
+  {
+    optgroup: "Hindi",
+    options: ["Hindi", "Hindi (Latin)"],
+    code: ["hi", "hi-Latn"],
+  },
+  {
+    optgroup: "Indonesian",
+    options: ["Indonesian"],
+    code: ["id"],
+  },
+  {
+    optgroup: "Italian",
+    options: ["Italian"],
+    code: ["it"],
+  },
+  {
+    optgroup: "Japanese",
+    options: ["Japanese"],
+    code: ["ja"],
+  },
+  {
+    optgroup: "Korean",
+    options: ["Korean"],
+    code: ["ko"],
+  },
+  {
+    optgroup: "Dutch",
+    options: ["Dutch"],
+    code: ["nl"],
+  },
+  {
+    optgroup: "Polish",
+    options: ["Polish"],
+    code: ["pl"],
+  },
+  {
+    optgroup: "Portuguese",
+    options: [
+      "Portuguese (Brazil)",
+      "Portuguese",
+      "Portuguese (Portugal)",
+    ],
+    code: [
+      "pt-BR",
+      "pt",
+      "pt-PT",
+    ],
+  },
+  {
+    optgroup: "Russian",
+    options: ["Russian"],
+    code: ["ru"],
+  },
+  {
+    optgroup: "Swedish",
+    options: ["Swedish"],
+    code: ["sv"],
+  },
+  {
+    optgroup: "Turkish",
+    options: ["Turkish"],
+    code: ["tr"],
+  },
+  {
+    optgroup: "Ukrainian",
+    options: ["Ukrainian"],
+    code: ["uk"],
+  },
+  {
+    optgroup: "Chinese",
+    options: ["Chinese (Simplified)", "Chinese (Traditional)"],
+    code: ["zh-CN", "zh-TW"],
+  },
+];
 export const languagesData = [
   {
     optgroup: "Afrikaans",
