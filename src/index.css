@@ -1502,7 +1502,7 @@ footer {
   color: black;
   flex-wrap: wrap;
   justify-content: space-between;
-  max-width: calc(25vw + 40px);
+  max-width: calc(25vw + 80px);
 }
 
 .dashboard__left-section-control-container p {
@@ -1830,9 +1830,9 @@ footer {
   }
 
   .pricing-section__boxes-container {
-    width: 250px;
-    max-width: 250px;
-    min-width: 250px;
+    width: 80vw;
+    max-width: 80vw;
+    min-width: 80vw;
     padding-inline: 20px;
     margin: auto;
   }
@@ -1848,9 +1848,9 @@ footer {
   }
 
   .pricing__box {
-    width: 250px;
+    width:80vw;
     scroll-margin-inline: 20px;
-    min-width: 250px;
+    min-width: 80vw;
     padding-block: 20px;
   }
 
@@ -2378,7 +2378,9 @@ footer {
 
   .hero-section {
     padding-inline: 5vw;
-    height: 90vh;
+    height: 600px;
+    min-height: 700px;
+    max-height: 800px;
     background-size: 100% 60%;
     background-position-x: center;
     background-position-y: center;
@@ -2721,7 +2723,7 @@ footer {
   }
 
   .carousel-button {
-    width: 70px;
+    width: 100px;
   }
 
   .testimonial-section__boxes-container {
