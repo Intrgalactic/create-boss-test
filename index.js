@@ -10,7 +10,9 @@ const cors = require('cors');
 const multer = require('multer');
 const speechToText = require('./middleware/api/speechToText');
 const liveSpeechToText = require('./middleware/api/liveSpeechToText');
+const deleteFile = require('./middleware/api/deleteFile');
 const { Storage } = require('@google-cloud/storage');
+const { MongoClient } = require('mongodb');
 const WebSocket = require('ws');
 dotenv.config();
 
@@ -26,12 +28,13 @@ const server = http.createServer(app);
 const wss = new WebSocket.Server({server});
 const uri = process.env.DB_URL;
 
-const { MongoClient } = require('mongodb');
 const path = require('path');
 const bodyParser = require('body-parser');
+
 const DbClient = new MongoClient(uri);
 const database = DbClient.db("createBoss");
 const usersCollection = database.collection("users");
+
 const googleCloudStorage = new Storage({
     keyFileName: path.join(__dirname, "../../config/google.json"),
     projectId: 'animated-alloy-236515'
@@ -39,6 +42,7 @@ const googleCloudStorage = new Storage({
 
 wss.on('connection',(ws) => {
     liveSpeechToText(ws);
+    wss.send('siemanko');
 })
 
 app.use(cors(corsOptions));
@@ -53,28 +57,22 @@ app.use(bodyParser.raw({ type: "audio/mpeg", limit: "1mb" }));
 app.get('/', cors(corsOptions), (req, res) => {
     res.send("OK");
 })
-app.post('/create-user', createUser(usersCollection));
 
+app.post('/create-user', createUser(usersCollection));
 app.get('/get-user', cors(corsOptions), getUser(usersCollection));
 
+app.post('/api/text-to-speech', upload.single("file"), cors(corsOptions), textToSpeech(googleCloudStorage));
 app.get('/api/text-to-speech/get/:filename',downloadFile(googleCloudStorage));
+app.get('/api/text-to-speech/delete/:filename', deleteFile(googleCloudStorage))
 
-app.get('/api/text-to-speech/delete/:filename', function (req, res) {
-    const filename = req.params.filename;
-    googleCloudStorage.bucket('create-boss').file(filename).delete();
-})
-app.get('/api/speech-to-text/delete/:filename', function (req, res) {
-    const filename = req.params.filename;
-    googleCloudStorage.bucket('create-boss').file(filename).delete();
-})
 app.post('/api/speech-to-text', upload.single('file'), speechToText(googleCloudStorage));
+app.get('/api/speech-to-text/get/:filename', cors(corsOptions), downloadFile(googleCloudStorage));
+app.get('/api/speech-to-text/delete/:filename', deleteFile(googleCloudStorage))
+
 
 app.listen(process.env.PORT || 80, () => {
     console.log('app listening');
 })
-app.get('/api/speech-to-text/get/:filename', cors(corsOptions), downloadFile(googleCloudStorage));
-app.post('/api/text-to-speech', upload.single("file"), cors(corsOptions), textToSpeech(googleCloudStorage));
-
 
 
 

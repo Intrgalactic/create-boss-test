@@ -43,7 +43,7 @@ const speechToText = (storage) => {
       )
 
       const fullTranscription = response.results.channels[0].alternatives[0].transcript;
-        console.log(response.results.channels[0].alternatives[0].transcript);
+
       if (summarizeOn) {
         summary = response.results.summary;
       }
@@ -54,6 +54,7 @@ const speechToText = (storage) => {
         var subtitles = [];
         addSubtitles(response, subtitles);
       }
+
       if (diarizeOn) {
         var diarization = [];
         var copiedDiarization = [];

@@ -72,7 +72,7 @@ function savePDF(stream, data) {
 async function saveDOCX(filename, data, stream) {
     try {
         const docxBuffer = await generateDocxContent(filename, data);
-        stream.write(docxBuffer); 
+        stream.write(docxBuffer);
         stream.end();
     }
     catch (err) {
@@ -119,7 +119,6 @@ function generateDocxContent(filename, data) {
     catch (err) {
         throw Error(err);
     }
-    return docxBuffer;
 }
 async function saveMP3(filename, audioData, stream) {
     try {
@@ -127,7 +126,7 @@ async function saveMP3(filename, audioData, stream) {
         await stream.write(audioBuffer);
         stream.end();
     }
-    catch(err) {
+    catch (err) {
         throw Error(err);
     }
 }

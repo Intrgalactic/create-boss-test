@@ -22,6 +22,7 @@ const textToSpeech = (storage) => {
         var outputFileName = "output.mp3";
         var sampleRateHertz = 16000;
         var audioEncoding;
+        
         try {
             if (req.file) {
                 outputFileName = req.file.originalname;
@@ -40,7 +41,6 @@ const textToSpeech = (storage) => {
             const [voiceVariants, voiceTechnologyType] = await selectBestVoice(voices)
             req.body.audioEncoding === "WAV" ? (audioEncoding = "LINEAR16",sampleRateHertz = 24000) :  req.body.audioEncoding === "OGG" ? audioEncoding = "OGG_OPUS" : (audioEncoding = "MP3",sampleRateHertz = 44100);
             const speakingRate = parseFloat(req.body.speakingRate);
-            console.log(audioEncoding,sampleRateHertz);
 
             const request = {
                 input: { text: textToSynthetize },
