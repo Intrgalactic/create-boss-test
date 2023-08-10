@@ -13,6 +13,7 @@ import OnBoard from './pages/onboard'
 import Dashboard from './pages/dashboard'
 import TTSDashboard from './pages/text-to-speech-dashboard'
 import STTDashboard from './pages/speech-to-text-dashboard'
+import STVDashboard from './pages/subtitles-to-video-dashboard'
 function App() {
   const [isLogged, setIsLogged] = useState();
   useEffect(() => {
@@ -41,7 +42,8 @@ function App() {
       <Route exact path="/dashboard" element={<authContext.Provider value={isLogged}><Dashboard/></authContext.Provider>}/>
       <Route exact path="/dashboard/services/text-to-speech" element={<authContext.Provider value={isLogged}><TTSDashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/speech-to-text" element={<authContext.Provider value={isLogged}><STTDashboard /></authContext.Provider>} />
-
+      <Route exact path="/dashboard/services/subtitles-to-video" element={<authContext.Provider value={isLogged}><STVDashboard/></authContext.Provider>} />
+      <Route exact path="/dashboard/services/speech-to-text" element={<authContext.Provider value={isLogged}><STTDashboard /></authContext.Provider>} />
     </Routes>
   )
 }

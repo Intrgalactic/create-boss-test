@@ -37,8 +37,11 @@ const NavWithRef = forwardRef((props, ref) => {
           <Link to='/dashboard/services/speech-to-text'>
             Speech To Text
           </Link>
-          <Link to='/dashboard/services/video-section'>
-            Video Section
+          <Link to='/dashboard/services/subtitles-to-video'>
+            Subtitles To Video
+          </Link>
+          <Link to='/dashboard/services/subtitles-from-video'>
+            Subtitles From Video
           </Link>
           <Link to='/account-settings'>
             Account Settings

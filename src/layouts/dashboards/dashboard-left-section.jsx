@@ -28,7 +28,6 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
             setAbleToTranslate("No");
         }
     }, [setIsFileAttached, file, setAbleToTranslate, textInput]);
-    console.log(isFileAttached);
     return (
             <div className="dashboard__left-section">
                 <SectionHeading heading={headings[0]} />

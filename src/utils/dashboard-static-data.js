@@ -485,3 +485,9 @@ export const languagesData = [
     code: ["zu-ZA"],
   },
 ];
+
+export const subtitlesFontOptions = ["Arial","Verdana","Tahoma","Trebuchet MS","Times New Roman"];
+export const videoSpeedOptions = ["1X","1.25X","1.5X","1.75X","2X"];
+export const logoAlignmentOptions = ["Bottom Center","Bottom Left","Bottom Right","Center","Center Left","Center Right","Top Center","Top Left","Top Right"];
+export const watermarkAlignmentOptions = ["Center","Left","Right"];
+export const watermarkSizeOptions = ["48PX","36PX","32PX","24PX","16PX"];

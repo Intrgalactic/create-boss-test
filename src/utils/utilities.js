@@ -229,3 +229,54 @@ function setFileAndUnload(stateSetters, fileToDownload) {
     stateSetters.setLoadingState(false);
     stateSetters.setErrorAtDownload(false);
 }
+
+export function removeDragEffect() {
+    fileRef.current.classList.remove("input-dragged");
+}
+export function handleFileInputDrag(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    fileRef.current.classList.add('input-dragged');
+}
+export function handleFileDrop(event) {
+    event.stopPropagation();
+    event.preventDefault();
+    const fileList = event.dataTransfer.files;
+    if (fileList[0].size > 1048576 * 15) {
+        setErrorAtDownload("The File Is Too Big");
+        console.log("error");
+    }
+    else if (fileList.length > 0) {
+        setFile(fileList[0]);
+    }
+}
+
+export function addFileListeners(fileRef) {
+    fileRef.current.addEventListener('dragover', handleFileInputDrag);
+    fileRef.current.addEventListener('dragleave', removeDragEffect)
+    fileRef.current.addEventListener('dragend', removeDragEffect);
+    fileRef.current.addEventListener('drop', handleFileDrop);
+}
+
+export function removeFileListeners(fileRef) {
+    fileRef.current.removeEventListener("dragover", handleFileInputDrag);
+    fileRef.current.removeEventListener('dragleave', removeDragEffect)
+    fileRef.current.removeEventListener('dragend', removeDragEffect);
+    fileRef.current.removeEventListener('drop', handleFileDrop); 
+}
+
+export function debounce(func, wait, immediate) {
+    var timeout
+    return function () {
+      var context = this,
+        args = arguments
+      var later = function () {
+        timeout = null
+        if (!immediate) func.apply(context, args)
+      }
+      var callNow = immediate && !timeout
+      clearTimeout(timeout)
+      timeout = setTimeout(later, wait)
+      if (callNow) func.apply(context, args)
+    }
+  }
