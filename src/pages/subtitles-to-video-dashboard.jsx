@@ -9,17 +9,17 @@ import Loader from "src/layouts/loader";
 import { logoAlignmentOptions, subtitlesFontOptions, videoSpeedOptions, watermarkAlignmentOptions, watermarkSizeOptions } from "src/utils/dashboard-static-data";
 
 export default function STVDashboard() {
-    const [subtitlesFont,setSubtitlesFont] = useState('Choose');
-    const [videoSpeed,setVideoSpeed] = useState('1X');
-    const [logoAlignment,setLogoAlignment] = useState("Bottom Center");
-    const [logo,setLogo] = useState("Choose Logo");
-    const [watermark,setWatermark] = useState("Choose Image");
-    const [videoFile,setVideoFile] = useState();
-    const [watermarkFile,setWatermarkFile] = useState();
-    const [logoFile,setLogoFile] = useState();
-    const [loadingState,setLoadingState] = useState(false);
-    const [watermarkAlignment,setWatermarkAlignment] = useState('Center');
-    const [watermarkSize,setWatermarkSize] = useState("48PX");
+    const [subtitlesFont, setSubtitlesFont] = useState('Choose');
+    const [videoSpeed, setVideoSpeed] = useState('1X');
+    const [logoAlignment, setLogoAlignment] = useState("Bottom Center");
+    const [logo, setLogo] = useState("Choose Logo");
+    const [watermark, setWatermark] = useState("Choose Image");
+    const [videoFile, setVideoFile] = useState();
+    const [watermarkFile, setWatermarkFile] = useState();
+    const [logoFile, setLogoFile] = useState();
+    const [loadingState, setLoadingState] = useState(false);
+    const [watermarkAlignment, setWatermarkAlignment] = useState('Center');
+    const [watermarkSize, setWatermarkSize] = useState("48PX");
     const firstServiceOptionsRowActions = [
         {
             text: subtitlesFont,
@@ -39,7 +39,7 @@ export default function STVDashboard() {
             setOption: setLogoAlignment,
             heading: "Logo Align",
         },
-     
+
         {
             text: watermarkAlignment,
             options: watermarkAlignmentOptions,
@@ -52,14 +52,29 @@ export default function STVDashboard() {
             setOption: setWatermarkSize,
             heading: "Watermark Size",
         }
-     
+
     ]
+    async function sendToGetSubtitles() {
+        if (videoFile) {
+            const data = new FormData();
+            console.log(videoFile);
+            data.append('file',videoFile,videoFile.name);
+            data.append('subtitlesOn',true);
+            console.log(data);
+            const subtitles = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/subtitles-to-video`,{
+                method: "POST",
+                body:data,
+                
+            });
+            console.log(subtitles.json());
+        }
+    }
     return (
         <div className="subtitles-to-video-dashboard">
-            <Suspense fallback={<Loader/>}>
-                <DashboardHeader/>
+            <Suspense fallback={<Loader />}>
+                <DashboardHeader />
                 <ContentContainer containerClass="subtitles-to-video-dashboard__container">
-                    <DashboardVideoLeftSection heading="Video To Modify" videoFile={videoFile} setVideoFile={setVideoFile}/>
+                    <DashboardVideoLeftSection heading="Video To Modify" videoFile={videoFile} setVideoFile={setVideoFile} sendToGetSubtitles={sendToGetSubtitles}/>
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Blank Logo Without Watermark">
                         <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
                     </DashboardRightSection>

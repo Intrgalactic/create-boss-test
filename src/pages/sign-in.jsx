@@ -9,6 +9,7 @@ import Header from "src/layouts/header";
 import { fetchUrl, getFirebaseErr, validateCallback, validateForm } from "src/utils/utilities";
 import { auth } from "../../firebase.js";
 import Loader from "src/layouts/loader.jsx";
+
 export default function SignIn() {
     const [validateErr, setValidateErr] = useState();
     const [firebaseErr, setFirebaseError] = useState();

@@ -6,7 +6,7 @@ import DashboardRightSection from "src/layouts/dashboards/dashboard-right-sectio
 import DashboardServiceOptionsRow from "src/layouts/dashboards/service-options/dashboard-service-options-row";
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
-import {STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
+import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
 
 export default function STTDashboard() {
@@ -22,21 +22,40 @@ export default function STTDashboard() {
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
-    const [diarization,setDiarization] = useState("No");
-    const [summarization,setSummarization] = useState('No');
-    const [detectTopic,setDetectTopic] = useState("No");
-    const [punctuation,setPunctuation] = useState('Yes');
-    const [timeStamps,setTimeStamps] = useState("No");
+    const [diarization, setDiarization] = useState("No");
+    const [summarization, setSummarization] = useState('No');
+    const [detectTopic, setDetectTopic] = useState("No");
+    const [punctuation, setPunctuation] = useState('Yes');
+    const [timeStamps, setTimeStamps] = useState("No");
     const [languageFilter, setLanguageFilter] = useState();
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     const stateSetters = {
-        setLoadingState:setLoadingState,
-        setErrorAtDownload:setErrorAtDownload,
-        setFilePath:setFilePath,
-        setIsTranslated:setIsTranslated
+        setLoadingState: setLoadingState,
+        setErrorAtDownload: setErrorAtDownload,
+        setFilePath: setFilePath,
+        setIsTranslated: setIsTranslated
     }
     const filteredLanguagesData = STTlanguageData.filter(obj => languageFilterRegEx.test(obj.optgroup));
-
+    const mimetypesArr = [
+        "audio/mpeg",
+        "video/ogg",
+        "audio/wav",
+        "audio/ogg",
+        "audio/mpeg",
+        "audio/webm",
+        "audio/flac",
+        "audio/amr",
+        "audio/aac",
+        "audio/opus",
+        "audio/weba",
+        "audio/x-m4a",
+        "audio/aiff",
+        "audio/x-ms-wma",
+        "audio/mpeg",
+        "video/ogg",
+        "video/quicktime",
+        "video/mp4"
+    ];
     const firstServiceOptionsRowActions = [
         {
             text: language,
@@ -82,50 +101,43 @@ export default function STTDashboard() {
             heading: "Show Timestamps",
         },
     ]
-    function setLanguageProps(code,name) {
-        setLanguageProperties(setLanguage,setLanguageCode,code,name);
-    } 
+    function setLanguageProps(code, name) {
+        setLanguageProperties(setLanguage, setLanguageCode, code, name);
+    }
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
-            if ((file) && (
-            file.type === "audio/mpeg" || 
-            file.type === "video/ogg" || 
-            file.type === "audio/wav" || 
-            file.type === "audio/ogg" || 
-            file.type === 'audio/mpeg' ||
-            file.type === 'audio/webm' ||
-            file.type === 'audio/flac' ||
-            file.type === 'audio/amr' ||
-            file.type === 'audio/aac' ||
-            file.type === 'audio/opus' ||
-            file.type === 'audio/weba' ||
-            file.type === 'audio/x-m4a' ||
-            file.type === 'audio/aiff' ||
-            file.type === 'audio/x-ms-wma' ||
-            file.type === 'audio/mpeg' ||
-            file.type === 'video/ogg' ||
-            file.type === 'video/quicktime' ||
-            file.type === 'video/mp4')) {
-                const data = new FormData()
-                data.append('file', file, file.name);
-                data.append('code',languageCode);
-                data.append('audioEncoding',outputExtension);
-                data.append('punctuationOn',punctuation);
-                data.append('topicsOn',detectTopic);
-                data.append('diarizeOn',diarization);
-                data.append('summarizeOn',summarization)
-                data.append('subtitlesOn',timeStamps);
-                sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/speech-to-text`,data,false,{
-                    file: file,
-                    outputExtension: outputExtension
-                },stateSetters);
+            for (let i = 0; i < mimetypesArr; i++) {
+                if (file.type === mimetypesArr[i]) {
+                    const data = new FormData()
+                    const objWithdata = {
+                        file: file.name,
+                        code: languageCode,
+                        audioEncoding: outputExtension,
+                        punctuationOn: punctuation,
+                        topicsOn: detectTopic,
+                        diarizeOn: diarization,
+                        summarizeOn: summarization,
+                        subtitlesOn: timeStamps
+                    };
+                    await appendToFormData(objWithdata, data);
+
+                    sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/speech-to-text`, data, false, {
+                        file: file,
+                        outputExtension: outputExtension
+                    }, stateSetters);
+                }
+                else if (i === mimetypesArr.length - 1) {
+                    setErrorAtDownload("The File Extension Is Not Supported");
+                    setLoadingState(false);
+                    return false;
+                }
             }
-            else {
-                setErrorAtDownload("The File Extension Is Not Supported");
-                setLoadingState(false);
-                return false;
-            }
+        }
+    }
+    function appendToFormData(objWithData, formData) {
+        for (const [key, value] of Object.entries(objWithData)) {
+            formData.append(`${key}`, value);
         }
     }
     async function downloadFile() {
@@ -137,7 +149,7 @@ export default function STTDashboard() {
         <div className="speech-to-text-dashboard">
             <DashboardHeader />
             <ContentContainer containerClass="speech-to-text-dashboard__container">
-                <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg"/>
+                <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg" />
                 <DashboardRightSection configurationHeading="Default Configuration Is Set To English Language">
                     <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
                 </DashboardRightSection>
