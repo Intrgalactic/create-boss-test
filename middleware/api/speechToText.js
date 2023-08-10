@@ -5,22 +5,25 @@ const sendToStorage = require('./sendToStorage');
 const getAudioDuration = require("../utils/getAudioDuration");
 const { Deepgram } = require('@deepgram/sdk');
 
-const speechToText = (storage) => {
+const speechToText = (storage, needFile) => {
   return asyncHandler(async (req, res) => {
     try {
       var topics = [];
       var summary;
       var fullSpeechToTextContent;
+      var contentType;
+      var diarizeOn;
+      var topicsOn;
+      console.log(req.file);
       const outputFileName = req.file.originalname;
-      const contentType = setContentType(req.body.audioEncoding);
+      contentType = req.body.audioEncoding ? setContentType(req.body.audioEncoding) : null;
       const deepgram = new Deepgram(process.env.DEEPGRAM_KEY);
-      const tier = (req.body.code.includes('es') || req.body.code.includes('en')) ? "nova" : "enhanced";
-      const diarizeOn = convertToBoolean(req.body.diarizeOn)
-      const topicsOn = convertToBoolean(req.body.topicsOn)
-      const punctuationOn = convertToBoolean(req.body.punctuationOn)
+      const tier = req.body.code ? (req.body.code.includes('es') || req.body.code.includes('en')) ? "nova" : "enhanced" : "enhanced";
+      diarizeOn = req.body.diarizeOn ? convertToBoolean(req.body.diarizeOn) : false;
+      topicsOn = req.body.topicsOn ? convertToBoolean(req.body.topicsOn) : false;
+      const punctuationOn = req.body.punctuationOn ? convertToBoolean(req.body.punctuationOn) : true;
       const subtitlesOn = convertToBoolean(req.body.subtitlesOn);
-      const summarizeOn = req.body.summarizeOn === "No" ? false : 'v2'
-
+      const summarizeOn = req.body.summarizeOn ? req.body.summarizeOn === "No" ? false : 'v2' : false;
       const options = {
         tier: tier,
         model: "general",
@@ -42,7 +45,7 @@ const speechToText = (storage) => {
         options
       )
 
-      const fullTranscription = response.results.channels[0].alternatives[0].transcript;
+      const fullTranscription = needFile ? response.results.channels[0].alternatives[0].transcript : null;
 
       if (summarizeOn) {
         summary = response.results.summary;
@@ -72,9 +75,14 @@ const speechToText = (storage) => {
       summarizeOn ? fullSpeechToTextContent += `\nSummary:\n\n${summary.short}\n` : null;
       subtitlesOn ? fullSpeechToTextContent += `\nSubtitles:\n\n${subtitles.join('\n')}\n` : null;
       topicsOn ? fullSpeechToTextContent += `\nTopics:\n\n${topics}\n` : null;
-      await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}.${req.body.audioEncoding.toLowerCase()}`, fullSpeechToTextContent, contentType, storage);
-
-      res.status(200).send("Converting Completed");
+      if (needFile) {
+        await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}.${req.body.audioEncoding.toLowerCase()}`, fullSpeechToTextContent, contentType, storage);
+        res.status(200).send("Converting Completed");
+      }
+      else {
+        console.log(subtitles);
+        res.status(200).send(JSON.stringify({subtitles: subtitles.join('\n')}));
+      }
     }
 
     catch (err) {
@@ -132,7 +140,7 @@ function addSubtitles(response, subtitles) {
         for (let i = 0; i < transcriptLen / 6; i++) {
           transcriptPart += transcriptArrInParts[j][i] !== undefined ? (transcriptArrInParts[j][i] + " ") : '';
         }
-        subtitles.push(`[${startTimeStamp.toFixed(2)} - ${endTimeStamp.toFixed(2)}] ${transcriptPart}\n`);
+        subtitles.push(`[${startTimeStamp.toFixed(2)} - ${endTimeStamp.toFixed(2)}]\n${transcriptPart}\n`);
         startTimeStamp += speakingTime;
         endTimeStamp += speakingTime;
         transcriptPart = "";

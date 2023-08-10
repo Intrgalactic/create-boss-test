@@ -8,6 +8,7 @@ const sendToStorage = async (filename, data, contentType, storage) => {
     try {
         const mainBucket = storage.bucket("create-boss");
         const file = mainBucket.file(filename);
+        
         var contentEncoding;
         var metadata = {
             contentType: contentType
@@ -23,6 +24,7 @@ const sendToStorage = async (filename, data, contentType, storage) => {
             resumable: false,
             overwrite: true
         });
+
         switch (contentType) {
             case "application/pdf": savePDF(stream, data);
                 break;
@@ -42,7 +44,6 @@ const sendToStorage = async (filename, data, contentType, storage) => {
         stream.on('finish', () => {
             console.log('Audio data has been written to Google Cloud Storage.');
         });
-
 
         return true;
 

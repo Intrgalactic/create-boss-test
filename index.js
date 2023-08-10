@@ -25,7 +25,7 @@ const corsOptions = {
 }
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({server});
+const wss = new WebSocket.Server({ server });
 const uri = process.env.DB_URL;
 
 const path = require('path');
@@ -40,7 +40,7 @@ const googleCloudStorage = new Storage({
     projectId: 'animated-alloy-236515'
 })
 
-wss.on('connection',(ws) => {
+wss.on('connection', (ws) => {
     liveSpeechToText(ws);
     wss.send('siemanko');
 })
@@ -52,7 +52,7 @@ app.use(express.urlencoded({
     limit: 5000000
 }));
 
-app.use(bodyParser.raw({ type: "audio/mpeg", limit: "1mb" }));
+app.use(bodyParser.raw({ type: "audio/mpeg", limit: "10mb" }));
 
 app.get('/', cors(corsOptions), (req, res) => {
     res.send("OK");
@@ -62,13 +62,14 @@ app.post('/create-user', createUser(usersCollection));
 app.get('/get-user', cors(corsOptions), getUser(usersCollection));
 
 app.post('/api/text-to-speech', upload.single("file"), cors(corsOptions), textToSpeech(googleCloudStorage));
-app.get('/api/text-to-speech/get/:filename',downloadFile(googleCloudStorage));
+app.get('/api/text-to-speech/get/:filename', downloadFile(googleCloudStorage));
 app.get('/api/text-to-speech/delete/:filename', deleteFile(googleCloudStorage))
 
-app.post('/api/speech-to-text', upload.single('file'), speechToText(googleCloudStorage));
+app.post('/api/speech-to-text', upload.single('file'), speechToText(googleCloudStorage, true));
 app.get('/api/speech-to-text/get/:filename', cors(corsOptions), downloadFile(googleCloudStorage));
 app.get('/api/speech-to-text/delete/:filename', deleteFile(googleCloudStorage))
 
+app.post('/api/subtitles-to-video', upload.single('file'), speechToText(googleCloudStorage, false));
 
 app.listen(process.env.PORT || 80, () => {
     console.log('app listening');
