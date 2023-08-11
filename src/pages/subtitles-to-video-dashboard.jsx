@@ -9,23 +9,21 @@ import Loader from "src/layouts/loader";
 import { logoAlignmentOptions, subtitlesFontOptions, videoSpeedOptions, watermarkAlignmentOptions, watermarkSizeOptions } from "src/utils/dashboard-static-data";
 
 export default function STVDashboard() {
-    const [subtitlesFont, setSubtitlesFont] = useState('Choose');
     const [videoSpeed, setVideoSpeed] = useState('1X');
     const [logoAlignment, setLogoAlignment] = useState("Bottom Center");
-    const [logo, setLogo] = useState("Choose Logo");
-    const [watermark, setWatermark] = useState("Choose Image");
     const [videoFile, setVideoFile] = useState();
     const [watermarkFile, setWatermarkFile] = useState();
+    const [subtitlesFontFile, setSubtitlesFontFile] = useState();
     const [logoFile, setLogoFile] = useState();
     const [loadingState, setLoadingState] = useState(false);
     const [watermarkAlignment, setWatermarkAlignment] = useState('Center');
     const [watermarkSize, setWatermarkSize] = useState("48PX");
     const firstServiceOptionsRowActions = [
         {
-            text: subtitlesFont,
-            options: subtitlesFontOptions,
-            setOption: setSubtitlesFont,
             heading: "Subtitles Font",
+            type: "input",
+            file: subtitlesFontFile,
+            setFile: setSubtitlesFontFile,
         },
         {
             text: videoSpeed,
@@ -51,6 +49,20 @@ export default function STVDashboard() {
             options: watermarkSizeOptions,
             setOption: setWatermarkSize,
             heading: "Watermark Size",
+        },
+        {
+            heading: "Logo",
+            type:"input",
+            file: logoFile,
+            setFile: setLogoFile,
+            acceptList: "image/*, .svg",
+        },
+        {
+            heading: "Watermark",
+            type: "input",
+            file: watermarkFile,
+            setFile: setWatermarkFile,
+            acceptList: "image/*, .svg",
         }
 
     ]

@@ -1,8 +1,9 @@
+import { forwardRef } from "react"
 
-export function CtaButton({text,action}) {
+export const CtaButton = forwardRef((props,ref) => {
     return (
-        <button className="call-to-action-btn" onClick={action}>
-            {text}
+        <button className="call-to-action-btn" ref={ref} onClick={props.action}>
+            {props.text}
         </button>
     )
-}
+})

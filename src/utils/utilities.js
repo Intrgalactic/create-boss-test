@@ -230,39 +230,29 @@ function setFileAndUnload(stateSetters, fileToDownload) {
     stateSetters.setErrorAtDownload(false);
 }
 
-export function removeDragEffect() {
-    fileRef.current.classList.remove("input-dragged");
+export function removeDragEffect(setText,setClassList) {
+    console.log(setClassList);
+    setClassList ? setClassList(true) : setText("Choose Video");
+    
 }
-export function handleFileInputDrag(event) {
+export function handleFileInputDrag(event,setText,setClassList) {
     event.stopPropagation();
     event.preventDefault();
-    fileRef.current.classList.add('input-dragged');
+
+    setClassList ? setClassList() : setText("Drop");
 }
-export function handleFileDrop(event) {
+export function handleFileDrop(event,setFile,setErrorAtDownload,setClassList) {
     event.stopPropagation();
     event.preventDefault();
     const fileList = event.dataTransfer.files;
     if (fileList[0].size > 1048576 * 15) {
         setErrorAtDownload("The File Is Too Big");
-        console.log("error");
     }
     else if (fileList.length > 0) {
+        console.log(fileList[0]);
         setFile(fileList[0]);
+        setClassList && setClassList(true,"attached-file")
     }
-}
-
-export function addFileListeners(fileRef) {
-    fileRef.current.addEventListener('dragover', handleFileInputDrag);
-    fileRef.current.addEventListener('dragleave', removeDragEffect)
-    fileRef.current.addEventListener('dragend', removeDragEffect);
-    fileRef.current.addEventListener('drop', handleFileDrop);
-}
-
-export function removeFileListeners(fileRef) {
-    fileRef.current.removeEventListener("dragover", handleFileInputDrag);
-    fileRef.current.removeEventListener('dragleave', removeDragEffect)
-    fileRef.current.removeEventListener('dragend', removeDragEffect);
-    fileRef.current.removeEventListener('drop', handleFileDrop); 
 }
 
 export function debounce(func, wait, immediate) {
