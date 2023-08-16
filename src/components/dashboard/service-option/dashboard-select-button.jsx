@@ -2,33 +2,46 @@ import { useEffect, useRef, useState } from "react";
 import { CtaButton } from "src/components/cta-button";
 import { DashboardOptionsSelect } from "./dashboard-options-select";
 
-export function DashboardSelectButton({ text, options, setOption, setFilter, type, acceptList, file,setFile }) {
+export function DashboardSelectButton({ text, options, setOption, setFilter, type, acceptList, file, setFile, color, setColor }) {
     const listRef = useRef();
     const inputBtnRef = useRef();
     const inputFileRef = useRef();
+    const colorInputRef = useRef();
     const [btnText, setBtnText] = useState("Choose");
     useEffect(() => {
+
         if (type === "input") {
             if (inputBtnRef.current) {
                 addFileListeners(inputBtnRef);
             }
-            if ( file) {
-              
+
+            if (file) {
                 setBtnText("Attached");
+
             }
+
             return () => {
                 if (inputBtnRef.current) {
                     removeFileListeners(inputBtnRef);
                 }
             }
-           
+
         }
-    }, [file,setBtnText,inputBtnRef.current]);
+        else if (type === "color") {
+            if (color) {
+                setBtnText("Picked");
+            }
+        }
+    }, [file, setBtnText, inputBtnRef.current, color]);
+
     function toggleOptionsList() {
         listRef.current.classList.toggle('visible-list');
     }
     function chooseFile() {
         inputFileRef.current.click();
+    }
+    function chooseColor() {
+        colorInputRef.current.click();
     }
     function removeDragEffect() {
         setBtnText("Choose");
@@ -55,24 +68,29 @@ export function DashboardSelectButton({ text, options, setOption, setFilter, typ
         fileRef.current.addEventListener('dragend', removeDragEffect);
         fileRef.current.addEventListener('drop', handleFileDrop);
     }
-    
+
     function removeFileListeners(fileRef) {
         fileRef.current.removeEventListener("dragover", handleFileInputDrag);
         fileRef.current.removeEventListener('dragleave', removeDragEffect)
         fileRef.current.removeEventListener('dragend', removeDragEffect);
-        fileRef.current.removeEventListener('drop', handleFileDrop); 
+        fileRef.current.removeEventListener('drop', handleFileDrop);
     }
     return (
         <div className="dashboard__select-button">
-            {type !== "input" ? <>
-                <CtaButton text={text} action={toggleOptionsList}/>
-            </> :
+            {type !== "input" && type !== "color" ? <>
+                <CtaButton text={text} action={toggleOptionsList} />
+            </> : type !== "color" ?
                 <>
-                    <CtaButton text={btnText} action={chooseFile}  ref={inputBtnRef}/>
-                    <input type="file" ref={inputFileRef} className="stv-input" onChange={(e) => {console.log(e.target.files[0]);setFile(e.target.files[0])}} accept={acceptList}/>
+                    <CtaButton text={btnText} action={chooseFile} ref={inputBtnRef} />
+                    <input type="file" ref={inputFileRef} className="stv-input" onChange={(e) => { console.log(e.target.files[0]); setFile(e.target.files[0]) }} accept={acceptList} />
+                </>
+                :
+                <>
+                    <CtaButton text={btnText} action={chooseColor} />
+                    <input type="color" ref={colorInputRef} onChange={(e) => setColor(e.target.value)} className="stv-input" />
                 </>
             }
-            {type !== "input" && <DashboardOptionsSelect options={options} ref={listRef} setOption={setOption} toggleList={toggleOptionsList} setFilter={setFilter} />}
+            {type !== "input" && type !== "color" && <DashboardOptionsSelect options={options} ref={listRef} setOption={setOption} toggleList={toggleOptionsList} setFilter={setFilter} />}
         </div>
     )
 }

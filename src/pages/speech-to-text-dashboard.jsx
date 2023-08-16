@@ -104,37 +104,37 @@ export default function STTDashboard() {
     function setLanguageProps(code, name) {
         setLanguageProperties(setLanguage, setLanguageCode, code, name);
     }
+
     async function sendToSynthetize() {
         if (textInput || file) {
-            setLoadingState(true);
-            for (let i = 0; i < mimetypesArr; i++) {
-                if (file.type === mimetypesArr[i]) {
-                    const data = new FormData()
-                    const objWithdata = {
-                        file: file.name,
-                        code: languageCode,
-                        audioEncoding: outputExtension,
-                        punctuationOn: punctuation,
-                        topicsOn: detectTopic,
-                        diarizeOn: diarization,
-                        summarizeOn: summarization,
-                        subtitlesOn: timeStamps
-                    };
-                    await appendToFormData(objWithdata, data);
+            const data = new FormData();
+            if (
+                mimetypesArr.includes(file.type) ||
+                (file.type === "audio/mpeg" && mimetypesArr.includes("audio/mp3")) ||
+                (file.type === "audio/mpeg" && mimetypesArr.includes("audio/x-mp3"))
+            ) {
+                const data = new FormData()
+                const objWithdata = {
+                    file: file,
+                    code: languageCode,
+                    audioEncoding: outputExtension,
+                    punctuationOn: punctuation,
+                    topicsOn: detectTopic,
+                    diarizeOn: diarization,
+                    summarizeOn: summarization,
+                    subtitlesOn: timeStamps
+                };
+                appendToFormData(objWithdata, data);
 
-                    sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/speech-to-text`, data, false, {
-                        file: file,
-                        outputExtension: outputExtension
-                    }, stateSetters);
-                }
-                else if (i === mimetypesArr.length - 1) {
-                    setErrorAtDownload("The File Extension Is Not Supported");
-                    setLoadingState(false);
-                    return false;
-                }
+                sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/speech-to-text`, data, false, {
+                    file: file,
+                    outputExtension: outputExtension
+                }, stateSetters);
             }
+            setLoadingState(true);
         }
     }
+    console.log(loadingState);
     function appendToFormData(objWithData, formData) {
         for (const [key, value] of Object.entries(objWithData)) {
             formData.append(`${key}`, value);
@@ -151,7 +151,7 @@ export default function STTDashboard() {
             <ContentContainer containerClass="speech-to-text-dashboard__container">
                 <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg" />
                 <DashboardRightSection configurationHeading="Default Configuration Is Set To English Language">
-                    <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
+                    <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Voice Options"/>
                 </DashboardRightSection>
             </ContentContainer>
             {loadingState === true && <Loader />}

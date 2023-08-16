@@ -254,7 +254,6 @@ export function handleFileDrop(event,setFile,setErrorAtDownload,setClassList) {
         setClassList && setClassList(true,"attached-file")
     }
 }
-
 export function debounce(func, wait, immediate) {
     var timeout
     return function () {
@@ -270,3 +269,16 @@ export function debounce(func, wait, immediate) {
       if (callNow) func.apply(context, args)
     }
   }
+
+export function expandList(isToggled,setIsToggled,triggerRef,className,imageRef) {
+    if (!isToggled) {
+        triggerRef.current.classList.add(className);
+        setIsToggled(true);
+        imageRef.current.querySelector("img").style.transform = "rotate(180deg)";
+    }
+    else {
+        triggerRef.current.classList.remove(className);
+        setIsToggled(false);
+        imageRef.current.querySelector("img").style.transform = "rotate(0deg)";
+    }
+}

@@ -37,7 +37,7 @@ export default function TTSDashboard() {
     }
     const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
 
-    const firstServiceOptionsRowActions = [
+    const voiceOptionsRowActions = [
         {
             text: voicePitch,
             options: voicePitchOptions,
@@ -52,19 +52,19 @@ export default function TTSDashboard() {
             heading: "Language",
         },
         {
+            text: voiceGender,
+            options: voiceGenderOptions,
+            setOption: setVoiceGender,
+            heading: "Voice Gender",
+        },
+        {
             text: audioSpeed,
             options: audioSpeedOptions,
             setOption: setAudioSpeed,
             heading: "Audio Speed"
         }
     ]
-    const secondServiceOptionsRowActions = [
-        {
-            text: voiceGender,
-            options: voiceGenderOptions,
-            setOption: setVoiceGender,
-            heading: "Voice Gender",
-        },
+    const voiceMiscellaneousOptionsRowActions = [
         {
             text: speakersType,
             options: speakersTypeOptions,
@@ -137,8 +137,8 @@ export default function TTSDashboard() {
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
                     <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
-                        <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} />
-                        <DashboardServiceOptionsRow actions={secondServiceOptionsRowActions} />
+                        <DashboardServiceOptionsRow actions={voiceOptionsRowActions} heading="Voice Options"/>
+                        <DashboardServiceOptionsRow actions={voiceMiscellaneousOptionsRowActions} heading="Miscellaneous"/>
                     </DashboardRightSection>
                 </ContentContainer>
                 {loadingState === true && <Loader />}

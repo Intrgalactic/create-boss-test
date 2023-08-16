@@ -488,6 +488,11 @@ export const languagesData = [
 
 export const subtitlesFontOptions = ["Arial","Verdana","Tahoma","Trebuchet MS","Times New Roman"];
 export const videoSpeedOptions = ["1X","1.25X","1.5X","1.75X","2X"];
-export const logoAlignmentOptions = ["Bottom Center","Bottom Left","Bottom Right","Center","Center Left","Center Right","Top Center","Top Left","Top Right"];
-export const watermarkAlignmentOptions = ["Center","Left","Right"];
-export const watermarkSizeOptions = ["48PX","36PX","32PX","24PX","16PX"];
+export const detailedAlignmentOptions = ["Bottom Center","Bottom Left","Bottom Right","Center","Center Left","Center Right","Top Center","Top Left","Top Right"];
+export const mainAlignmentOptions = ["Bottom","Center","Top"];
+export const videoTypeOptions = ["Wide","Narrow","Tiktok"];
+export const subtitlesColorOptions = ["White","Black",'Yellow',"Red","Blue","Green"];
+export const subBgColorOptions = ["White","Black","Yellow"];
+export const subBgOpacityOptions = ['1','0.8','0.5','0.2','0.1'];
+export const textStrokeOptions = ["1PX","2PX","3PX"];
+export const fontSizeOptions = ["48PX","36PX","32PX","24PX","16PX"];
