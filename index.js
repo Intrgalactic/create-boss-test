@@ -65,11 +65,11 @@ app.post('/api/text-to-speech', upload.single("file"), cors(corsOptions), textTo
 app.get('/api/text-to-speech/get/:filename', downloadFile(googleCloudStorage));
 app.get('/api/text-to-speech/delete/:filename', deleteFile(googleCloudStorage))
 
-app.post('/api/speech-to-text', upload.single('file'), speechToText(googleCloudStorage, true));
+app.post('/api/speech-to-text', upload.single('file'), speechToText(googleCloudStorage, false));
 app.get('/api/speech-to-text/get/:filename', cors(corsOptions), downloadFile(googleCloudStorage));
 app.get('/api/speech-to-text/delete/:filename', deleteFile(googleCloudStorage))
 
-app.post('/api/subtitles-to-video', upload.single('file'), speechToText(googleCloudStorage, false));
+app.post('/api/subtitles-to-video', upload.array('files'), speechToText(googleCloudStorage, true));
 
 app.listen(process.env.PORT || 80, () => {
     console.log('app listening');
