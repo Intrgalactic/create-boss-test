@@ -70,6 +70,8 @@ app.get('/api/speech-to-text/get/:filename', cors(corsOptions), downloadFile(goo
 app.get('/api/speech-to-text/delete/:filename', deleteFile(googleCloudStorage))
 
 app.post('/api/subtitles-to-video', upload.array('files'), speechToText(googleCloudStorage, true));
+app.get('/api/subtitles-to-video/get/:filename', cors(corsOptions), downloadFile(googleCloudStorage));
+app.get('/api/subtitles-to-video/delete/:filename', deleteFile(googleCloudStorage))
 
 app.listen(process.env.PORT || 80, () => {
     console.log('app listening');

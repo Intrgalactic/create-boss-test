@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler")
 const setContentType = require('../utils/setContentType');
 const sendToStorage = require('./sendToStorage');
-const getAudioDuration = require("../utils/getAudioDuration");
 const { Deepgram } = require('@deepgram/sdk');
 const path = require('path');
 const { spawn } = require('child_process');
@@ -9,8 +8,6 @@ const Ffmpeg = require('fluent-ffmpeg');
 const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const ffprobe = require('ffprobe-static');
-const videoMimetypes = ["video/ogg", "video/mpeg", "video/quicktime", "video/mp4"];
-const fontFileTypes = [".ttf", ".otf", ".woff", ".woff2"];
 const fontkit = require('fontkit');
 const Color = require('color');
 const speechToText = (storage, isVideoApi) => {
@@ -26,17 +23,13 @@ const speechToText = (storage, isVideoApi) => {
         var watermarkIndex = req.body.watermark && req.body.watermark;
         var watermark = req.files[watermarkIndex] && req.files[watermarkIndex];
         var watermarkExtension = watermark && watermark.originalname.slice(watermark.originalname.lastIndexOf('.'));
-
         var fontIndex = req.body.subtitles && req.body.subtitles;
         var font = req.files[fontIndex] && req.files[fontIndex];
         var fontExtension = req.files[fontIndex] && req.files[fontIndex].originalname.slice(font.originalname.lastIndexOf('.'));
         var fontSize = req.body.subtitlesFontSize;
-
         var formattedSubtitlesColor = convertColorToReversedHex(req.body.subtitlesColor, "FFFFFF");
         var formattedStrokeColor = convertColorToReversedHex(req.body.strokeColor, "000000");
-        var formattedSubBgColor = convertColorToReversedHex(req.body.subBgColor,"FFFFF",parseFloat(req.body.subBgOpacity));
-        console.log(req.body.subBgColor);
-        console.log(req.body.subBgOpacity);
+        var formattedSubBgColor = convertColorToReversedHex(req.body.subBgColor, "FFFFF", parseFloat(req.body.subBgOpacity));
         var enableTextStroke = req.body.enableTextStroke === "No" ? false : true;
         var enableSubBg = req.body.enableSubBg === "No" ? false : true;
         var subBgColor = req.body.subBgColor.toLowerCase();
@@ -87,7 +80,6 @@ const speechToText = (storage, isVideoApi) => {
       if (subtitlesOn) {
         var subtitles = [];
         !isVideoApi ? subtitles = await addSubtitles(response) : subtitles = await addSubtitles(response, videoStream);
-        console.log(subtitles);
       }
 
       if (diarizeOn) {
@@ -108,18 +100,18 @@ const speechToText = (storage, isVideoApi) => {
       summarizeOn ? fullSpeechToTextContent += `\nSummary:\n\n${summary.short}\n` : null;
       subtitlesOn ? fullSpeechToTextContent += `\nSubtitles:\n\n${subtitles.join('\n')}\n` : null;
 
-
       topicsOn ? fullSpeechToTextContent += `\nTopics:\n\n${topics}\n` : null;
       if (!isVideoApi) {
         await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}.${req.body.audioEncoding.toLowerCase()}`, fullSpeechToTextContent, contentType, storage);
         res.status(200).send("Converting Completed");
       }
+
       else {
         const srtSubtitles = convertToSrt(subtitles.join(''));
-        const modifiedVideo = await
-          addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), srtSubtitles, formattedSubtitlesColor, enableSubBg,formattedSubBgColor,videoStream.buffer, font, fontSize, fontExtension, req.body.subtitlesAlign, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign, enableShadow, enableTextStroke, textStroke, formattedStrokeColor,enableSubBg);
-
-        await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}${videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.'))}}`, modifiedVideo, contentType, storage);
+        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), srtSubtitles, formattedSubtitlesColor, enableSubBg, formattedSubBgColor, videoStream.buffer, font, fontSize, fontExtension, req.body.subtitlesAlign, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign, enableShadow, enableTextStroke, textStroke, formattedStrokeColor, enableSubBg);
+        const endVideoBuffer = fs.readFileSync(videoPath);
+        fs.unlinkSync(videoPath);
+        await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}${videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.'))}`, endVideoBuffer, contentType, storage);
         res.status(200).send(JSON.stringify("Converting Completed"));
       }
 
@@ -131,7 +123,6 @@ const speechToText = (storage, isVideoApi) => {
 }
 
 function addTopics(response, topics) {
-  console.log(response.results.channels[0].alternatives[0]);
   for (let i = 0; i < response.results.channels[0].alternatives[0].topics.length; i++) {
 
     if (typeof (response.results.channels[0].alternatives[0].topics[i].topics[0]) === "object") {
@@ -192,6 +183,7 @@ async function addSubtitles(response, video) {
 
 
         ffprobeProcess.on('close', (code) => {
+          fs.unlinkSync(path.join(tempFolder, aspectRadioVideoFileName));
           if (code === 0) {
             const videoInfo = JSON.parse(ffprobeOutput);
             const videoWidth = videoInfo.streams[0].width;
@@ -249,7 +241,7 @@ function splitToNChunks(array, n) {
   return result;
 }
 
-async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor, enableSubBg,subBgColor, videoBuffer, font, fontSize, fontExtension, subtitlesAlign, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign, enableShadow, enableTextStroke, stroke, strokeColor,enableSubBg) {
+async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor, enableSubBg, subBgColor, videoBuffer, font, fontSize, fontExtension, subtitlesAlign, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign, enableShadow, enableTextStroke, stroke, strokeColor, enableSubBg) {
 
   Ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -264,7 +256,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
   const subtitlesVideoFileName = generateRandomFileName(videoExtension)
 
   const videoFileName = generateRandomFileName(videoExtension);
- 
+
   fs.writeFileSync(path.join(tempFolder, subtitlesFileName), srtSubtitlesBuffer);
   fs.writeFileSync(path.join(tempFolder, videoFileName), videoBuffer);
 
@@ -301,35 +293,50 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
   const videoWithSubtitlesPath = path.join(tempFolder, subtitlesVideoFileName);
   var shadow = enableShadow ? ",Shadow=1" : "";
   var textStroke = enableTextStroke ? `,Outline=${stroke}` : ",Outline=0";
-  console.log(subBgColor);
   var outlineColor = enableTextStroke ? `,OutlineColour=${strokeColor}` : "";
   var subBg = enableSubBg ? `,BorderStyle=4,MarginV=${subtitlesAlign === "Bottom" ? "20" : "0"},BackColour=${subBgColor}` : "";
-  Ffmpeg()
-    .input(path.join(tempFolder, videoFileName))
-    .complexFilter([
-      {
-        filter: 'subtitles',
-        options: `./temporary/${subtitlesFileName}:force_style='Alignment=${subtitlesAlignFFmpegFormat},Fontsize=${fontSize},Fontsdir=/temporary,Fontfile=${subtitlesFontFileName},PrimaryColour=${subtitlesColor},Fontname=${fontFamilyName}${shadow}${textStroke}${outlineColor}${subBg}'`
+  const endVideoPath = await createModifiedVideos();
+  return endVideoPath;
+  function createModifiedVideos() {
+    return new Promise((resolve, reject) => {
+      Ffmpeg()
+        .input(path.join(tempFolder, videoFileName))
+        .complexFilter([
+          {
+            filter: 'subtitles',
+            options: `./temporary/${subtitlesFileName}:force_style='Alignment=${subtitlesAlignFFmpegFormat},Fontsize=${fontSize},Fontsdir=/temporary,Fontfile=${subtitlesFontFileName},PrimaryColour=${subtitlesColor},Fontname=${fontFamilyName}${shadow}${textStroke}${outlineColor}${subBg}'`
 
-      }])
-    .toFormat(videoExtension.slice(videoExtension.indexOf('.') + 1))
-    .on('start', () => {
-      console.log('Creating buffer with subtitles...');
-    })
-    .on('end', () => {
-      if (watermark) {
-        addWatermarkWithFFmpeg(true);
-      }
-      else if (logo) {
-        addLogoWithFFmpeg(videoWithSubtitlesPath);
-      }
-    })
-    .on('error', (err) => {
-      console.error('Error generating buffer with subtitles:', err);
-    })
-    .save(videoWithSubtitlesPath)
-
-  function addWatermarkWithFFmpeg(addLogoOnEnd) {
+          }])
+        .toFormat(videoExtension.slice(videoExtension.indexOf('.') + 1))
+        .on('start', () => {
+          console.log('Creating buffer with subtitles...');
+        })
+        .on('end', async () => {
+          fs.unlinkSync(path.join(tempFolder,subtitlesFileName));
+          fs.unlinkSync(path.join(tempFolder,videoFileName));
+          if (font) {
+            fs.unlinkSync(path.join(tempFolder,subtitlesFontFileName));
+          }
+          if (watermark && logo) {
+            addWatermarkWithFFmpeg(true,resolve,reject);    
+          }
+          else if (watermark) {
+            addWatermarkWithFFmpeg(false,resolve,reject);
+          }
+          else if (logo) {
+            addLogoWithFFmpeg(videoWithSubtitlesPath,false,resolve,reject);
+          }
+          else {
+            resolve(videoWithSubtitlesPath);
+          }
+        })
+        .on('error', (err) => {
+          console.error('Error generating buffer with subtitles:', err);
+        })
+        .save(videoWithSubtitlesPath)
+    });
+  }
+  function addWatermarkWithFFmpeg(addLogoOnEnd,resolve,reject) {
     Ffmpeg()
       .input(videoWithSubtitlesPath) // Input from pipe
       .input(path.join(tempFolder, watermarkFileName)) // Input watermark from file
@@ -345,19 +352,22 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
         console.log(videoWithWatermarkPath);
       })
       .on('end', () => {
-        console.log('added');
+        fs.unlinkSync(videoWithSubtitlesPath);
+        fs.unlinkSync(path.join(tempFolder,watermarkFileName));
         if (addLogoOnEnd) {
-          addLogoWithFFmpeg(videoWithWatermarkPath);
+          addLogoWithFFmpeg(videoWithWatermarkPath,true,resolve,reject);
+        }
+        else {
+          resolve(videoWithWatermarkPath);
         }
       })
       .on('error', (err) => {
         console.error('Error adding watermark:', err);
+        reject(err);
       })
       .save(videoWithWatermarkPath); // Save the final video with watermark
   }
-  function addLogoWithFFmpeg(videoPathToEdit) {
-    console.log(videoPathToEdit);
-    console.log(logoAlignFFmpegFormat);
+  function addLogoWithFFmpeg(videoPathToEdit,hasWatermark,resolve,reject) {
     Ffmpeg()
       .input(videoPathToEdit)
       .input(path.join(tempFolder, logoFileName)) // Input logo from buffer
@@ -372,10 +382,19 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
         console.log('Adding logo...');
       })
       .on('end', () => {
+        if (!hasWatermark) {
+          fs.unlinkSync(videoWithSubtitlesPath);
+        }
+        fs.unlinkSync(path.join(tempFolder,logoFileName));
+        if (hasWatermark) {
+          fs.unlinkSync(videoWithWatermarkPath)
+        }
         console.log("Process Done");
+        resolve(videoWithLogoPath);
       })
       .on('error', (err) => {
         console.error('Error adding logo:', err);
+        reject(err);
       })
       .save(videoWithLogoPath);
 
@@ -394,7 +413,7 @@ function returnAlignment(alignment) {
       return 2;
   }
 }
-function returnDetailedAlignment(alignment,fontSize) {
+function returnDetailedAlignment(alignment, fontSize) {
   switch (alignment) {
     case "Top Left":
       return { x: 10, y: 10 };
@@ -495,18 +514,18 @@ function convertColorToRGB(color) {
     return null;
   }
 }
-function convertColorToReversedHex(color, variant,opacity) {
+function convertColorToReversedHex(color, variant, opacity) {
   if (opacity) {
     var op = 1 - opacity;
     var alphaValue = Math.round(op * 255);
-  
+
     var alphaHex = alphaValue.toString(16).toUpperCase().padStart(2, '0');
   }
   try {
     var fullHexColorPrefix = opacity ? `0x${alphaHex}` : "0x";
     const cleanHexColor = color.startsWith("#") ? color.substring(1) : color;
     var fullHexColor = fullHexColorPrefix + cleanHexColor.toUpperCase().split("").reverse().join("");
-    if (fullHexColor === "0xDENIFEDNU") {
+    if (fullHexColor === "0xDENIFEDNU" || fullHexColor === "0x00DENIFDNU") {
       fullHexColor = `0x${variant}`;
     }
     return fullHexColor;
