@@ -1,13 +1,14 @@
 import { Suspense, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 import DashboardHeader from "src/layouts/dashboards/dashboard-header";
-import DashboardLeftSection from "src/layouts/dashboards/dashboard-left-section";
 import DashboardRightSection from "src/layouts/dashboards/dashboard-right-section";
 import DashboardVideoLeftSection from "src/layouts/dashboards/dashboard-video-left-section";
 import DashboardServiceOptionsRow from "src/layouts/dashboards/service-options/dashboard-service-options-row";
 import Loader from "src/layouts/loader";
 import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, subtitlesColorOptions, trueFalseOptions, textStrokeOptions } from "src/utils/dashboard-static-data";
-import { setLanguageProperties } from "src/utils/utilities";
+import { sendData, setLanguageProperties } from "src/utils/utilities";
+import fileDownload from "js-file-download";
+import DownloadingLoader from "src/layouts/downloading-loader";
 
 export default function STVDashboard() {
     const [logoAlignment, setLogoAlignment] = useState("Bottom Center");
@@ -26,11 +27,18 @@ export default function STVDashboard() {
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     const [languageCode, setLanguageCode] = useState('en-US');
     const [subColor, setSubColor] = useState();
+    const [filePath, setFilePath] = useState();
+    const [errorAtDownload, setErrorAtDownload] = useState();
     const [enableSubBg, setEnableSubBg] = useState("No");
     const [textStroke, setTextStroke] = useState("1PX");
-    const [subtitlesShadow,setSubtitlesShadow] = useState("No");
+    const [subtitlesShadow, setSubtitlesShadow] = useState("No");
     const [language, setLanguage] = useState("English (US)")
     const [strokeColor, setStrokeColor] = useState("");
+    const stateSetters = {
+        setLoadingState: setLoadingState,
+        setErrorAtDownload: setErrorAtDownload,
+        setFilePath: setFilePath,
+    }
     const filteredLanguagesData = STTlanguageData.filter(obj => languageFilterRegEx.test(obj.optgroup));
     const filesArr = [
         {
@@ -108,14 +116,14 @@ export default function STVDashboard() {
             setOption: setSubtitlesShadow,
             heading: "Subtitles Shadow"
         },
-        
+
     ]
     const subtitlesBackgroundOptionsRowActions = [
         {
-            color:subBgColor,
+            color: subBgColor,
             options: subBgColorOptions,
             setColor: setSubBgColor,
-            type:"color",
+            type: "color",
             heading: "Subtitles BG Color",
         },
         {
@@ -163,6 +171,7 @@ export default function STVDashboard() {
 
     async function sendToGetSubtitles() {
         if (videoFile) {
+            setLoadingState(true);
             const data = new FormData();
             data.append('files', videoFile, videoFile.name);
             data.append('subtitlesFontSize', subtitlesSize);
@@ -172,52 +181,55 @@ export default function STVDashboard() {
             data.append('subtitlesColor', subColor);
             data.append('enableTextStroke', enableTextStroke);
             data.append('subBgColor', subBgColor);
-            data.append('subBgOpacity', subBgOpacity);
             data.append("textStroke", textStroke);
             data.append('strokeColor', strokeColor);
             data.append('enableSubBg', enableSubBg);
-            data.append('subBgOpacity',subBgOpacity);
-            data.append("enableShadow",subtitlesShadow)
+            data.append('subBgOpacity', subBgOpacity);
+            data.append("enableShadow", subtitlesShadow)
             data.append('languageCode', languageCode);
+            let fileIndex = 1;
             for (let i = 0; i < filesArr.length; i++) {
                 for (let j = 0; j < filesArr[i].allowedTypes.length; j++) {
                     if (filesArr[i].file) {
                         if (filesArr[i].file.type.includes(filesArr[i].allowedTypes[j]) || filesArr[i].file.name.slice(filesArr[i].file.name.lastIndexOf(".")).includes(filesArr[i].allowedTypes[j])) {
                             data.append('files', filesArr[i].file, filesArr[i].file.name);
-                            if (i === 0) data.append(filesArr[i].name, i + 1);
-                            else data.append(filesArr[i].name, i);
+                            if (filesArr[i].file) {
+                                data.append(filesArr[i].name, fileIndex);
+                                fileIndex++;
+                            }
                         }
                     }
                 }
             }
             data.append('subtitlesOn', true);
-            console.log(data);
-            const subtitles = await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}api/subtitles-to-video`, {
-                method: "POST",
-                body: data,
-
-            });
-
-            console.log(subtitles.json());
+            sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/subtitles-to-video`, data, false, {
+                file: videoFile,
+                outputExtension: videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)
+            }, stateSetters)
         }
     }
     function setLanguageProps(code, name) {
         setLanguageProperties(setLanguage, setLanguageCode, code, name);
     }
-    console.log(subColor);
+
+    async function downloadFile() {
+        (videoFile && videoFile.name) ? console.log(filePath, `${videoFile.name.substring(0, videoFile.name.indexOf('.'))}`) : console.log(filePath, `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`);
+        (videoFile && videoFile.name) ? await fileDownload(filePath, `${videoFile.name.substring(0, videoFile.name.indexOf('.'))}.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`) : await fileDownload(filePath, `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`);
+    }
+
     return (
         <div className="subtitles-to-video-dashboard">
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="subtitles-to-video-dashboard__container">
-                    <DashboardVideoLeftSection heading="Video To Modify" videoFile={videoFile} setVideoFile={setVideoFile} sendToGetSubtitles={sendToGetSubtitles} />
+                    <DashboardVideoLeftSection heading="Video To Modify" videoFile={videoFile} setVideoFile={setVideoFile} sendToGetSubtitles={sendToGetSubtitles} filePath={filePath} downloadFile={downloadFile} setFilePath={setFilePath}/>
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Blank Logo Without Watermark">
-                        <DashboardServiceOptionsRow actions={subtitlesOptionsRowActions} heading="Subtitles"/>
-                        <DashboardServiceOptionsRow actions={subtitlesBackgroundOptionsRowActions} heading="Subtitles Background"/>
-                        <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Miscellaneous"/>
+                        <DashboardServiceOptionsRow actions={subtitlesOptionsRowActions} heading="Subtitles" />
+                        <DashboardServiceOptionsRow actions={subtitlesBackgroundOptionsRowActions} heading="Subtitles Background" />
+                        <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Miscellaneous" />
                     </DashboardRightSection>
                 </ContentContainer>
-                {loadingState === true && <Loader />}
+                {loadingState === true && <DownloadingLoader heading="We are modifying your video"/>}
             </Suspense>
         </div>
     )

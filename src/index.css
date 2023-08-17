@@ -1721,7 +1721,8 @@ footer {
 }
 
 .text-to-speech-dashboard .dashboard__select-button,
-.speech-to-text-dashboard .dashboard__select-button {
+.speech-to-text-dashboard .dashboard__select-button,
+.subtitles-to-video-dashboard .dashboard__select-button {
   width: 150px;
   color: white;
   font-size: 0.8em;
@@ -1732,9 +1733,46 @@ footer {
 .subtitles-to-video-dashboard .dashboard__service-options-row .call-to-action-btn {
   width: 150px;
   border-radius: 5px;
-  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25), 0px 0px 10px 5px rgba(0, 0, 0, 0.25) inset;
   height: 65px;
   font-size: 1em;
+  align-items: center;
+  appearance: none;
+  background-image: radial-gradient(100% 100% at 100% 0, #C900FF 0, #5500FF 100%);
+  border: 0;
+  box-shadow: rgba(45, 35, 66, .4) 0 2px 4px,rgba(45, 35, 66, .3) 0 7px 13px -3px,rgba(58, 65, 111, .5) 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #fff;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s,transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow,transform;
+}
+.text-to-speech-dashboard .dashboard__service-options-row .call-to-action-btn,
+.speech-to-text-dashboard .dashboard__service-options-row .call-to-action-btn {
+  background-image: radial-gradient(100% 100% at 100% 0, #00A2FE 0, #5468ff 100%);
+}
+
+.text-to-speech-dashboard .dashboard__service-options-row .call-to-action-btn:hover,
+.speech-to-text-dashboard .dashboard__service-options-row .call-to-action-btn:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #003AFE 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+.subtitles-to-video-dashboard .dashboard__service-options-row .call-to-action-btn:hover {
+  box-shadow: rgba(45, 35, 66, .4) 0 4px 8px, rgba(45, 35, 66, .3) 0 7px 13px -3px, #4B0BBB 0 -3px 0 inset;
+  transform: translateY(-2px);
 }
 
 .visible-list {
@@ -1950,6 +1988,27 @@ footer {
 .speech-to-text-dashboard .dashboard__select-box-optgroup {
   background-color: #004FC5;
 }
+.downloading-loader-container {
+  padding:30px;
+  max-width: 60vw;
+  margin:auto;
+  background-color: rgba(80, 74, 255, 0.9);
+  box-shadow: rgba(0, 0, 0, 0.17) 0px -23px 25px 0px inset, rgba(0, 0, 0, 0.15) 0px -36px 30px 0px inset, rgba(0, 0, 0, 0.1) 0px -79px 40px 0px inset, rgba(0, 0, 0, 0.06) 0px 2px 1px, rgba(0, 0, 0, 0.09) 0px 4px 2px, rgba(0, 0, 0, 0.09) 0px 8px 4px, rgba(0, 0, 0, 0.09) 0px 16px 8px, rgba(0, 0, 0, 0.09) 0px 32px 16px;
+  border-radius: 15px;
+}
+.downloading-loader-container p {
+  width: 80%;
+  text-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+  padding-block:20px;
+  margin:auto;
+}
+.downloading-loader-container p:first-of-type {
+  font-family: NexaHeavy;
+}
+.downloading-loader-container p:last-of-type {
+  font-family: NexaRegular;
+}
+
 @keyframes lds-ellipsis1 {
   0% {
     transform: scale(0);
@@ -2581,11 +2640,12 @@ footer {
     height: 50px;
     font-size: 1em;
   }
-
-  .dashboard__service-options-row {
-    width: 100%;
+  .dashboard__service-options-row__container {
+    margin-bottom: 30px;
   }
-
+  .dashboard__service-options-row__container-heading h1 {
+    font-size: 1.2em;
+  }
   .dashboard__service-input-container .section-heading {
     font-size: 1.5em;
     text-align: left;
@@ -2648,10 +2708,11 @@ footer {
     width: 100%;
   }
   .dashboard__service-options-row {
-    height: fit-content;
-    max-height: fit-content;
-    overflow: visible;
+ 
     justify-content: center;
+  }
+  .downloading-loader-container p {
+    width: 95%;
   }
 }
 

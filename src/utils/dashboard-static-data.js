@@ -495,4 +495,4 @@ export const subtitlesColorOptions = ["White","Black",'Yellow',"Red","Blue","Gre
 export const subBgColorOptions = ["White","Black","Yellow"];
 export const subBgOpacityOptions = ['1','0.8','0.5','0.2','0.1'];
 export const textStrokeOptions = ["1PX","2PX","3PX"];
-export const fontSizeOptions = ["48PX","36PX","32PX","24PX","16PX"];
+export const fontSizeOptions = ["48PX","36PX","32PX","24PX","16PX","12PX","8PX"];

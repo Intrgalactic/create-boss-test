@@ -159,14 +159,15 @@ export async function sendData(fetchUrl, data, type, states, stateSetters) {
         body: data,
         signal
     }
-    type ? options.headers = { "Content-Type": type } : null;
+    type ? options.headers = { "Content-Type" : type } : null;
 
     try {
 
         setTimeout(() => {
             controller.abort();
-        }, 60000);
-
+        }, 480000);
+        
+        console.log('sent');
         await fetch(`${fetchUrl}`, options).then(async (res) => {
             var rawFileResponse;
             if (res.status === 200) {
@@ -184,9 +185,9 @@ export async function sendData(fetchUrl, data, type, states, stateSetters) {
                 }
 
                 const fileToDownload = await rawFileResponse.blob();
+                console.log(fileToDownload);
                 setFileAndUnload(stateSetters, fileToDownload);
-                states.file ? fetch(`${fetchUrl}/delete/${states.file.name.substring(0, states.file.name.indexOf('.'))}.${outputExtension}`) : fetch(`${fetchUrl}/delete/output.${outputExtension}`)
-
+                
             }
             else {
                 setErrorAndUnload(stateSetters, "Please Try Again");
@@ -225,7 +226,7 @@ function setErrorAndUnload(stateSetters, errMsg) {
 
 function setFileAndUnload(stateSetters, fileToDownload) {
     stateSetters.setFilePath(fileToDownload);
-    stateSetters.setIsTranslated(true);
+    stateSetters.setIsTranslated ? stateSetters.setIsTranslated(true) : null;
     stateSetters.setLoadingState(false);
     stateSetters.setErrorAtDownload(false);
 }

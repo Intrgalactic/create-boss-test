@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { VideoPreview } from "./video-preview";
 import { VideoPreviewControl } from "./video-preview-control";
 import { handleFileDrop, handleFileInputDrag, removeDragEffect } from "src/utils/utilities";
-export function VideoPreviewContainer({ videoFile, setVideoFile, sendToGetSubtitles }) {
+export function VideoPreviewContainer({ videoFile, setVideoFile, sendToGetSubtitles,filePath,downloadFile,setFilePath }) {
     const fileInputRef = useRef();
     const fileRef = useRef();
     const modifyRef = useRef();
@@ -15,12 +15,12 @@ export function VideoPreviewContainer({ videoFile, setVideoFile, sendToGetSubtit
     return (
         <div className="video-preview__container">
             <VideoPreviewControl>
-                <label ref={fileRef} onClick={() => { fileInputRef.current.click() }} onDrop={(e) => { handleFileDrop(e, setVideoFile) }} onDragEnd={(e) => { () => { removeDragEffect(setLabelText) } }} onDragOver={(e) => { handleFileInputDrag(e, setLabelText) }} onDragLeave={() => { removeDragEffect(setLabelText) }}>{labelText}</label>
-                <input type="file" accept="video/*" ref={fileInputRef} onChange={(e) => { setVideoFile(e.target.files[0]) }} />
+                <label ref={fileRef} onClick={() => { fileInputRef.current.click() }} onDrop={(e) => { handleFileDrop(e, setVideoFile); }} onDragEnd={(e) => { () => { removeDragEffect(setLabelText) } }} onDragOver={(e) => { handleFileInputDrag(e, setLabelText) }} onDragLeave={() => { removeDragEffect(setLabelText) }}>{labelText}</label>
+                <input type="file" accept="video/*" ref={fileInputRef} onChange={(e) => { setVideoFile(e.target.files[0]);setFilePath() }} />
             </VideoPreviewControl>
             <VideoPreview videoFile={videoFile} />
             <VideoPreviewControl>
-                <button onClick={sendToGetSubtitles} ref={modifyRef} >Modify</button>
+                <button onClick={() => {!filePath ? sendToGetSubtitles() : downloadFile()}} ref={modifyRef} >{filePath ? "Download" : "Modify"}</button>
             </VideoPreviewControl>
         </div>
     )

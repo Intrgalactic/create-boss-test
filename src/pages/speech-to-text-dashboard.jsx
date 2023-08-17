@@ -116,7 +116,7 @@ export default function STTDashboard() {
                 const data = new FormData()
                 const objWithdata = {
                     file: file,
-                    code: languageCode,
+                    languageCode: languageCode,
                     audioEncoding: outputExtension,
                     punctuationOn: punctuation,
                     topicsOn: detectTopic,
@@ -134,7 +134,6 @@ export default function STTDashboard() {
             setLoadingState(true);
         }
     }
-    console.log(loadingState);
     function appendToFormData(objWithData, formData) {
         for (const [key, value] of Object.entries(objWithData)) {
             formData.append(`${key}`, value);
