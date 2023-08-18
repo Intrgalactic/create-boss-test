@@ -31,6 +31,56 @@ import { auth } from "../../firebase.js";
 import { checkIsLoggedAndFetch, setLanguageProperties } from "src/utils/utilities.js";
 import Loader from "src/layouts/loader.jsx";
 
+function CustomTooltip({ payload, label, active }) {
+    const colors = [ "#ffb200", "#e000ff", "#7800ff", "#0059ff"];
+    if (payload.length > 0) {
+ 
+        var dataArr = [{
+            key: payload[0].dataKey,
+            value: payload[0].value
+        }, {
+            key: payload[1].dataKey,
+            value: payload[1].value
+        },
+        {
+            key: payload[2].dataKey,
+            value: payload[2].value
+        }, {
+            key: payload[3].dataKey,
+            value: payload[3].value
+        }];
+        dataArr.sort(function (a, b) {
+            return b.value - a.value; // Ascending order
+            // To sort in descending order, use: return b.value - a.value;
+        });
+    }
+    if (active) {
+        return (
+            <div className="dashboard-tooltip">
+                {dataArr.map((obj, index) => (
+                    <p className="dashboard-tooltip-label" style={{color: obj.key === "STT" ? colors[3] : obj.key === "TTS" ? colors[2] : obj.key === "STV" ? colors[1] : colors[0]}} key={index}>{obj.key} {<span style={{color:"white"}}>{obj.value} Minutes</span>}</p>
+                ))}
+            </div>
+        );
+    }
+
+    return null;
+}
+function getIntroOfPage(label) {
+    if (label === '1.06') {
+        return '1.06';
+    } if (label === '8.06') {
+        return '8.06'
+    } if (label === '15.06') {
+        return '15.06';
+    } if (label === '23.06') {
+        return '23.06';
+    } if (label === '30.06') {
+        return '30.06';
+    } if (label === '7.07') {
+        return '7.07';
+    }
+}
 export default function Dashboard() {
     const [audioSpeed, setAudioSpeed] = useState('1');
     const [voiceGender, setVoiceGender] = useState('Male');
@@ -111,12 +161,13 @@ export default function Dashboard() {
             SFV: 1230
         },
     ];
-    function setTTSLanguageProps(code,name) {
-        setLanguageProperties(setTSSLanguage,setTSSLanguageCode,code,name);
+    function setTTSLanguageProps(code, name) {
+        setLanguageProperties(setTSSLanguage, setTSSLanguageCode, code, name);
     }
-    function setSTTLanguageProps(code,name) {
-        setLanguageProperties(setSTTLanguage,setSTTLanguageCode,code,name);
+    function setSTTLanguageProps(code, name) {
+        setLanguageProperties(setSTTLanguage, setSTTLanguageCode, code, name);
     }
+
     return (
         <div className="dashboard">
             <Suspense fallback={<Loader />}>
@@ -141,7 +192,7 @@ export default function Dashboard() {
                                     <LineChart data={data}
                                         margin={{ right: 30, left: 20, bottom: 5 }}>
                                         <XAxis dataKey="name" axisLine={false} style={{ fontFamily: "NexaHeavy" }} tick={{ fill: "white" }} />
-                                        <Tooltip style={{ backgroundColor: "transparent" }} />
+                                        <Tooltip content={<CustomTooltip />} />
                                         <Line type="monotone" dataKey="STT" stroke="#0059ff" strokeWidth={3} />
                                         <Line type="monotone" dataKey="TTS" stroke="#7800ff" strokeWidth={3} />
                                         <Line type="monotone" dataKey="STV" stroke="#e000ff" strokeWidth={3} />

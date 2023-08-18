@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 import DashboardHeader from "src/layouts/dashboards/dashboard-header";
 import DashboardRightSection from "src/layouts/dashboards/dashboard-right-section";
@@ -204,7 +204,7 @@ export default function STVDashboard() {
             data.append('subtitlesOn', true);
             sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/subtitles-to-video`, data, false, {
                 file: videoFile,
-                outputExtension: videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)
+                outputExtension: videoFile.name.slice(videoFile.name.lastIndexOf('.'))
             }, stateSetters)
         }
     }
@@ -213,10 +213,9 @@ export default function STVDashboard() {
     }
 
     async function downloadFile() {
-        (videoFile && videoFile.name) ? console.log(filePath, `${videoFile.name.substring(0, videoFile.name.indexOf('.'))}`) : console.log(filePath, `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`);
-        (videoFile && videoFile.name) ? await fileDownload(filePath, `${videoFile.name.substring(0, videoFile.name.indexOf('.'))}.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`) : await fileDownload(filePath, `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`);
+        fileDownload(filePath,`${videoFile && videoFile.name ? videoFile.name : `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`}`);
     }
-
+    
     return (
         <div className="subtitles-to-video-dashboard">
             <Suspense fallback={<Loader />}>

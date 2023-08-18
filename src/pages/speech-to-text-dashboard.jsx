@@ -140,8 +140,8 @@ export default function STTDashboard() {
         }
     }
     async function downloadFile() {
-        console.log(filePath, `${file.name.substring(0, file.name.indexOf('.'))}`);
-        (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
+        const outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.${outputExtension.toLowerCase()}`;
+        fileDownload(filePath,`${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
     }
 
     return (

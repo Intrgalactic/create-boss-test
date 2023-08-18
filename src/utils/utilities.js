@@ -153,7 +153,6 @@ export async function sendData(fetchUrl, data, type, states, stateSetters) {
 
     const controller = new AbortController();
     const signal = controller.signal;
-
     var options = {
         method: "POST",
         body: data,
@@ -166,28 +165,17 @@ export async function sendData(fetchUrl, data, type, states, stateSetters) {
         setTimeout(() => {
             controller.abort();
         }, 480000);
-        
-        console.log('sent');
         await fetch(`${fetchUrl}`, options).then(async (res) => {
             var rawFileResponse;
+            var data = await res.json();
+            console.log(data);
             if (res.status === 200) {
                 const outputExtension = states.outputExtension.toLowerCase() === "ogg" ? "opus" : states.outputExtension.toLowerCase();
-                if (states.file) {
-                    const fileName = states.file.name.substring(0, states.file.name.indexOf('.'));
-                    if (states.file.name) {
-                        rawFileResponse = await fetchFile(fetchUrl, '/get/', fileName, outputExtension, stateSetters);
-                    }
-                }
-
-                else {
-                    rawFileResponse = await fetchFile(fetchUrl, '/get/', "output", outputExtension, stateSetters);
-                    console.log(rawFileResponse);
-                }
-
+                const fileName = data.fileName;
+                rawFileResponse = await fetchFile(fetchUrl, '/get/', fileName, outputExtension, stateSetters);
                 const fileToDownload = await rawFileResponse.blob();
-                console.log(fileToDownload);
                 setFileAndUnload(stateSetters, fileToDownload);
-                
+                fetch(`${fetchUrl}/delete/${fileName}.${outputExtension}`);
             }
             else {
                 setErrorAndUnload(stateSetters, "Please Try Again");
@@ -196,7 +184,6 @@ export async function sendData(fetchUrl, data, type, states, stateSetters) {
 
     }
     catch (err) {
-        console.log(err);
         setErrorAndUnload(stateSetters, "Please Try Again");
     }
 }
@@ -232,14 +219,12 @@ function setFileAndUnload(stateSetters, fileToDownload) {
 }
 
 export function removeDragEffect(setText,setClassList) {
-    console.log(setClassList);
     setClassList ? setClassList(true) : setText("Choose Video");
     
 }
 export function handleFileInputDrag(event,setText,setClassList) {
     event.stopPropagation();
     event.preventDefault();
-
     setClassList ? setClassList() : setText("Drop");
 }
 export function handleFileDrop(event,setFile,setErrorAtDownload,setClassList) {
@@ -250,7 +235,6 @@ export function handleFileDrop(event,setFile,setErrorAtDownload,setClassList) {
         setErrorAtDownload("The File Is Too Big");
     }
     else if (fileList.length > 0) {
-        console.log(fileList[0]);
         setFile(fileList[0]);
         setClassList && setClassList(true,"attached-file")
     }

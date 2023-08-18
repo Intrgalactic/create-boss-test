@@ -6,7 +6,7 @@ const DashboardRightSection = lazy(() => import('src/layouts/dashboards/dashboar
 const DashboardServiceOptionsRow = lazy(() => import('src/layouts/dashboards/service-options/dashboard-service-options-row'));
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
-import { speakersTypeOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions,audioSpeedOptions } from "src/utils/dashboard-static-data";
+import { speakersTypeOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions, audioSpeedOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
 import { handleTextChange } from "src/utils/utilities";
 
@@ -96,7 +96,7 @@ export default function TTSDashboard() {
         if (textInput || file) {
             setLoadingState(true);
             if (file) {
-                if (file.type === "text/plain" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf" ) {
+                if (file.type === "text/plain" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf") {
                     const data = new FormData();
                     const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&speakingRate=${audioSpeed}`;
                     const queryParams = Object.fromEntries(new URLSearchParams(queryString));
@@ -127,18 +127,21 @@ export default function TTSDashboard() {
     }
 
     async function downloadFile() {
-        (file && file.name) ? console.log(filePath, `${file.name.substring(0, file.name.indexOf('.'))}`) : console.log(filePath, `output.${outputExtension.toLowerCase()}`);
-        (file && file.name) ? await fileDownload(filePath, `${file.name.substring(0, file.name.indexOf('.'))}.${outputExtension.toLowerCase()}`) : await fileDownload(filePath, `output.${outputExtension.toLowerCase()}`);
+        if (file) {
+            var outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.${outputExtension.toLowerCase()}`;
+        }
+        fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
     }
+
     return (
         <div className="text-to-speech-dashboard">
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
-                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document"/>
+                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
-                        <DashboardServiceOptionsRow actions={voiceOptionsRowActions} heading="Voice Options"/>
-                        <DashboardServiceOptionsRow actions={voiceMiscellaneousOptionsRowActions} heading="Miscellaneous"/>
+                        <DashboardServiceOptionsRow actions={voiceOptionsRowActions} heading="Voice Options" />
+                        <DashboardServiceOptionsRow actions={voiceMiscellaneousOptionsRowActions} heading="Miscellaneous" />
                     </DashboardRightSection>
                 </ContentContainer>
                 {loadingState === true && <Loader />}
