@@ -3,6 +3,8 @@ const asyncHandler = require("express-async-handler");
 const listVoices = require('./listVoices');
 const formatEncoding = require('../utils/formatters/formatEncoding');
 const sendToStorage = require('./sendToStorage');
+const generateRandomFileName = require('../utils/generateFileName');
+
 const fileTypes = [
     'application/pdf',
     'application/rtf',
@@ -13,19 +15,19 @@ const fileTypes = [
 ];
 const setContentType = require('../utils/setContentType');
 const parseFile = require('../utils/fileParser');
-const spellCheck = require('../utils/spellCheck');
 
 const textToSpeech = (storage) => {
     return asyncHandler(async (req, res) => {
         var textToSynthetize;
         var contentType;
-        var outputFileName = "output.mp3";
+        var outputFileName = generateRandomFileName(`.${req.body.audioEncoding.toLowerCase()}`);
+        var outputFileNameWithoutExt = outputFileName.substring(0,outputFileName.lastIndexOf("."));
         var sampleRateHertz = 16000;
         var audioEncoding;
-        
+        console.log(outputFileName);
         try {
             if (req.file) {
-                outputFileName = req.file.originalname;
+                outputFileName = encodeURIComponent(req.file.originalname);
                 textToSynthetize = await getTextToSynthetize(req.file, req)
             }
             else {
@@ -41,7 +43,6 @@ const textToSpeech = (storage) => {
             const [voiceVariants, voiceTechnologyType] = await selectBestVoice(voices)
             req.body.audioEncoding === "WAV" ? (audioEncoding = "LINEAR16",sampleRateHertz = 24000) :  req.body.audioEncoding === "OGG" ? audioEncoding = "OGG_OPUS" : (audioEncoding = "MP3",sampleRateHertz = 44100);
             const speakingRate = parseFloat(req.body.speakingRate);
-
             const request = {
                 input: { text: textToSynthetize },
                 voice: { languageCode: req.body.code, ssmlGender: gender, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
@@ -49,14 +50,13 @@ const textToSpeech = (storage) => {
             };
 
             const [response] = await client.synthesizeSpeech(request);
-            
             contentType = await setContentType(req.body.audioEncoding)
             const outputExtension = req.body.audioEncoding.toLowerCase() === "ogg" ? "opus" : req.body.audioEncoding.toLowerCase()
-            await sendToStorage(`${outputFileName.substring(0, outputFileName.indexOf('.'))}.${outputExtension}`, response.audioContent, contentType, storage)
-
-            res.status(200).send("Synthesizing Completed");
+            await sendToStorage(`${outputFileNameWithoutExt}.${outputExtension}`, response.audioContent, contentType, storage)
+            res.status(200).send(JSON.stringify({fileName:outputFileNameWithoutExt}));
         }
         catch (err) {
+            console.log(err);
             res.status(400).send(err.message);
         }
     });

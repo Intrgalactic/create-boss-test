@@ -8,7 +8,6 @@
     "@google-cloud/translate": "^7.2.2",
     "body-parser": "^1.20.2",
     "child_process": "^1.0.2",
-    "color": "^4.2.3",
     "cors": "^2.8.5",
     "docx": "^8.2.2",
     "docxtemplater": "^3.37.12",
