@@ -48,6 +48,7 @@ export default function SignIn() {
                     <input type="email" placeholder="Your E-Mail" onChange={(e) => {userData.current.email = e.target.value}}/>
                     <input type="password" placeholder="Your Password" onChange={(e) => {userData.current.password = e.target.value}}/>
                     {validateErr ? <font className="auth-form__err">{validateErr}</font> : firebaseErr ? <font className="auth-form__err">{firebaseErr}</font> : null}
+                    <Link to="/reset-password">Reset Your Password</Link>
                     <Link to='/sign-up'>Don’t have account yet? Join to CreateBoss today!</Link>
                     <CtaButton text="Login" action={validateLoginForm}/>
                 </AuthForm>

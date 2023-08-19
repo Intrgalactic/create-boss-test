@@ -81,7 +81,7 @@ h2 {
   text-shadow: 0px 4px 10px black;
 }
 
-.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading,.verify-page .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading, .speech-to-text-dashboard__container .section-heading, .subtitles-to-video-dashboard .section-heading) {
+.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading,.verify-page .section-heading,.reset-password-page .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading, .speech-to-text-dashboard__container .section-heading, .subtitles-to-video-dashboard .section-heading) {
   width: 60%;
   padding-block: 50px;
   margin: auto;
@@ -624,7 +624,7 @@ textarea {
   max-height: 250px;
   min-height: 150px;
 }
-textarea:not(.contact-section textarea) {
+textarea:not(.contact-section textarea,.text-to-speech-dashboard textarea,.speech-to-text-dashboard textarea) {
   min-width: 100%;
   max-width: 100%;
 }
@@ -861,7 +861,7 @@ footer {
 }
 
 .sign-in-page,
-.sign-up-page,.verify-page {
+.sign-up-page,.verify-page,.reset-password-page {
   background-color: white;
 }
 .verify-page input::-webkit-outer-spin-button,
@@ -873,6 +873,7 @@ footer {
 /* Firefox */
 .verify-page [type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .auth-container {
   min-height:800px;
@@ -952,12 +953,23 @@ footer {
 .search-bar {
   margin-top: 30px;
 }
-.verify-page .auth-container {
+.verify-page .auth-container,.reset-password-page .auth-container {
   min-height: 700px;
+}
+.reset-password-page .section-heading {
+  margin: auto;
+  padding-bottom: 50px;
 }
 .email-verify__container {
   display:grid;
   height: 500px;
+}
+.auth__form-success {
+  color:#08FE00;
+  max-width: 80%;
+  font-size: 1.5em;;
+  margin:auto;
+  flex-basis: 100%;
 }
 .email-verify__container-content {
   height: 200px;
@@ -1000,7 +1012,9 @@ footer {
   width: 80%;
   margin: auto;
 }
-
+.loader:not(.file-output-container .loader) {
+  min-height: 100vh;
+}
 .loader {
   background-color: rgba(0, 0, 0, 0.2);
   position: absolute;
@@ -1013,8 +1027,8 @@ footer {
   justify-content: center;
   overflow-x: hidden;
   backdrop-filter: blur(1.5px);
-  min-height: 100vh;
 }
+
 .verify-page .loader {
   background-color: rgba(0, 0, 0, 1);
 }
@@ -1359,6 +1373,7 @@ footer {
 .dashboard__select-box p {
   margin-block: 0;
   text-align: left;
+
   padding-inline: 10%;
   font-family: NexaRegular;
   max-width: 80%;
@@ -1863,7 +1878,7 @@ footer {
 .text-to-speech-dashboard .dashboard__select-box p,
 .speech-to-text-dashboard .dashboard__select-box p,
 .subtitles-to-video-dashboard .dashboard__select-box p {
-  font-size: 1em;
+  font-size: 1.2em;
 }
 
 .dashboard__container div:nth-child(3) .dashboard__box:last-of-type .dashboard__box-content {
@@ -1958,9 +1973,6 @@ footer {
   font-size: 2em;
 }
 
-.stv-input {
-  
-}
 .video-file-type-err {
   height: 100px;
   width: 100%;
@@ -2054,6 +2066,9 @@ footer {
 .downloading-loader-container p:last-of-type {
   font-family: NexaRegular;
 }
+.text-to-speech-dashboard textarea {
+  width: 100%;
+}
 .dashboard-tooltip {
   background-color: rgba(20, 10, 147, 0.9);
   padding:5px;
@@ -2068,6 +2083,16 @@ footer {
   column-gap:20px;
   box-shadow: rgba(0,0,0, 0.3) -5px 6px 5px 1px;
   text-shadow: 0px 0px 2px black;
+}
+.dashboard__select-button .call-to-action-btn {
+  position: relative;
+}
+.dashboard__select-button  input:not(.dashboard__select-button .search-bar input) {
+  position: absolute;
+  left:0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
 }
 .dashboard-tooltip-label {
   flex-basis: 40%;
@@ -2369,7 +2394,7 @@ footer {
     font-size: clamp(0.8em,3.75vw,1.1em);
   }
 
-  .section-heading:not(.benefits-section .section-heading, .about-us-section__container .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading, .text-to-speech-dashboard .section-heading, .speech-to-text-dashboard .section-heading, .subtitles-to-video-dashboard .section-heading) {
+  .section-heading:not(.benefits-section .section-heading, .about-us-section__container .section-heading,.reset-password-page .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading, .text-to-speech-dashboard .section-heading, .speech-to-text-dashboard .section-heading, .subtitles-to-video-dashboard .section-heading) {
     width: 100%;
     padding-bottom: 25px;
   }
@@ -2544,7 +2569,7 @@ footer {
   }
 
   .auth-form form a,
-  .auth-form__err {
+  .auth-form__err,.auth__form-success {
     font-size: 1em;
   }
 
@@ -2662,7 +2687,7 @@ footer {
     max-width: 80vw;
     justify-content: center;
   }
-
+ 
   .dashboard__left-section-content-container-main-input textarea,
   .speech-to-text-dashboard .dashboard__left-section-content-container-main-input .textarea-container {
     width: calc(100% - 40px);
@@ -2961,6 +2986,9 @@ footer {
   .dashboard-video-section .dashboard-header {
     background-color: rgba(0, 0, 0, 0.3);
   }
+  .reset-password-page .auth-container {
+    min-height: 550px;
+  }
 }
 
 @media only screen and (min-width:512px) and (max-width:768px) {
@@ -3220,7 +3248,7 @@ footer {
   }
 
   .auth-form__err,
-  .auth-form form a {
+  .auth-form form a,.auth__form-success {
     font-size: 1.2em;
   }
 

@@ -1,4 +1,4 @@
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 import DashboardHeader from "src/layouts/dashboards/dashboard-header";
 import DashboardRightSection from "src/layouts/dashboards/dashboard-right-section";
