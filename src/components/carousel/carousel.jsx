@@ -21,14 +21,34 @@ export const Carousel = forwardRef((props, ref) => {
     function scrollToNextElem(e) {
         const elementsToScroll = ref.current.querySelector("div").childNodes;
         if (e.target.classList.contains("left-carousel-button") && scrollCount - 1 >= 0) {
-            checkClassListAndScroll(elementsToScroll)
+            checkClassListAndScroll(elementsToScroll, "-",scrollCount - 2 >= 0)
         }
         else if (e.target.classList.contains("right-carousel-button") && scrollCount + 1 < elementsToScroll.length) {
-            checkClassListAndScroll(elementsToScroll);
+            checkClassListAndScroll(elementsToScroll, "+",scrollCount + 2 < elementsToScroll.length);
         }
         else {
-            e.target.classList.contains("right-carousel-button") ? elementsToScroll[0].scrollIntoView({ behavior: "smooth", block: "center", inline: "center" }) : elementsToScroll[elementsToScroll.length - 1].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
+            e.target.classList.contains("right-carousel-button") ? elementsToScroll[0].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" }) : elementsToScroll[elementsToScroll.length - 1].scrollIntoView({ behavior: "smooth", block: "center", inline: "nearest" });
             e.target.classList.contains("right-carousel-button") ? setScrollCount(0) : setScrollCount(elementsToScroll.length - 1);
+        }
+    }
+    function checkClassListAndScroll(elementsToScroll, sign,condition) {
+        if (condition === true && window.innerWidth > 768) {
+            if (elementsToScroll[0].classList.contains("pricing__box") && windowSize > 1024) {
+                console.log('fire 0');
+                scrollToElem(3, elementsToScroll, sign)
+            }
+            else if (elementsToScroll[0].classList.contains("pricing__box")) {
+                console.log('fire 1');
+                scrollToElem(1, elementsToScroll,sign);
+            }
+            else {
+                console.log('fire 2');
+                scrollToElem(2, elementsToScroll, sign);
+            }
+        }
+        else {
+            console.log('fire 3');
+            scrollToElem(1, elementsToScroll, sign);
         }
     }
     function scrollToElem(it, elementsToScroll, sign) {
@@ -41,22 +61,7 @@ export const Carousel = forwardRef((props, ref) => {
             setScrollCount(count => count - it);
         }
     }
-    function checkClassListAndScroll(elementsToScroll) {
-        if (scrollCount === 0 && window.innerWidth > 768) {
-            if (elementsToScroll[0].classList.contains("pricing__box") && windowSize > 1024) {
-                scrollToElem(3, elementsToScroll, "+")
-            }
-            else if (elementsToScroll[0].classList.contains("pricing__box")) {
-                scrollToElem(1, elementsToScroll, "+");
-            }
-            else {
-                scrollToElem(2, elementsToScroll, "+");
-            }
-        }
-        else {
-            scrollToElem(1, elementsToScroll, "+");
-        }
-    }
+    console.log(scrollCount);
     return (
         <div className="carousel" ref={ref}>
             {windowSize < 512 ?

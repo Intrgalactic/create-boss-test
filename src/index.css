@@ -81,7 +81,7 @@ h2 {
   text-shadow: 0px 4px 10px black;
 }
 
-.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading, .speech-to-text-dashboard__container .section-heading, .subtitles-to-video-dashboard .section-heading) {
+.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading,.verify-page .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading, .speech-to-text-dashboard__container .section-heading, .subtitles-to-video-dashboard .section-heading) {
   width: 60%;
   padding-block: 50px;
   margin: auto;
@@ -560,6 +560,7 @@ textarea {
   display: block;
   margin: auto;
   width: 80%;
+  
   margin-bottom: 30px;
   height: 50px;
   padding-block: 10px;
@@ -567,12 +568,12 @@ textarea {
   font-family: NexaHeavy;
   color: black;
   background-color: white;
-  border-radius: 20px;
+  border-radius: 5px;
   -webkit-appearance: none;
   appearance: none;
   border: none;
   font-size: 1.5em;
-  box-shadow: 0px 0px 4px 5px rgba(0, 0, 0, 0.125) inset;
+  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.125) inset;
 }
 
 .contact-section__form-container form textarea {
@@ -595,7 +596,7 @@ form label:hover {
 }
 
 input[type="checkbox"] {
-  box-shadow: 0px 0px 4px 5px rgba(0, 0, 0, 0.125) inset;
+  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.125) inset;
   height: 40px;
   width: 50px;
   max-width: 50px;
@@ -616,14 +617,17 @@ input[type="checkbox"]:checked {
 }
 
 textarea {
-  min-width: 100%;
-  max-width: 100%;
   height: 150px;
+  max-width: 80%;
+  min-width: 80%;
   padding-top: 20px;
   max-height: 250px;
   min-height: 150px;
 }
-
+textarea:not(.contact-section textarea) {
+  min-width: 100%;
+  max-width: 100%;
+}
 .contact-section__form-container {
   text-align: left;
 }
@@ -857,10 +861,19 @@ footer {
 }
 
 .sign-in-page,
-.sign-up-page {
+.sign-up-page,.verify-page {
   background-color: white;
 }
+.verify-page input::-webkit-outer-spin-button,
+.verify-page input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
 
+/* Firefox */
+.verify-page [type=number] {
+  -moz-appearance: textfield;
+}
 .auth-container {
   min-height:800px;
   position: relative;
@@ -936,14 +949,28 @@ footer {
   padding-top: 50px;
 }
 
-.sign-up-page .auth-container {
-  padding-bottom: 200px;
-}
-
 .search-bar {
   margin-top: 30px;
 }
-
+.verify-page .auth-container {
+  min-height: 700px;
+}
+.email-verify__container {
+  display:grid;
+  height: 500px;
+}
+.email-verify__container-content {
+  height: 200px;
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top:50px;
+}
+.email-verify__container-content .section-heading {
+  color:black;
+  text-shadow: none;
+  flex-basis: 100%;
+}
 .search-bar input {
   width: 30vw;
   border-radius: 10px;
@@ -978,6 +1005,7 @@ footer {
   background-color: rgba(0, 0, 0, 0.2);
   position: absolute;
   top: 0;
+  z-index:999;
   height: 100%;
   width: 100vw;
   display: grid;
@@ -985,8 +1013,11 @@ footer {
   justify-content: center;
   overflow-x: hidden;
   backdrop-filter: blur(1.5px);
+  min-height: 100vh;
 }
-
+.verify-page .loader {
+  background-color: rgba(0, 0, 0, 1);
+}
 .lds-ellipsis {
   display: inline-block;
   position: relative;
@@ -2144,11 +2175,12 @@ footer {
     padding-top: 50px;
   }
 
-  .pricing-section__boxes-container {
+  .pricing-section__boxes-container,.testimonial-section__boxes-container {
     width: 80vw;
     max-width: 80vw;
     min-width: 80vw;
-    padding-inline: 20px;
+    padding-inline: 25px;
+    column-gap: 50px;
     margin: auto;
   }
 
@@ -2162,13 +2194,18 @@ footer {
     flex-wrap: wrap;
   }
 
-  .pricing__box {
+  .pricing__box,.testimonial__box {
     width: 80vw;
-    scroll-margin-inline: 20px;
+    scroll-margin-inline:25px;
     min-width: 80vw;
     padding-block: 20px;
   }
-
+  .testimonial__box {
+    min-width: 80vw;
+    width: 80vw;
+    padding-inline:0;
+    margin-inline:0;
+  }
   .carousel-buttons-container {
     flex-basis: 100%;
     display: flex;
@@ -2308,10 +2345,7 @@ footer {
     display: none;
   }
 
-  .testimonial-section__boxes-container {
-    width: calc(280px);
-    min-width: 280px;
-  }
+
 
   .carousel-button {
     width: 80px;
@@ -2321,13 +2355,6 @@ footer {
     column-gap: 0px;
   }
 
-  .testimonial__box {
-    width: 200px;
-    margin-inline: 20px;
-    min-width: 200px;
-    scroll-margin-inline: 20px;
-
-  }
 
   .testimonial__box-user-details {
     align-items: center;
@@ -2337,16 +2364,15 @@ footer {
   .testimonial__box-user-details p {
     font-size: 16px;
   }
-
   .testimonial__box p:not(.testimonial__box-user-details p) {
-    font-size: 0.9em;
+    width: 80%;
+    font-size: clamp(0.8em,3.75vw,1.1em);
   }
 
   .section-heading:not(.benefits-section .section-heading, .about-us-section__container .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading, .text-to-speech-dashboard .section-heading, .speech-to-text-dashboard .section-heading, .subtitles-to-video-dashboard .section-heading) {
     width: 100%;
     padding-bottom: 25px;
   }
-
   .contact-section__container {
     display: block;
   }
@@ -2994,21 +3020,12 @@ footer {
     width: 40vw;
   }
 
-  .carousel-button {
-    width: 60px;
+  .carousel .carousel-button:not(.pricing-section .carousel .carousel-button) {
+    width: 80px;
+    order:2;
   }
-
-  .testimonial-section__boxes-container {
-    width: calc(280px);
-    min-width: 280px;
-  }
-
-  .testimonial__box {
-    width: 200px;
-    margin-inline: 20px;
-    min-width: 200px;
-    scroll-margin-inline: 20px;
-
+  .carousel-button:first-of-type:not(.pricing-section .carousel-button:first-of-type) {
+    margin-right: calc(40vw - 80px);
   }
 
   .pricing-section__boxes-container {
@@ -3026,7 +3043,7 @@ footer {
     scroll-margin-inline: 20px;
     min-width: 310px;
   }
-
+  
   .pricing__box-included-item {
     font-size: 0.9em;
   }
@@ -3128,26 +3145,23 @@ footer {
     width: 35vw;
   }
 
-  .carousel {
+  .carousel:not(.pricing-section .carousel) {
     column-gap: 0px;
+    flex-wrap: wrap;
   }
-
-  .carousel-button {
-    width: 100px;
-  }
-
   .testimonial-section__boxes-container {
-    width: 620px;
-    min-width: 620px;
+    margin-inline:10vw;
   }
-
-  .testimonial__box {
-    width: 230px;
-    margin-inline: 20px;
-    scroll-margin-inline: 20px;
-    min-width: 230px;
+  .carousel-button:not(.pricing-section .carousel-button) {
+    width: 100px;
+    order:2;
   }
-
+  .carousel-button:first-of-type:not(.pricing-section .carousel-button:first-of-type) {
+    margin-right: 150px;
+  }
+  .carousel-button:last-of-type:not(.pricing-section .carousel-button:last-of-type) {
+    margin-left: 150px;
+  }
   footer .callout {
     width: 60vw;
     display: block;
@@ -3309,7 +3323,7 @@ footer {
   .dashboard__right-section .section-heading:first-of-type:not(.dashboard__service-options-container .section-heading) {
     text-align: left;
   }
-
+ 
   .dashboard__left-section-file-container {
     width: 40%;
   }

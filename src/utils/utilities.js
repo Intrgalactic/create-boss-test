@@ -267,3 +267,10 @@ export function expandList(isToggled,setIsToggled,triggerRef,className,imageRef)
         imageRef.current.querySelector("img").style.transform = "rotate(0deg)";
     }
 }
+
+export function isEqual(firstItem, secondItem) {
+    if (firstItem !== secondItem) {
+        return false;
+    }
+    return true;
+}
