@@ -8,6 +8,10 @@
   src: url('assets/fonts/NexaRegular.otf');
 }
 
+@font-face {
+  font-family:Nunito;
+  src: url('assets/fonts/Nunito.ttf');
+}
 html {
   scroll-behavior: smooth;
   font-display: swap;
@@ -379,25 +383,43 @@ input[type="checkbox"]:hover,
   min-width: 300px;
   background-color: white;
   color: black;
-  border-radius: 40px;
+  border-radius: 10px;
   padding-inline: 20px;
   padding-block: 30px;
-  box-shadow: 0px 4px 10px black;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
 }
 
 .testimonial__box p:not(.testimonial__box-user-details p) {
-  font-family: NexaRegular;
+  font-family: Nunito;
   text-align: left;
   width: 95%;
   margin: auto;
-  font-size: 16px;
+  margin-top:20px;
+  height: 250px;
+  font-size: 1em;
+}
+.testimonial__box-user-details picture {
+  width: 80px;
+  height: 80px;
+  box-shadow: 0px 5px 5px rgba(0,0,0,0.3);
+  overflow: hidden;
+  border-radius: 50%;
 }
 
 .testimonial__box-user-details p {
   font-size: 24px;
   font-family: NexaHeavy;
 }
+.testimonial__box picture:not(.testimonial__box-user-details picture) {
+  width: 80%;
+  max-width: 80%;
+}
 
+.testimonial__box picture img:not(.testimonial__box-user-details picture img) {
+  filter:drop-shadow(0px 5px 5px rgba(0,0,0,0.2));
+  max-width: 100%;
+  height: auto;
+}
 .pricing-section {
   background-color: black;
   padding-block: 100px;
@@ -840,7 +862,7 @@ footer {
 }
 
 .auth-container {
-  min-height: 90vh;
+  min-height:800px;
   position: relative;
   padding-block: 50px;
 }
@@ -1906,7 +1928,7 @@ footer {
 }
 
 .stv-input {
-  display: none;
+  
 }
 .video-file-type-err {
   height: 100px;
@@ -2834,7 +2856,7 @@ footer {
   }
 
   .auth-container {
-    min-height: 80vh;
+    min-height: max(80vh,600px);
   }
 
   .dashboard__container div:nth-child(2) .dashboard__box:first-of-type .dashboard__box-content {
@@ -3268,7 +3290,7 @@ footer {
   .text-to-speech-dashboard__container,
   .speech-to-text-dashboard__container,
   .subtitles-to-video-dashboard__container {
-    margin-left: 15vw;
+    margin-left: 13.75vw;
     flex-wrap: wrap;
     padding-bottom: 40px;
   }
