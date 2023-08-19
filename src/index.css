@@ -433,10 +433,41 @@ input[type="checkbox"]:hover,
   box-shadow: 0px 4px 20px rgba(255, 255, 255, 0.6), 5px 0px 20px 10px rgba(0, 0, 0, 0.25) inset;
   text-align: left;
   width: 400px;
+  height: fit-content;
   min-width: 400px;
   scroll-margin-inline: 25px;
+  scrollbar-width: 0px;
+}
+.pricing__box h3 {
+  margin-top:30px;
 }
 
+.pricing__box-expand-list {
+  max-height: 100px;
+  transition-duration: 400ms;
+  transition-timing-function: ease-in-out;
+  overflow:hidden;
+  scrollbar-width: 0px;
+  padding-bottom: 20px;
+}
+
+.pricing__box-expand-list-container {
+  height: 100px;
+  font-family: NexaRegular;
+  font-size: 2em;
+  gap:50px;
+  display:flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.pricing__box-expand-list-container img {
+  transition-duration: 400ms;
+  transition-timing-function: ease-in-out;
+}
+.pricing-expanded-list {
+  max-height: 1500px;
+  overflow-y:hidden;
+}
 .pricing-section__boxes-container {
   width: 1300px;
   min-width: 1300px;
@@ -2100,6 +2131,9 @@ footer {
 .dashboard-tooltip-label span {
   font-size:0.8em;
 }
+.pricing__box .call-to-action-btn {
+  margin-bottom: 30px;
+}
 @keyframes lds-ellipsis1 {
   0% {
     transform: scale(0);
@@ -2534,7 +2568,13 @@ footer {
     width: 80vw;
     max-width: 80vw;
   }
-
+  .pricing__box-expand-list-container {
+    height: 150px;
+  }
+  .pricing__box-expand-list-container {
+    font-size:1.3em;
+    max-height: 120px;
+  }
   .sign-in-page .section-heading,
   .sign-up-page .section-heading {
     width: 80%;

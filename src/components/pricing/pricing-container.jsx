@@ -1,9 +1,9 @@
 import { lazy, useRef } from "react";
 const Carousel = lazy(() => import("src/components/carousel/carousel").then(module => {
-    return {default: module.Carousel}
+    return { default: module.Carousel }
 }))
 const Pricing = lazy(() => import('./pricing-box').then(module => {
-    return {default: module.Pricing}
+    return { default: module.Pricing }
 }))
 import { SectionHeading } from "src/components/section-heading";
 import pricingCarouselButtonImage from 'src/assets/images/pricing-carousel-button.png';
@@ -11,16 +11,26 @@ import webpPricingCarouselButtonImage from 'src/assets/images/pricing-carousel-b
 
 export function PricingContainer() {
     const carouselRef = useRef();
-    const packagesAmounts = [["10,000", "10", "5", "5"], ["25,000", "15", "10", "10"], ["50,000", "25", "20", "20"],["?","?","?","?"]];
+    const packagesAmounts = [["10,000", "10", "5", "5"], ["25,000", "15", "10", "10","Access to Video Enhancer", "Advanced Options For Subtitles"], ["50,000", "25", "20", "20","Access to Video Enhancer", "Advanced Options For Subtitles","Access to Voice Cloning", "Instant Personal Support"], ["?", "?", "?", "?","Access to Video Enhancer", "Advanced Options For Subtitles","Access to Voice Cloning", "Instant Personal Support",'High Volume']];
+    const starterServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video"];
+    const essentialServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","Access to Video Enhancer", "Advanced Options For Subtitles"];
+    const professionalServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","Access to Video Enhancer", "Advanced Options For Subtitles","Access to Voice Cloning", "Instant Personal Support"];
+    const enterpriseServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","Access to Video Enhancer", "Advanced Options For Subtitles","Access to Voice Cloning", "Instant Personal Support","Access to High Volume Use"]
+
+    const starterDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes'];
+    const essentialDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes','Yes'];
+    const professionalDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes','Yes','Yes'];
+    const enterpriseDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month"];
+
     return (
         <div className="pricing-section__container" >
             <SectionHeading heading="Find Your Ideal Fit: Flexible Pricing for Every Content Creator's Journey!" />
             <Carousel images={[pricingCarouselButtonImage, webpPricingCarouselButtonImage]} alt="carousel button" imgWidth="96px" imgHeight="96px" ref={carouselRef}>
                 <div className="pricing-section__boxes-container">
-                    <Pricing price="35$" packageName="Starter" heading="Unlock Your Voice: Get Started with Seamless Speech Conversion" buttonText="Get Started Now" includedItems={packagesAmounts[0]} />
-                    <Pricing price="50$" packageName="Essential" heading="Empower Your Content: Elevate Your Creations with Essential Tools" buttonText="Upgrade Today" includedItems={packagesAmounts[1]} />
-                    <Pricing price="80$" packageName="Professional" heading="Unlock Your Voice: Get Started with Seamless Speech Conversion" buttonText="Unlock More Power" includedItems={packagesAmounts[2]} />
-                    <Pricing price={"Flexible"} packageName="Enterprise" heading="Custom Solutions for Limitless Potential: Elevate Your Content Strategy Today!" buttonText="Contact" includedItems={packagesAmounts[3]} />
+                    <Pricing price="35$" packageName="Starter" heading="Unlock Your Voice: Get Started with Seamless Speech Conversion" buttonText="Get Started Now" includedItems={packagesAmounts[0]} services={starterServices} descriptions={starterDescriptions} />
+                    <Pricing price="50$" packageName="Essential" heading="Empower Your Content: Elevate Your Creations with Essential Tools" buttonText="Upgrade Today" includedItems={packagesAmounts[1]} services={essentialServices} descriptions={essentialDescriptions} />
+                    <Pricing price="80$" packageName="Professional" heading="Unlock Your Voice: Get Started with Seamless Speech Conversion" buttonText="Unlock More Power" includedItems={packagesAmounts[2]} services={professionalServices} descriptions={professionalDescriptions} />
+                    <Pricing price={"Flexible"} packageName="Enterprise" heading="Custom Solutions for Limitless Potential: Elevate Your Content Strategy Today!" buttonText="Contact" includedItems={packagesAmounts[3]} services={enterpriseServices} descriptions={enterpriseDescriptions} />
                 </div>
             </Carousel>
         </div>
