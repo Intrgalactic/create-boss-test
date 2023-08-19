@@ -26,13 +26,13 @@ const speechToText = (storage, isVideoApi) => {
         var font = req.files[fontIndex] && req.files[fontIndex];
         var fontExtension = req.files[fontIndex] && req.files[fontIndex].originalname.slice(font.originalname.lastIndexOf('.'));
         var fontSize = req.body.subtitlesFontSize;
-        var formattedSubtitlesColor = convertColorToReversedHex(req.body.subtitlesColor, "FFFFFF");
-        var formattedStrokeColor = convertColorToReversedHex(req.body.strokeColor, "000000");
-        var formattedSubBgColor = convertColorToReversedHex(req.body.subBgColor, "FFFFF", parseFloat(req.body.subBgOpacity));
+       
         var enableTextStroke = req.body.enableTextStroke === "No" ? false : true;
         var enableSubBg = req.body.enableSubBg === "No" ? false : true;
-        var subBgColor = req.body.subBgColor.toLowerCase();
         var enableShadow = req.body.enableShadow === "No" ? false : true;
+        var formattedSubtitlesColor = convertColorToReversedHex(req.body.subtitlesColor, "FFFFFF");
+        var formattedStrokeColor = enableTextStroke ? convertColorToReversedHex(req.body.strokeColor, "000000") : null;
+        var formattedSubBgColor = enableSubBg ? convertColorToReversedHex(req.body.subBgColor, "000000", parseFloat(req.body.subBgOpacity)) : null;
         var textStroke = enableTextStroke ? req.body.textStroke.slice(0, req.body.textStroke.indexOf('P')) : null;
       }
  
@@ -296,8 +296,10 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
   var textStroke = enableTextStroke ? `,Outline=${stroke}` : ",Outline=0";
   var outlineColor = enableTextStroke ? `,OutlineColour=${strokeColor}` : "";
   var subBg = enableSubBg ? `,BorderStyle=4,MarginV=${subtitlesAlign === "Bottom" ? "20" : "0"},BackColour=${subBgColor}` : "";
+  console.log(subBgColor);
   const endVideoPath = await createModifiedVideos();
   return endVideoPath;
+  
   function createModifiedVideos() {
     return new Promise((resolve, reject) => {
       Ffmpeg()
@@ -518,8 +520,8 @@ function convertColorToReversedHex(color, variant, opacity) {
     var fullHexColorPrefix = opacity ? `0x${alphaHex}` : "0x";
     const cleanHexColor = color.startsWith("#") ? color.substring(1) : color;
     var fullHexColor = fullHexColorPrefix + cleanHexColor.toUpperCase().split("").reverse().join("");
-    if (fullHexColor === "0xDENIFEDNU" || fullHexColor === "0x00DENIFDNU") {
-      fullHexColor = `0x${variant}`;
+    if (fullHexColor === "0xDENIFEDNU" || fullHexColor === `0x${alphaHex}DENIFEDNU`) {
+      fullHexColor = !opacity ? `0x${variant}` : `0x${alphaHex}${variant}`;
     }
     return fullHexColor;
   }
