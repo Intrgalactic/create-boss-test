@@ -15,7 +15,7 @@ import webpErrorImage from 'src/assets/images/error.webp';
 import { Link } from "react-router-dom";
 
 
-export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload, setErrorAtDownload,acceptedFormats }) {
+export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload, setErrorAtDownload,acceptedFormats,setTextInput }) {
     const [isFileAttached, setIsFileAttached] = useState(false);
     useEffect(() => {
         if (file) {
@@ -24,18 +24,23 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
         if (textInput !== "" || file) {
             setAbleToTranslate("Yes");
         }
-        else {
+        else if (!file || textInput === "") {
             setAbleToTranslate("No");
         }
+        
     }, [setIsFileAttached, file, setAbleToTranslate, textInput]);
-    console.log(file);
+    function resetState() {
+        setFile();
+        setIsFileAttached(false);
+        if (setTextInput) setTextInput("");
+    }
     return (
             <div className="dashboard__left-section">
                 <SectionHeading heading={headings[0]} />
                 <div className="dashboard__left-section-container">
                     <ContentContainer containerClass="dashboard__left-section-content-container">
                         <DashboardServiceInputContainer heading={headings[1]} inputClass="dashboard__left-section-content-container-main-input">
-                            <DashboardServiceOutput isFileAttached={isFileAttached} setTextInput={handleTextChange} setFile={setFile}/>
+                            <DashboardServiceOutput isFileAttached={isFileAttached} setTextInput={handleTextChange} setFile={setFile} textInput={textInput}/>
                         </DashboardServiceInputContainer>
                     </ContentContainer>
                     <ContentContainer containerClass="dashboard__left-section-file-container">
@@ -68,8 +73,7 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
                     <ContentContainer containerClass="dashboard__left-section-control-container">
                         {controls.map((control, index) => (
                             <DashboardServiceInputContainer inputClass="dashboard__left-section-content-container-control-input">
-                                {index === controls.length - 1 ?
-                                    <button onClick={mainAction}>{control}</button> : <p>{control}</p>
+                                {index >= controls.length - 2 ? <button key={index} onClick={index === controls.length - 1 ? mainAction : resetState}>{control}</button> : <p key={index}>{control}</p> 
                                 }
                             </DashboardServiceInputContainer>
                         ))}

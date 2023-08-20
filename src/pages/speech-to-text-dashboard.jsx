@@ -17,7 +17,7 @@ export default function STTDashboard() {
     const [outputExtension, setOutputExtension] = useState("TXT");
     const [isTranslated, setIsTranslated] = useState(false);
     const [filePath, setFilePath] = useState('');
-    const controls = [`Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`, "Translate"];
+    const controls = [`Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`,"Reset", "Translate"];
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();

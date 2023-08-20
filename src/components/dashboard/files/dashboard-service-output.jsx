@@ -8,7 +8,7 @@ import pauseImage from 'src/assets/images/pause.png';
 import webpPauseImage from 'src/assets/images/pause.webp';
 import { useLocation } from "react-router-dom";
 
-export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile }) {
+export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile,textInput }) {
     const textAreaRef = useRef();
     const location = useLocation();
     const path = location.pathname;
@@ -17,11 +17,10 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile })
     var audioChunks = [];
 
     useEffect(() => {
-        if (isFileAttached) {
+        if (textInput === "" && (isFileAttached || !isFileAttached)) {
             textAreaRef.current.value = "";
         }
-
-    }, [isFileAttached]);
+    }, [isFileAttached,textInput]);
 
     function enableMicrophone() {
         navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then((mediaStream) => {
@@ -50,7 +49,7 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile })
         microphoneStream.stop();
         setMicrophoneStream();
     }
-
+    console.log(isFileAttached);
     return (
         <>
             {isFileAttached ?
@@ -70,11 +69,11 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile })
                     <div className="textarea-container">
                         {!microphoneStream ?
                             <>
-                                <span onClick={enableMicrophone} className="record-button" ref={listenButton}><Picture images={[webpRecordImage, recordImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
+                                <span onClick={enableMicrophone} className="record-button" ref={listenButton}><Picture images={[webpRecordImage, recordImage]} imgWidth="64px" imgHeight="64px" alt="record" /></span>
                                 <p>Click the microphone to record live</p>
                                 <p>Or attach a file</p></> :
                             <>
-                                <span onClick={disableMicrophone} className="record-button"><Picture images={[webpPauseImage, pauseImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
+                                <span onClick={disableMicrophone} className="record-button"><Picture images={[webpPauseImage, pauseImage]} imgWidth="64px" imgHeight="64px" alt="record" /></span>
                                 <p>Pause to get text</p>
                                 <p>Click the pause button to stop recording</p>
                             </>}
