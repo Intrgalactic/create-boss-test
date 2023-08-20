@@ -17,6 +17,7 @@ import STVDashboard from './pages/subtitles-to-video-dashboard'
 import Verify from './pages/user-action'
 import UserAction from './pages/user-action'
 import ResetPassword from './pages/reset-password'
+import SFVDashboard from './pages/subtitles-from-video-dashboard'
 function App() {
   const [isLogged, setIsLogged] = useState();
   useEffect(() => {
@@ -49,6 +50,7 @@ function App() {
       <Route exact path="/dashboard/services/text-to-speech" element={<authContext.Provider value={isLogged}><TTSDashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/speech-to-text" element={<authContext.Provider value={isLogged}><STTDashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/subtitles-to-video" element={<authContext.Provider value={isLogged}><STVDashboard/></authContext.Provider>} />
+      <Route exact path="/dashboard/services/subtitles-from-video" element={<authContext.Provider value={isLogged}><SFVDashboard/></authContext.Provider>} />
     </Routes>
   )
 }

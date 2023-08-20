@@ -1,5 +1,4 @@
 import { lazy, useEffect, useRef, useState } from "react";
-import { chooseFile, toggleOptionsList } from "src/utils/utilities";
 const CtaButton = lazy(() => import("src/components/cta-button").then(module => { return { default: module.CtaButton } }));
 const DashboardOptionsSelect = lazy(() => import('./dashboard-options-select').then(module => {return {default:module.DashboardOptionsSelect}}));
 
@@ -67,19 +66,27 @@ export function DashboardSelectButton({ text, options, setOption, setFilter, typ
         fileRef.current.removeEventListener('dragend', removeDragEffect);
         fileRef.current.removeEventListener('drop', handleFileDrop);
     }
-    
+    function toggleOptionsList() {
+        listRef.current.classList.toggle('visible-list');
+    }
+    function chooseFile() {
+        inputFileRef.current.click();
+    }
+    function chooseColor() {
+        colorInputRef.current.click();
+    }
     return (
         <div className="dashboard__select-button">
             {type !== "input" && type !== "color" ? <>
-                <CtaButton text={text} action={() => {toggleOptionsList(listRef)}} />
+                <CtaButton text={text} action={toggleOptionsList} />
             </> : type !== "color" ?
                 <>
-                    <CtaButton text={btnText} action={() => {chooseFile(inputFileRef)}} ref={inputBtnRef} />
+                    <CtaButton text={btnText} action={chooseFile} ref={inputBtnRef} />
                     <input type="file" ref={inputFileRef} className="stv-input" onChange={(e) => { setFile(e.target.files[0]) }} accept={acceptList} />
                 </>
                 :
                 <>
-                    <CtaButton text={btnText} action={() => {chooseColor(colorInputRef)}} />
+                    <CtaButton text={btnText} action={chooseColor} />
                     <input type="color" ref={colorInputRef} onChange={(e) => setColor(e.target.value)} className="stv-input" />
                 </>
             }

@@ -7,7 +7,7 @@ const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/ser
 import fileDownload from "js-file-download";
 import Loader from "src/layouts/loader";
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
-import { sendData, setLanguageProperties } from "src/utils/utilities";
+import { createDataAndSend, setLanguageProperties } from "src/utils/utilities";
 
 export default function STTDashboard() {
 
@@ -15,7 +15,6 @@ export default function STTDashboard() {
     const [languageCode, setLanguageCode] = useState("en-US");
     const [ableToTranslate, setAbleToTranslate] = useState('No');
     const [outputExtension, setOutputExtension] = useState("TXT");
-    const [textInput, setTextInput] = useState("");
     const [isTranslated, setIsTranslated] = useState(false);
     const [filePath, setFilePath] = useState('');
     const controls = [`Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`, "Translate"];
@@ -106,14 +105,13 @@ export default function STTDashboard() {
     }
 
     async function sendToSynthetize() {
-        if (textInput || file) {
-            const data = new FormData();
+        if (file) {
+            setLoadingState(true);
             if (
                 mimetypesArr.includes(file.type) ||
                 (file.type === "audio/mpeg" && mimetypesArr.includes("audio/mp3")) ||
                 (file.type === "audio/mpeg" && mimetypesArr.includes("audio/x-mp3"))
             ) {
-                const data = new FormData()
                 const objWithdata = {
                     file: file,
                     languageCode: languageCode,
@@ -124,21 +122,12 @@ export default function STTDashboard() {
                     summarizeOn: summarization,
                     subtitlesOn: timeStamps
                 };
-                appendToFormData(objWithdata, data);
-
-                sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/speech-to-text`, data, false, {
-                    file: file,
-                    outputExtension: outputExtension
-                }, stateSetters);
+                createDataAndSend(objWithdata,file,outputExtension,stateSetters,'api/speech-to-text',false);
             }
-            setLoadingState(true);
+           
         }
     }
-    function appendToFormData(objWithData, formData) {
-        for (const [key, value] of Object.entries(objWithData)) {
-            formData.append(`${key}`, value);
-        }
-    }
+  
     async function downloadFile() {
         const outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.${outputExtension.toLowerCase()}`;
         fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);

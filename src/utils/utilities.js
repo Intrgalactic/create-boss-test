@@ -149,7 +149,7 @@ export function checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPayi
     }
 }
 
-export async function sendData(fetchUrl, data, type, states, stateSetters) {
+export async function sendData(fetchUrl, data, states, stateSetters) {
 
     const controller = new AbortController();
     const signal = controller.signal;
@@ -158,7 +158,6 @@ export async function sendData(fetchUrl, data, type, states, stateSetters) {
         body: data,
         signal
     }
-    type ? options.headers = { "Content-Type" : type } : null;
 
     try {
 
@@ -275,12 +274,34 @@ export function isEqual(firstItem, secondItem) {
     return true;
 }
 
-export function toggleOptionsList(ref) {
-    ref.current.classList.toggle('visible-list');
+export function appendToFormData(objWithData, formData) {
+    for (const [key, value] of Object.entries(objWithData)) {
+        (key === "file" || key === "files") ? formData.append(`${key}`,value,value.name) : formData.append(`${key}`,value);
+    }
 }
-export function chooseFile(ref) {
-    ref.current.click();
-}
-export function chooseColor(ref) {
-    ref.current.click();
+
+export function createDataAndSend(dataToSend,file,outputExtension,stateSetters,fetchUrl,filesArr) {
+    const data = new FormData();
+    const objWithdata = dataToSend;
+    appendToFormData(objWithdata, data);
+    if (filesArr) {
+        let fileIndex = 1;
+        for (let i = 0; i < filesArr.length; i++) {
+            for (let j = 0; j < filesArr[i].allowedTypes.length; j++) {
+                if (filesArr[i].file) {
+                    if (filesArr[i].file.type.includes(filesArr[i].allowedTypes[j]) || filesArr[i].file.name.slice(filesArr[i].file.name.lastIndexOf(".")).includes(filesArr[i].allowedTypes[j])) {
+                        data.append('files', filesArr[i].file, filesArr[i].file.name);
+                        if (filesArr[i].file) {
+                            data.append(filesArr[i].name, fileIndex);
+                            fileIndex++;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}${fetchUrl}`, data, {
+        file: file,
+        outputExtension: outputExtension
+    }, stateSetters);
 }

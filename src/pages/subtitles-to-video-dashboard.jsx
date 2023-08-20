@@ -6,7 +6,7 @@ const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dash
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
 import Loader from "src/layouts/loader";
 import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions } from "src/utils/dashboard-static-data";
-import { sendData, setLanguageProperties } from "src/utils/utilities";
+import { createDataAndSend, sendData, setLanguageProperties } from "src/utils/utilities";
 import fileDownload from "js-file-download";
 import DownloadingLoader from "src/layouts/downloading-loader";
 
@@ -172,40 +172,23 @@ export default function STVDashboard() {
     async function sendToGetSubtitles() {
         if (videoFile) {
             setLoadingState(true);
-            const data = new FormData();
-            data.append('files', videoFile, videoFile.name);
-            data.append('subtitlesFontSize', subtitlesSize);
-            data.append("watermarkAlign", watermarkAlignment);
-            data.append('logoAlign', logoAlignment);
-            data.append('subtitlesAlign', subtitlesAlignment);
-            data.append('subtitlesColor', subColor);
-            data.append('enableTextStroke', enableTextStroke);
-            data.append('subBgColor', subBgColor);
-            data.append("textStroke", textStroke);
-            data.append('strokeColor', strokeColor);
-            data.append('enableSubBg', enableSubBg);
-            data.append('subBgOpacity', subBgOpacity);
-            data.append("enableShadow", subtitlesShadow)
-            data.append('languageCode', languageCode);
-            let fileIndex = 1;
-            for (let i = 0; i < filesArr.length; i++) {
-                for (let j = 0; j < filesArr[i].allowedTypes.length; j++) {
-                    if (filesArr[i].file) {
-                        if (filesArr[i].file.type.includes(filesArr[i].allowedTypes[j]) || filesArr[i].file.name.slice(filesArr[i].file.name.lastIndexOf(".")).includes(filesArr[i].allowedTypes[j])) {
-                            data.append('files', filesArr[i].file, filesArr[i].file.name);
-                            if (filesArr[i].file) {
-                                data.append(filesArr[i].name, fileIndex);
-                                fileIndex++;
-                            }
-                        }
-                    }
-                }
-            }
-            data.append('subtitlesOn', true);
-            sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/subtitles-to-video`, data, false, {
-                file: videoFile,
-                outputExtension: videoFile.name.slice(videoFile.name.lastIndexOf('.'))
-            }, stateSetters)
+            const objWithdata = {
+                languageCode: languageCode,
+                files: videoFile,
+                subtitlesFontSize: subtitlesSize,
+                watermarkAlign: watermarkAlignment,
+                logoAlign: logoAlignment,
+                subtitlesAlign: subtitlesAlignment,
+                subtitlesColor: subColor,
+                enableTextStroke: enableTextStroke,
+                subBgColor: subBgColor,
+                textStroke: textStroke,
+                strokeColor: strokeColor,
+                enableSubBg: enableSubBg,
+                subBgOpacity: subBgOpacity,
+                enableShadow: subtitlesShadow
+            };
+            createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr);
         }
     }
     function setLanguageProps(code, name) {
@@ -213,22 +196,22 @@ export default function STVDashboard() {
     }
 
     async function downloadFile() {
-        fileDownload(filePath,`${videoFile && videoFile.name ? videoFile.name : `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`}`);
+        fileDownload(filePath, `${videoFile && videoFile.name ? videoFile.name : `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`}`);
     }
-    
+
     return (
         <div className="subtitles-to-video-dashboard">
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="subtitles-to-video-dashboard__container">
-                    <DashboardVideoLeftSection heading="Video To Modify" videoFile={videoFile} setVideoFile={setVideoFile} sendToGetSubtitles={sendToGetSubtitles} filePath={filePath} downloadFile={downloadFile} setFilePath={setFilePath}/>
+                    <DashboardVideoLeftSection heading="Video To Modify" videoFile={videoFile} setVideoFile={setVideoFile} sendToGetSubtitles={sendToGetSubtitles} filePath={filePath} downloadFile={downloadFile} setFilePath={setFilePath} />
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Blank Logo Without Watermark">
                         <DashboardServiceOptionsRow actions={subtitlesOptionsRowActions} heading="Subtitles" />
                         <DashboardServiceOptionsRow actions={subtitlesBackgroundOptionsRowActions} heading="Subtitles Background" />
                         <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Miscellaneous" />
                     </DashboardRightSection>
                 </ContentContainer>
-                {loadingState === true && <DownloadingLoader heading="We are modifying your video"/>}
+                {loadingState === true && <DownloadingLoader heading="We are modifying your video" />}
             </Suspense>
         </div>
     )

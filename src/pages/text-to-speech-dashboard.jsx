@@ -7,11 +7,10 @@ const DashboardServiceOptionsRow = lazy(() => import('src/layouts/dashboards/ser
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
 import { speakersTypeOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions, audioSpeedOptions } from "src/utils/dashboard-static-data";
-import { sendData, setLanguageProperties } from "src/utils/utilities";
+import { createDataAndSend, sendData, setLanguageProperties } from "src/utils/utilities";
 import { handleTextChange } from "src/utils/utilities";
 
 export default function TTSDashboard() {
-
     const [voicePitch, setVoicePitch] = useState("0");
     const [language, setLanguage] = useState("English (US)");
     const [audioSpeed, setAudioSpeed] = useState('1');
@@ -97,18 +96,14 @@ export default function TTSDashboard() {
             setLoadingState(true);
             if (file) {
                 if (file.type === "text/plain" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf") {
-                    const data = new FormData();
-                    const queryString = `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&speakingRate=${audioSpeed}`;
-                    const queryParams = Object.fromEntries(new URLSearchParams(queryString));
-                    for (const [key, value] of Object.entries(queryParams)) {
-                        data.append(key, value);
-                    }
-                    data.append('file', file, file.name);
-                    data.append('fileType', file.type);
-                    sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, data, false, {
-                        file: file,
-                        outputExtension: outputExtension
-                    }, stateSetters);
+                    createDataAndSend({
+                        code: languageCode,
+                        gender: voiceGender,
+                        pitch: voicePitch,
+                        effectsProfileId: speakersType,
+                        audioEncoding: outputExtension,
+                        speakingRate: audioSpeed
+                    }, file, outputExtension, stateSetters, 'api/text-to-speech');
                 }
                 else {
                     setErrorAtDownload("The File Extension Is Not Supported");
@@ -117,10 +112,15 @@ export default function TTSDashboard() {
                 }
             }
             else if (!file) {
-                sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech`, `code=${languageCode}&gender=${voiceGender}&pitch=${voicePitch}&effectsProfileId=${speakersType}&audioEncoding=${outputExtension}&text=${textInput}&speakingRate=${audioSpeed}`, "application/x-www-form-urlencoded", {
-                    file: file,
-                    outputExtension: outputExtension
-                }, stateSetters);
+                createDataAndSend({
+                    code: languageCode,
+                    gender: voiceGender,
+                    pitch: voicePitch,
+                    effectsProfileId: speakersType,
+                    audioEncoding: outputExtension,
+                    text: textInput,
+                    speakingRate: audioSpeed
+                }, file, outputExtension, stateSetters, 'api/text-to-speech');
             }
 
         }

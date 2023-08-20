@@ -1,7 +1,7 @@
 import { ContentContainer } from "src/components/content-container";
 import { Suspense, lazy, useContext, useEffect, useState } from "react";
-const DashboardBox = lazy(() => import("src/components/dashboard/boxes/dashboard-box").then(module => {return {default:module.DashboardBox}}));
-const DashboardBoxContent = lazy(() => import("src/components/dashboard/boxes/dashboard-box-content").then(module => {return {default:module.DashboardBoxContent}}));
+const DashboardBox = lazy(() => import("src/components/dashboard/boxes/dashboard-box").then(module => { return { default: module.DashboardBox } }));
+const DashboardBoxContent = lazy(() => import("src/components/dashboard/boxes/dashboard-box-content").then(module => { return { default: module.DashboardBoxContent } }));
 import { SectionHeading } from "src/components/section-heading";
 import DashboardHeader from "src/layouts/dashboards/dashboard-header";
 const CtaButton = lazy(() => import("src/components/cta-button").then(module => { return { default: module.CtaButton } }));
@@ -29,57 +29,9 @@ import { Tooltip, XAxis, ResponsiveContainer, LineChart, Line } from "recharts";
 import { auth } from "../../firebase.js";
 import { checkIsLoggedAndFetch, setLanguageProperties } from "src/utils/utilities.js";
 import Loader from "src/layouts/loader.jsx";
+const CustomTooltip = lazy(() => import("src/components/dashboard/charts/customTooltip.jsx").then(module => { return { default: module.CustomTooltip } }));
 
-function CustomTooltip({ payload, label, active }) {
-    const colors = [ "#ffb200", "#e000ff", "#7800ff", "#0059ff"];
-    if (payload.length > 0) {
- 
-        var dataArr = [{
-            key: payload[0].dataKey,
-            value: payload[0].value
-        }, {
-            key: payload[1].dataKey,
-            value: payload[1].value
-        },
-        {
-            key: payload[2].dataKey,
-            value: payload[2].value
-        }, {
-            key: payload[3].dataKey,
-            value: payload[3].value
-        }];
-        dataArr.sort(function (a, b) {
-            return b.value - a.value; // Ascending order
-            // To sort in descending order, use: return b.value - a.value;
-        });
-    }
-    if (active) {
-        return (
-            <div className="dashboard-tooltip">
-                {dataArr.map((obj, index) => (
-                    <p className="dashboard-tooltip-label" style={{color: obj.key === "STT" ? colors[3] : obj.key === "TTS" ? colors[2] : obj.key === "STV" ? colors[1] : colors[0]}} key={index}>{obj.key} {<span style={{color:"white"}}>{obj.value} Minutes</span>}</p>
-                ))}
-            </div>
-        );
-    }
 
-    return null;
-}
-function getIntroOfPage(label) {
-    if (label === '1.06') {
-        return '1.06';
-    } if (label === '8.06') {
-        return '8.06'
-    } if (label === '15.06') {
-        return '15.06';
-    } if (label === '23.06') {
-        return '23.06';
-    } if (label === '30.06') {
-        return '30.06';
-    } if (label === '7.07') {
-        return '7.07';
-    }
-}
 export default function Dashboard() {
     const [audioSpeed, setAudioSpeed] = useState('1');
     const [voiceGender, setVoiceGender] = useState('Male');
@@ -107,6 +59,7 @@ export default function Dashboard() {
     useEffect(() => {
 
     }, [isLogged, setIsPaying]);
+
     const data = [
         {
             name: '1.06',

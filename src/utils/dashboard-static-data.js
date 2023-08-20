@@ -63,14 +63,14 @@ export const dashboardActionsData = [
         images: [dotsImage,webpDotsImage],
         imgHeight: "22px",
         imgWidth: "42px",
-        link: "subtitles-from-video",
+        link: "services/subtitles-from-video",
         linkDescription: "Subtitles From Video"
     },
     {
         images: [tapeImage,webpTapeImage],
         imgHeight: "22px",
         imgWidth: "22px",
-        link: "subtitles-to-video",
+        link: "services/subtitles-to-video",
         linkDescription: "Subtitles To Video"
     },
 

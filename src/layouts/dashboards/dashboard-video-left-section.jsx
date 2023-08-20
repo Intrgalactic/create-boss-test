@@ -1,6 +1,6 @@
 import { ContentContainer } from "src/components/content-container";
 import { SectionHeading } from "src/components/section-heading";
-import { VideoPreviewContainer } from "src/components/video-preview-container";
+import { VideoPreviewContainer } from "src/components/video/video-preview-container";
 
 export default function DashboardVideoLeftSection({heading,videoFile,setVideoFile,sendToGetSubtitles,filePath,downloadFile,setFilePath}) {
     return (

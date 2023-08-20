@@ -7,7 +7,7 @@ import webpPlayBtnImg from 'src/assets/images/play-button.webp';
 import pauseBtnImg from 'src/assets/images/pause-button.png';
 import webpPauseBtnImg from 'src/assets/images/pause-button.webp';
 
-import { Picture } from './picture';
+import { Picture } from 'src/components/picture';
 import useWindowSize from 'src/hooks/useWindowSize';
 import { useEffect, useRef, useState } from 'react';
 

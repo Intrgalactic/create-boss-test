@@ -496,6 +496,7 @@ input[type="checkbox"]:hover,
   display: flex;
   align-items: center;
   text-align: center;
+  min-height: 60px;
   justify-content: space-between;
   font-size: 0.9em;
 }
@@ -3035,7 +3036,7 @@ footer {
     min-height: 550px;
   }
   .pricing__box {
-    min-height: 480px;
+    min-height: 500px;
   }
 }
 
