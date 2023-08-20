@@ -28,13 +28,14 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
             setAbleToTranslate("No");
         }
     }, [setIsFileAttached, file, setAbleToTranslate, textInput]);
+    console.log(file);
     return (
             <div className="dashboard__left-section">
                 <SectionHeading heading={headings[0]} />
                 <div className="dashboard__left-section-container">
                     <ContentContainer containerClass="dashboard__left-section-content-container">
                         <DashboardServiceInputContainer heading={headings[1]} inputClass="dashboard__left-section-content-container-main-input">
-                            <DashboardServiceOutput isFileAttached={isFileAttached} setTextInput={handleTextChange} />
+                            <DashboardServiceOutput isFileAttached={isFileAttached} setTextInput={handleTextChange} setFile={setFile}/>
                         </DashboardServiceInputContainer>
                     </ContentContainer>
                     <ContentContainer containerClass="dashboard__left-section-file-container">

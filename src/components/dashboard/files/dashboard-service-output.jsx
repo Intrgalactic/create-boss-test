@@ -8,96 +8,47 @@ import pauseImage from 'src/assets/images/pause.png';
 import webpPauseImage from 'src/assets/images/pause.webp';
 import { useLocation } from "react-router-dom";
 
-export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
+export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile }) {
     const textAreaRef = useRef();
     const location = useLocation();
     const path = location.pathname;
     const listenButton = useRef();
-    const [isListening, setIsListening] = useState();
-    const [socket, setSocket] = useState(null);
+    const [microphoneStream, setMicrophoneStream] = useState();
+    var audioChunks = [];
 
     useEffect(() => {
         if (isFileAttached) {
             textAreaRef.current.value = "";
         }
-        const newSocket = new WebSocket(`ws://localhost:4000`);
-
-        newSocket.onopen = () => {
-            console.log("WebSocket connection opened");
-            setSocket(newSocket);
-        };
-
-        newSocket.onmessage = (event) => {
-            console.log("Received message:", event.data);
-        };
-
-        newSocket.onclose = () => {
-            console.log("WebSocket connection closed");
-        };
-
-        return () => {
-            if (socket) {
-                socket.close();
-            }
-        };
 
     }, [isFileAttached]);
 
-
-    async function getMicrophone() {
-        const userMedia = await navigator.mediaDevices.getUserMedia({
-            audio: true,
-        });
-
-        return new MediaRecorder(userMedia);
-    }
-
-    async function openMicrophone(socket) {
-        try {
-            const userMedia = await getMicrophone();
-            const microphone = new MediaRecorder(userMedia);
-
-            microphone.onstart = () => {
-                setIsListening(true);
-            };
-
-            microphone.onstop = () => {
-                setIsListening(false);
-            };
-
-            microphone.ondataavailable = (e) => {
-                if (socket.readyState === WebSocket.OPEN) {
-                    console.log("client: sent data to websocket");
-                    socket.send(e.data);
+    function enableMicrophone() {
+        navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then((mediaStream) => {
+            const mediaRecorder = new MediaRecorder(mediaStream);
+            mediaRecorder.ondataavailable = event => {
+                if (event.data.size > 0) {
+                    audioChunks.push(event.data);
                 }
             };
-
-            await microphone.start(500);
-
-            return microphone;
-        } catch (error) {
-            console.error("Error opening microphone:", error);
-            return null;
-        }
-    }
-
-    function closeMicrophone(microphone) {
-        if (microphone) {
-            microphone.stop();
-        }
-    }
-
-    async function startListening(socket) {
-        let microphone = null;
-
-        listenButton.current.addEventListener("click", async () => {
-            if (!microphone) {
-                microphone = await openMicrophone(socket);
-            } else {
-                closeMicrophone(microphone);
-                microphone = null;
-            }
+    
+            mediaRecorder.onstop = () => {
+                const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const file = new File([audioBlob],"audio.wav",{type:"audio/wav"});
+                    setFile(file);
+                };
+                reader.readAsArrayBuffer(audioBlob);
+            };
+            setMicrophoneStream(mediaRecorder);
+            mediaRecorder.start();
         });
+    }
+
+    function disableMicrophone() {
+        microphoneStream.stop();
+        setMicrophoneStream();
     }
 
     return (
@@ -117,13 +68,14 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput }) {
                     </div> :
                     !isFileAttached &&
                     <div className="textarea-container">
-                        {!isListening ?
+                        {!microphoneStream ?
                             <>
-                                <span onClick={startListening} className="record-button" ref={listenButton}><Picture images={[webpRecordImage, recordImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
+                                <span onClick={enableMicrophone} className="record-button" ref={listenButton}><Picture images={[webpRecordImage, recordImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
                                 <p>Click the microphone to record live</p>
                                 <p>Or attach a file</p></> :
                             <>
-                                <span onClick={closeMicrophone}><Picture images={[webpPauseImage, pauseImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
+                                <span onClick={disableMicrophone} className="record-button"><Picture images={[webpPauseImage, pauseImage]} imgWidth="96px" imgHeight="96px" alt="record" /></span>
+                                <p>Pause to get text</p>
                                 <p>Click the pause button to stop recording</p>
                             </>}
                     </div>
