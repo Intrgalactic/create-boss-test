@@ -20,11 +20,12 @@ const textToSpeech = (storage) => {
     return asyncHandler(async (req, res) => {
         var textToSynthetize;
         var contentType;
+        console.log(req.body);
         var outputFileName = generateRandomFileName(`.${req.body.audioEncoding.toLowerCase()}`);
         var outputFileNameWithoutExt = outputFileName.substring(0,outputFileName.lastIndexOf("."));
         var sampleRateHertz = 16000;
         var audioEncoding;
-        console.log(outputFileName);
+
         try {
             if (req.file) {
                 outputFileName = encodeURIComponent(req.file.originalname);

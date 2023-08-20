@@ -11,7 +11,7 @@ const downloadFile = (googleCloudStorage) => {
             try {
                 const file = await googleCloudStorage.bucket('create-boss').file(req.params.filename);
                 const [fileBuffer] = await file.download();
-
+                
                 res.set('Content-Type', file.metadata.contentType);
 
                 file.createReadStream().pipe(res);

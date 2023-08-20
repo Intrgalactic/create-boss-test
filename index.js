@@ -73,6 +73,10 @@ app.post('/api/subtitles-to-video', upload.array('files'), speechToText(googleCl
 app.get('/api/subtitles-to-video/get/:filename', cors(corsOptions), downloadFile(googleCloudStorage));
 app.get('/api/subtitles-to-video/delete/:filename', deleteFile(googleCloudStorage))
 
+app.post('/api/subtitles-from-video', upload.single('file'), speechToText(googleCloudStorage, false));
+app.get('/api/subtitles-from-video/get/:filename', cors(corsOptions), downloadFile(googleCloudStorage));
+app.get('/api/subtitles-from-video/delete/:filename', deleteFile(googleCloudStorage))
+
 app.listen(process.env.PORT || 80, () => {
     console.log('app listening');
 })

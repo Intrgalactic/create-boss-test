@@ -15,6 +15,7 @@ const speechToText = (storage, isVideoApi) => {
     try {
       var summary, fullSpeechToTextContent, contentType, diarizeOn, topicsOn;
       var topics = [];
+      console.log(req.body);
       if (isVideoApi) {
         var logoIndex = req.body.logo && req.body.logo;
         var logo = req.files[logoIndex] && req.files[logoIndex];
@@ -50,6 +51,7 @@ const speechToText = (storage, isVideoApi) => {
       const punctuationOn = req.body.punctuationOn ? convertToBoolean(req.body.punctuationOn) : true;
       const subtitlesOn = convertToBoolean(req.body.subtitlesOn);
       const summarizeOn = req.body.summarizeOn ? req.body.summarizeOn === "No" ? false : 'v2' : false;
+      
       const options = {
         tier: tier,
         model: "general",
@@ -247,6 +249,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
   Ffmpeg.setFfmpegPath(ffmpegPath);
 
   var tempFolder = path.join(__dirname, '../.././temporary');
+  const fontTempFolder = path.join(__dirname,'./temporary');
   var detectedFont, fontFamilyName;
   var logoFileName, logoAlignFFmpegFormat, logoVideoFileName, videoWithLogoPath;
   var watermarkFileName, watermarkAlignFFmpegFormat, watermarkVideoFileName, videoWithWatermarkPath;
@@ -265,7 +268,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
     subtitlesFontFileName = generateRandomFileName(fontExtension);
     detectedFont = fontkit.create(font.buffer);
     fontFamilyName = detectedFont.familyName;
-    fs.writeFileSync(path.join(tempFolder, subtitlesFontFileName), font.buffer);
+    fs.writeFileSync(path.join(fontTempFolder, subtitlesFontFileName), font.buffer);
     subtitlesAlignFFmpegFormat = returnAlignment(subtitlesAlign);
   }
   else {
@@ -318,7 +321,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
           fs.unlinkSync(path.join(tempFolder, subtitlesFileName));
           fs.unlinkSync(path.join(tempFolder, videoFileName));
           if (font) {
-            fs.unlinkSync(path.join(tempFolder, subtitlesFontFileName));
+            fs.unlinkSync(path.join(fontTempFolder, subtitlesFontFileName));
           }
           if (watermark && logo) {
             addWatermarkWithFFmpeg(true, resolve, reject);
