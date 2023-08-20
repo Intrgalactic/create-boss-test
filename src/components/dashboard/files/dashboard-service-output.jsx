@@ -9,23 +9,11 @@ import webpPauseImage from 'src/assets/images/pause.webp';
 import { useLocation } from "react-router-dom";
 
 export function DashboardServiceOutput({ isFileAttached, setTextInput, setFile, textInput }) {
-    const textAreaRef = useRef();
     const location = useLocation();
     const path = location.pathname;
     const listenButton = useRef();
     const [microphoneStream, setMicrophoneStream] = useState();
     var audioChunks = [];
-
-    useEffect(() => {
-        if (textAreaRef.current) {
-            if (textInput === "") {
-                textAreaRef.current.value = "";
-            }
-            else if (isFileAttached, !isFileAttached) {
-                textAreaRef.current.value = "";
-            }
-        }
-    }, [isFileAttached, textInput]);
 
     function enableMicrophone() {
         navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then((mediaStream) => {
@@ -59,7 +47,7 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput, setFile, 
         <>
             {isFileAttached ?
                 <div className="textarea-container">
-                    <textarea disabled ref={textAreaRef}>
+                    <textarea disabled>
                     </textarea>
                     <div className="dashboard__left-section-content-container-main-input-file-alert">
                         <Picture images={[webpFileImage, fileImage]} imgWidth="128px" imgHeight="128px" alt="file" />
@@ -68,7 +56,7 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput, setFile, 
                     </div>
                 </div> : path !== "/dashboard/services/speech-to-text" ?
                     <div className="textarea-container">
-                        <textarea ref={textAreaRef} onChange={(e) => { setTextInput(e.target.value) }} />
+                        <textarea onChange={(e) => { setTextInput(e.target.value) }} value={textInput}/>
                     </div> :
                     !isFileAttached &&
                     <div className="textarea-container">
