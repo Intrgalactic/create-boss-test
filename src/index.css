@@ -196,7 +196,7 @@ header nav,
 .hero-section {
   height: 972px;
   background-size: 100% 100%;
-  background-image: url('assets/images/hero.jpg');
+  background-image: url('assets/images/hero.webp');
   background-image: image-set(url('assets/images/hero.webp') type('image/webp'),
       url('assets/images/hero.jpg') type('image/jpeg'));
   background-position-x: center;
@@ -238,7 +238,7 @@ header nav,
 }
 
 .service-overview-section {
-  background-image: url('assets/images/service-overview-bg.jpg');
+  background-image: url('assets/images/service-overview-bg.webp');
   background-image: image-set(url('assets/images/service-overview-bg.webp') type('image/webp'),
       url('assets/images/service-overview-bg.jpg') type('image/jpeg'));
   padding-block: 100px;
@@ -308,7 +308,7 @@ header nav,
 }
 
 .benefits-section {
-  background-image: url('assets/images/benefits-bg.jpg');
+  background-image: url('assets/images/benefits-bg.webp');
   background-image: image-set(url('assets/images/benefits-bg.webp') type('image/webp'),
       url('assets/images/benefits-bg.jpg') type('image/jpeg'));
   background-size: 100% 100%;
@@ -554,7 +554,7 @@ input[type="checkbox"]:hover,
 }
 
 .contact-section {
-  background-image: url('assets/images/contact-bg.jpg');
+  background-image: url('assets/images/contact-bg.webp');
   background-image: image-set(url('assets/images/contact-bg.webp') type('image/webp'),
       url('assets/images/contact-bg.jpg') type('image/jpeg'));
   background-size: cover;
@@ -679,7 +679,7 @@ textarea::placeholder {
 }
 
 footer .callout {
-  background-image: url('assets/images/callout-bg.jpg');
+  background-image: url('assets/images/callout-bg.webp');
   background-image: image-set(url('assets/images/callout-bg.webp') type('image/webp'),
       url('assets/images/callout-bg.jpg') type('image/jpeg'));
   width: 50vw;
@@ -1165,7 +1165,7 @@ footer {
 .dashboard,
 .text-to-speech-dashboard,
 .speech-to-text-dashboard {
-  background-image: url('assets/images/dashboard-bg.jpg');
+  background-image: url('assets/images/dashboard-bg.webp');
   background-image: image-set(url('assets/images/dashboard-bg.webp') type('image/webp'),
       url('assets/images/dashboard-bg.jpg') type('image/jpeg'),
     );
@@ -2304,7 +2304,7 @@ footer {
 
     background-position: center;
     background-repeat: no-repeat;
-    background-image: url('assets/images/mobile-hero.jpg');
+    background-image: url('assets/images/mobile-hero.webp');
     background-image: image-set(url('assets/images/mobile-hero.webp') type('image/webp'),
         url('assets/images/mobile-hero.jpg') type('image/jpeg'));
     background-size: 100% 100%;
@@ -2329,13 +2329,13 @@ footer {
 
   .service-overview-section {
     background-size: 150% 100%;
-    background-image: url('assets/images/mobile-service-overview.jpg');
+    background-image: url('assets/images/mobile-service-overview.webp');
     background-image: image-set(url('assets/images/mobile-service-overview.webp') type('image/webp'),
         url('assets/images/mobile-service-overview.jpg') type('image/jpeg'));
   }
 
   .contact-section {
-    background-image: url('assets/images/mobile-contact-bg.jpg');
+    background-image: url('assets/images/mobile-contact-bg.webp');
     background-image: image-set(url('assets/images/mobile-contact-bg.webp') type('image/webp'),
         url('assets/images/mobile-contact-bg.jpg') type('image/jpeg'));
   }
@@ -2636,7 +2636,7 @@ footer {
   }
 
   .dashboard {
-    background-image: url('assets/images/mobile-dashboard-bg.jpg');
+    background-image: url('assets/images/mobile-dashboard-bg.webp');
     background-image: image-set(url('assets/images/mobile-dashboard-bg.webp') type('image/webp'),
         url('assets/images/mobile-dashboard-bg.jpg') type('image/jpeg'),
       );
@@ -3033,6 +3033,9 @@ footer {
   }
   .reset-password-page .auth-container {
     min-height: 550px;
+  }
+  .pricing__box {
+    min-height: 480px;
   }
 }
 

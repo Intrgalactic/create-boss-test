@@ -1,10 +1,10 @@
-import { lazy, useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
 const DashboardLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-left-section"));
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
-import fileDownload from "js-file-download" ;
+import fileDownload from "js-file-download";
 import Loader from "src/layouts/loader";
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
@@ -141,19 +141,21 @@ export default function STTDashboard() {
     }
     async function downloadFile() {
         const outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.${outputExtension.toLowerCase()}`;
-        fileDownload(filePath,`${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
+        fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
     }
 
     return (
         <div className="speech-to-text-dashboard">
-            <DashboardHeader />
-            <ContentContainer containerClass="speech-to-text-dashboard__container">
-                <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg" />
-                <DashboardRightSection configurationHeading="Default Configuration Is Set To English Language">
-                    <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Voice Options"/>
-                </DashboardRightSection>
-            </ContentContainer>
-            {loadingState === true && <Loader />}
+            <Suspense fallback={<Loader />}>
+                <DashboardHeader />
+                <ContentContainer containerClass="speech-to-text-dashboard__container">
+                    <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg" />
+                    <DashboardRightSection configurationHeading="Default Configuration Is Set To English Language">
+                        <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Voice Options" />
+                    </DashboardRightSection>
+                </ContentContainer>
+                {loadingState === true && <Loader />}
+            </Suspense>
         </div>
     )
 }
