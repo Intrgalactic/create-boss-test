@@ -12,7 +12,7 @@ const speechToText = require('./middleware/api/speechToText');
 const deleteFile = require('./middleware/api/deleteFile');
 const { Storage } = require('@google-cloud/storage');
 const { MongoClient } = require('mongodb');
-const WebSocket = require('ws');
+
 dotenv.config();
 
 const multerStorage = multer.memoryStorage();

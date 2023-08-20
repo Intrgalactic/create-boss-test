@@ -4,6 +4,7 @@ const listVoices = require('./listVoices');
 const formatEncoding = require('../utils/formatters/formatEncoding');
 const sendToStorage = require('./sendToStorage');
 const generateRandomFileName = require('../utils/generateFileName');
+const googleEnv = require("../../config/google.json");
 
 const fileTypes = [
     'application/pdf',
@@ -22,15 +23,15 @@ const textToSpeech = (storage) => {
         var contentType;
         console.log(req.body);
         var outputFileName = generateRandomFileName(`.${req.body.audioEncoding.toLowerCase()}`);
-        var outputFileNameWithoutExt = outputFileName.substring(0,outputFileName.lastIndexOf("."));
+        var outputFileNameWithoutExt = outputFileName.substring(0, outputFileName.lastIndexOf("."));
         var sampleRateHertz = 16000;
         var audioEncoding;
-
+        console.log(req.file);
         try {
             if (req.file) {
                 outputFileName = encodeURIComponent(req.file.originalname);
                 textToSynthetize = await getTextToSynthetize(req.file, req)
-              
+
             }
             else {
                 textToSynthetize = req.body.text;
@@ -43,19 +44,37 @@ const textToSpeech = (storage) => {
             const client = new textToSpeech.TextToSpeechClient();
             const voices = await listVoices(client, req.body.gender.toUpperCase(), req.body.code)
             const [voiceVariants, voiceTechnologyType] = await selectBestVoice(voices)
-            req.body.audioEncoding === "WAV" ? (audioEncoding = "LINEAR16",sampleRateHertz = 24000) :  req.body.audioEncoding === "OGG" ? audioEncoding = "OGG_OPUS" : (audioEncoding = "MP3",sampleRateHertz = 44100);
+            req.body.audioEncoding === "WAV" ? (audioEncoding = "LINEAR16", sampleRateHertz = 24000) : req.body.audioEncoding === "OGG" ? audioEncoding = "OGG_OPUS" : (audioEncoding = "MP3", sampleRateHertz = 44100);
             const speakingRate = parseFloat(req.body.speakingRate);
             const request = {
                 input: { text: textToSynthetize },
                 voice: { languageCode: req.body.code, ssmlGender: gender, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
-                audioConfig: { audioEncoding: audioEncoding, pitch: pitch, effectsProfileId: [environment],speakingRate:speakingRate,sampleRateHertz:sampleRateHertz },
+                audioConfig: { audioEncoding: audioEncoding, pitch: pitch, effectsProfileId: [environment], speakingRate: speakingRate, sampleRateHertz: sampleRateHertz },
             };
-
-            const [response] = await client.synthesizeSpeech(request);
-            contentType = await setContentType(req.body.audioEncoding)
-            const outputExtension = req.body.audioEncoding.toLowerCase() === "ogg" ? "opus" : req.body.audioEncoding.toLowerCase()
-            await sendToStorage(`${outputFileNameWithoutExt}.${outputExtension}`, response.audioContent, contentType, storage)
-            res.status(200).send(JSON.stringify({fileName:outputFileNameWithoutExt}));
+            if (req.file.size < 5000) {
+                const [response] = await client.synthesizeSpeech(request);
+                contentType = await setContentType(req.body.audioEncoding)
+                const outputExtension = req.body.audioEncoding.toLowerCase() === "ogg" ? "opus" : req.body.audioEncoding.toLowerCase()
+                await sendToStorage(`${outputFileNameWithoutExt}.${outputExtension}`, response.audioContent, contentType, storage)
+                res.status(200).send(JSON.stringify({ fileName: outputFileNameWithoutExt }));
+            }
+            else {
+                if (req.body.code === "en-US" || req.body.code === "es-US") {
+                    const longClient = new textToSpeech.TextToSpeechLongAudioSynthesizeClient();
+                    console.log(`gs://create-boss/${outputFileName}`)
+                    const request = await longClient.synthesizeLongAudio({
+                        parent: `projects/${googleEnv.project_id}/locations/global`,
+                        audioConfig: { audioEncoding: audioEncoding },
+                        input: { text: textToSynthetize },
+                        voice: { language_code: req.body.code, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
+                        output_gcs_uri: `gs://create-boss/example.pdf`
+                    })
+            
+                }
+                else {
+                    res.status(503).send("Files bigger than 5 Kb must be only in US English or US Spanish");
+                }
+            }
         }
         catch (err) {
             console.log(err);
