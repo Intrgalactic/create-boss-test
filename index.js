@@ -9,7 +9,6 @@ const dotenv = require('dotenv');
 const cors = require('cors');
 const multer = require('multer');
 const speechToText = require('./middleware/api/speechToText');
-const liveSpeechToText = require('./middleware/api/liveSpeechToText');
 const deleteFile = require('./middleware/api/deleteFile');
 const { Storage } = require('@google-cloud/storage');
 const { MongoClient } = require('mongodb');
@@ -25,7 +24,6 @@ const corsOptions = {
 }
 
 const server = http.createServer(app);
-const wss = new WebSocket.Server({ server });
 const uri = process.env.DB_URL;
 
 const path = require('path');
@@ -40,10 +38,6 @@ const googleCloudStorage = new Storage({
     projectId: 'animated-alloy-236515'
 })
 
-wss.on('connection', (ws) => {
-    liveSpeechToText(ws);
-    wss.send('siemanko');
-})
 
 app.use(cors(corsOptions));
 
