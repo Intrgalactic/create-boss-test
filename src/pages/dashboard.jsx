@@ -131,7 +131,7 @@ export default function Dashboard() {
                         <DashboardBox heading="Current Plan Details">
                             <DashboardBoxContent>
                                 {planDetailsData.map((item, index) => (
-                                    <PlanDetailsRecord heading={item.heading} images={item.images} description={item.description} imgHeight={item.imgHeight} imgWidth={item.imgWidth} key={index} />
+                                    <PlanDetailsRecord heading={item.heading} images={item.images} description={item.description} imgHeight={item.imgHeight} imgWidth={item.imgWidth} key={index} alt={item.alt}/>
                                 ))}
                             </DashboardBoxContent>
                         </DashboardBox>
@@ -142,7 +142,7 @@ export default function Dashboard() {
                                     <LineChart data={data}
                                         margin={{ right: 30, left: 20, bottom: 5 }}>
                                         <XAxis dataKey="name" axisLine={false} style={{ fontFamily: "NexaHeavy" }} tick={{ fill: "white" }} />
-                                        <Tooltip content={<CustomTooltip />} />
+                                        <Tooltip content={<CustomTooltip/>} />
                                         <Line type="monotone" dataKey="STT" stroke="#0059ff" strokeWidth={3} />
                                         <Line type="monotone" dataKey="TTS" stroke="#7800ff" strokeWidth={3} />
                                         <Line type="monotone" dataKey="STV" stroke="#e000ff" strokeWidth={3} />

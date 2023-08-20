@@ -20,28 +20,32 @@ export const planDetailsData = [
         heading: "Current Plan :",
         description: "Starter",
         imgWidth: "27px",
-        imgHeight: "27px"
+        imgHeight: "27px",
+        alt: "current plan"
     },
     {
         images: [webpRecurringImage, recurringImage],
         heading: "Recurring In :",
         description: "31 Days",
         imgWidth: "25px",
-        imgHeight: "27px"
+        imgHeight: "27px",
+        alt: "recur"
     },
     {
         images: [webpAutorenewImage, autorenewImage],
         heading: "Auto - Renew :",
         description: "Yes",
         imgWidth: "31px",
-        imgHeight: "27px"
+        imgHeight: "27px",
+        alt: "renew"
     },
     {
         images: [boughtatImage, webpBoughtatImage],
         heading: "Bought At :",
         description: "25.07.2023",
         imgWidth: "38px",
-        imgHeight: "27px"
+        imgHeight: "27px",
+        alt: "bought at"
     }
 ]
 export const dashboardActionsData = [
@@ -50,28 +54,32 @@ export const dashboardActionsData = [
         imgHeight: "22px",
         imgWidth: "22px",
         link: "services/speech-to-text",
-        linkDescription: "Speech To Text"
+        linkDescription: "Speech To Text",
+        alt: "message box"
     },
     {
         images: [microphoneImage,webpMicrophoneImage],
         imgHeight: "22px",
         imgWidth: "16px",
         link: "services/text-to-speech",
-        linkDescription: "Text To Speech"
+        linkDescription: "Text To Speech",
+        alt: "microphone"
     },
     {
         images: [dotsImage,webpDotsImage],
         imgHeight: "22px",
         imgWidth: "42px",
         link: "services/subtitles-from-video",
-        linkDescription: "Subtitles From Video"
+        linkDescription: "Subtitles From Video",
+        alt: "dots"
     },
     {
         images: [tapeImage,webpTapeImage],
         imgHeight: "22px",
         imgWidth: "22px",
         link: "services/subtitles-to-video",
-        linkDescription: "Subtitles To Video"
+        linkDescription: "Subtitles To Video",
+        alt: "video tape"
     },
 
 ]

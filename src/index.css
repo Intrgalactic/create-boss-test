@@ -1,20 +1,22 @@
 @font-face {
   font-family: NexaHeavy;
   src: url('assets/fonts/NexaHeavy.otf');
+  font-display: swap;
 }
 
 @font-face {
   font-family: NexaRegular;
   src: url('assets/fonts/NexaRegular.otf');
+  font-display: swap;
 }
 
 @font-face {
   font-family:Nunito;
   src: url('assets/fonts/Nunito.ttf');
+  font-display: swap;
 }
 html {
   scroll-behavior: smooth;
-  font-display: swap;
   overscroll-behavior: none;
 }
 
@@ -2975,7 +2977,7 @@ footer {
     flex-basis: 100%;
     text-align: center;
     width: 100%;
-    font-size: 0.7em;
+    font-size: 0.9em;
     margin-block: 0;
   }
 
@@ -3007,7 +3009,9 @@ footer {
   .dashboard_settings-record {
     justify-content: space-around;
   }
-
+  .dashboard__select-box p {
+    font-size: 1.4em;
+  }
   .dashboard_settings-record .call-to-action-btn {
     width: 100px;
     font-size: 0.9em;
@@ -3502,7 +3506,7 @@ footer {
     width: 16.25vw;
     text-align: center;
     margin-block: 0;
-    font-size: 0.7em;
+    font-size: 1em;
 
   }
 
