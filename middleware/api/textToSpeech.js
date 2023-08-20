@@ -21,12 +21,10 @@ const textToSpeech = (storage) => {
     return asyncHandler(async (req, res) => {
         var textToSynthetize;
         var contentType;
-        console.log(req.body);
         var outputFileName = generateRandomFileName(`.${req.body.audioEncoding.toLowerCase()}`);
         var outputFileNameWithoutExt = outputFileName.substring(0, outputFileName.lastIndexOf("."));
         var sampleRateHertz = 16000;
         var audioEncoding;
-        console.log(req.file);
         try {
             if (req.file) {
                 outputFileName = encodeURIComponent(req.file.originalname);
@@ -51,36 +49,46 @@ const textToSpeech = (storage) => {
                 voice: { languageCode: req.body.code, ssmlGender: gender, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
                 audioConfig: { audioEncoding: audioEncoding, pitch: pitch, effectsProfileId: [environment], speakingRate: speakingRate, sampleRateHertz: sampleRateHertz },
             };
-            if (req.file.size < 5000) {
+            if (req.file) {
+                if (req.file.size < 5000) {
+                    synthesizeAndSend();
+                }
+                else {
+                    if (req.body.code === "en-US" || req.body.code === "es-US") {
+                        const longClient = new textToSpeech.TextToSpeechLongAudioSynthesizeClient();
+                        console.log(`gs://create-boss/${outputFileName}`)
+                        const request = await longClient.synthesizeLongAudio({
+                            parent: `projects/${googleEnv.project_id}/locations/global`,
+                            audioConfig: { audioEncoding: audioEncoding },
+                            input: { text: textToSynthetize },
+                            voice: { language_code: req.body.code, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
+                            output_gcs_uri: `gs://create-boss/example.pdf`
+                        })
+
+                    }
+                    else {
+                        res.status(503).send("Files bigger than 5 Kb must be only in US English or US Spanish");
+                    }
+                }
+            }
+            else {
+                synthesizeAndSend();
+            }
+            async function synthesizeAndSend() {
                 const [response] = await client.synthesizeSpeech(request);
                 contentType = await setContentType(req.body.audioEncoding)
                 const outputExtension = req.body.audioEncoding.toLowerCase() === "ogg" ? "opus" : req.body.audioEncoding.toLowerCase()
                 await sendToStorage(`${outputFileNameWithoutExt}.${outputExtension}`, response.audioContent, contentType, storage)
                 res.status(200).send(JSON.stringify({ fileName: outputFileNameWithoutExt }));
             }
-            else {
-                if (req.body.code === "en-US" || req.body.code === "es-US") {
-                    const longClient = new textToSpeech.TextToSpeechLongAudioSynthesizeClient();
-                    console.log(`gs://create-boss/${outputFileName}`)
-                    const request = await longClient.synthesizeLongAudio({
-                        parent: `projects/${googleEnv.project_id}/locations/global`,
-                        audioConfig: { audioEncoding: audioEncoding },
-                        input: { text: textToSynthetize },
-                        voice: { language_code: req.body.code, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
-                        output_gcs_uri: `gs://create-boss/example.pdf`
-                    })
-            
-                }
-                else {
-                    res.status(503).send("Files bigger than 5 Kb must be only in US English or US Spanish");
-                }
-            }
         }
         catch (err) {
             console.log(err);
             res.status(400).send(err.message);
         }
+       
     });
+
 }
 
 
