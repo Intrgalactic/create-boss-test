@@ -30,6 +30,7 @@ const textToSpeech = (storage) => {
             if (req.file) {
                 outputFileName = encodeURIComponent(req.file.originalname);
                 textToSynthetize = await getTextToSynthetize(req.file, req)
+              
             }
             else {
                 textToSynthetize = req.body.text;
