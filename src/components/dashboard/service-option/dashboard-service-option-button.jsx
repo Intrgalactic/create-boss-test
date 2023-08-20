@@ -1,5 +1,6 @@
-import { CtaButton } from "src/components/cta-button";
-import { DashboardSelectButton } from "./dashboard-select-button";
+
+import { lazy } from "react";
+const DashboardSelectButton = lazy(() => import("./dashboard-select-button").then(module => {return {default: module.DashboardSelectButton}}));
 
 export function DashboardServiceOptionButton({heading,text,options,setOption,setFilter,type,setFile,file,acceptList,color,setColor}) {
     return (

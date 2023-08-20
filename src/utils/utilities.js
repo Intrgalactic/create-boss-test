@@ -274,3 +274,13 @@ export function isEqual(firstItem, secondItem) {
     }
     return true;
 }
+
+export function toggleOptionsList(ref) {
+    ref.current.classList.toggle('visible-list');
+}
+export function chooseFile(ref) {
+    ref.current.click();
+}
+export function chooseColor(ref) {
+    ref.current.click();
+}

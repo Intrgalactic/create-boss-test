@@ -1,8 +1,8 @@
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
-import { Suspense, useRef, useState } from "react"
-import { AuthContainer } from "src/components/auth/auth-container"
-import { AuthForm } from "src/components/auth/auth-form"
-import { CtaButton } from "src/components/cta-button";
+import { Suspense, lazy, useRef, useState } from "react"
+const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx").then(module => {return { default: module.AuthContainer }}));
+const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => {return { default: module.AuthForm }}));
+const CtaButton = lazy(() => import("src/components/cta-button").then(module => {return { default: module.CtaButton }}));
 import Footer from "src/layouts/footer";
 import Header from "src/layouts/header";
 import Loader from "src/layouts/loader";

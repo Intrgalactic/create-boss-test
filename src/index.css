@@ -38,6 +38,7 @@ html {
 }
 
 body {
+  font-display:swap;
   margin: 0;
   min-width: 320px;
   max-width: 100vw;
@@ -1958,7 +1959,11 @@ footer {
 }
 
 .subtitles-to-video-dashboard {
-  background-image: url('assets/images/subtitles-to-video-bg.png');
+  background-image: url('assets/images/subtitles-to-video-bg.webp');
+  background-image: image-set(
+    url("assets/images/subtitles-to-video-bg.webp") type("image/webp"),
+    url("assets/images/subtitles-to-video-bg.jpg") type('image/jpeg')
+  );
   background-size: cover;
   min-height: 110vh;
 }

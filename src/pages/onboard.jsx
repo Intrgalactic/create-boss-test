@@ -10,13 +10,13 @@ import webpSubtitlesToVideoImage from 'src/assets/images/onboard-subtitles-to-vi
 import subtitlesFromVideoImage from 'src/assets/images/onboard-subtitles-from-video.png';
 import webpSubtitlesFromVideoImage from 'src/assets/images/onboard-subtitles-from-video.webp';
 import DashboardHeader from "src/layouts/dashboards/dashboard-header.jsx";
-import { useEffect, useState } from "react";
+import { Suspense, lazy, useEffect, useState } from "react";
 import { useContext } from "react";
 import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase.js";
-import { checkIsLoggedAndFetch, fetchUrl } from "src/utils/utilities.js";
-import { PricingContainer } from "src/components/pricing/pricing-container.jsx";
+import { checkIsLoggedAndFetch } from "src/utils/utilities.js";
+const PricingContainer = lazy(() => import("src/components/pricing/pricing-container.jsx").then(module => { return { default: module.PricingContainer } }));
 import Loader from "src/layouts/loader.jsx";
 import { ContentContainer } from "src/components/content-container.jsx";
 export default function OnBoard() {
@@ -31,18 +31,20 @@ export default function OnBoard() {
         [textToSpeechImage, webpTextToSpeechImage]
     ];
     useEffect(() => {
-        checkIsLoggedAndFetch(isLogged,auth,setLoadingState,setIsPaying,navigate);
+        checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPaying, navigate);
     }, [isLogged, setIsPaying]);
     return (
         <div className="onboard-page">
-            <DashboardHeader />
-            <ContentContainer containerClass="onboard-container">
-                {isPaying == "true" ?
-                    <ServiceOverview>
-                        <ServiceOverviewContainer heading="Welcome Onboard! Your Journey with Us Begins Now. Choose Your Preferred Service to Get Started!" imagePaths={imagePaths} buttonText="Go" />
-                    </ServiceOverview> : isPaying == "false" && <PricingContainer />}
-                {loadingState && <Loader />}
-            </ContentContainer>
+            <Suspense fallback={<Loader />}>
+                <DashboardHeader />
+                <ContentContainer containerClass="onboard-container">
+                    {isPaying == "true" ?
+                        <ServiceOverview>
+                            <ServiceOverviewContainer heading="Welcome Onboard! Your Journey with Us Begins Now. Choose Your Preferred Service to Get Started!" imagePaths={imagePaths} buttonText="Go" />
+                        </ServiceOverview> : isPaying == "false" && <PricingContainer />}
+                    {loadingState && <Loader />}
+                </ContentContainer>
+            </Suspense>
         </div>
     )
 }

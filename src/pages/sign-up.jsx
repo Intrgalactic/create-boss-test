@@ -1,8 +1,7 @@
 import { createUserWithEmailAndPassword, deleteUser, sendEmailVerification, updateProfile } from "firebase/auth";
-import { Suspense, lazy, useContext, useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
-import { AuthContainer } from "src/components/auth/auth-container.jsx";
-import { AuthForm } from "src/components/auth/auth-form";
+import { Suspense, lazy, useContext, useRef, useState } from "react";
+const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx").then(module => {return { default: module.AuthContainer }}));
+const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => {return { default: module.AuthForm }}));
 import Header from "src/layouts/header";
 import { getFirebaseErr, validateCallback, validateForm } from "src/utils/utilities";
 import { auth } from "../../firebase.js";

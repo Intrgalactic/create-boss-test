@@ -1,10 +1,10 @@
 import { ContentContainer } from "src/components/content-container";
-import { DashboardBox } from "src/components/dashboard/boxes/dashboard-box";
-import { DashboardBoxContent } from "src/components/dashboard/boxes/dashboard-box-content";
+import { Suspense, lazy, useContext, useEffect, useState } from "react";
+const DashboardBox = lazy(() => import("src/components/dashboard/boxes/dashboard-box").then(module => {return {default:module.DashboardBox}}));
+const DashboardBoxContent = lazy(() => import("src/components/dashboard/boxes/dashboard-box-content").then(module => {return {default:module.DashboardBoxContent}}));
 import { SectionHeading } from "src/components/section-heading";
 import DashboardHeader from "src/layouts/dashboards/dashboard-header";
-import { CtaButton } from "src/components/cta-button";
-import { Suspense, lazy, useContext, useEffect, useState } from "react";
+const CtaButton = lazy(() => import("src/components/cta-button").then(module => { return { default: module.CtaButton } }));
 const DashboardActionsRecord = lazy(() => import('src/components/dashboard/boxes/actions/dashboard-actions-record').then(module => {
     return { default: module.DashboardActionsRecord }
 }))
@@ -26,7 +26,6 @@ import { planDetailsData, dashboardActionsData, audioSpeedOptions, voiceGenderOp
 import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, XAxis, ResponsiveContainer, LineChart, Line } from "recharts";
-import { PureComponent } from "react";
 import { auth } from "../../firebase.js";
 import { checkIsLoggedAndFetch, setLanguageProperties } from "src/utils/utilities.js";
 import Loader from "src/layouts/loader.jsx";
@@ -93,9 +92,7 @@ export default function Dashboard() {
     const TTSfilterRegEx = new RegExp(TTSLanguageFilter, "i");
     const STTfilterRegEx = new RegExp(STTLanguageFilter, "i");
     const isLogged = useContext(authContext);
-    const navigate = useNavigate();
     const [isPaying, setIsPaying] = useState(false);
-    const [loadingState, setLoadingState] = useState(true);
     function setTTSOptionsToDefault() {
         setAudioSpeed("1");
         setVoiceGender("Male");

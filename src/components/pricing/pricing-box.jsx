@@ -1,7 +1,7 @@
 import { Suspense, lazy, useRef, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 import Loader from "src/layouts/loader";
-import { CtaButton } from "../cta-button";
+const CtaButton = lazy(() => import("src/components/cta-button").then(module => { return { default: module.CtaButton } }));
 import { Picture } from "../picture";
 import expandImage from 'src/assets/images/pricing-expand.png';
 import webpExpandImage from 'src/assets/images/pricing-expand.webp';

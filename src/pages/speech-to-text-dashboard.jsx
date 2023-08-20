@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { lazy, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
-import DashboardHeader from "src/layouts/dashboards/dashboard-header";
-import DashboardLeftSection from "src/layouts/dashboards/dashboard-left-section";
-import DashboardRightSection from "src/layouts/dashboards/dashboard-right-section";
-import DashboardServiceOptionsRow from "src/layouts/dashboards/service-options/dashboard-service-options-row";
+const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
+const DashboardLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-left-section"));
+const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
+const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
+import fileDownload from "js-file-download" ;
 import Loader from "src/layouts/loader";
-import fileDownload from "js-file-download";
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
 

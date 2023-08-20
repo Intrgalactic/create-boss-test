@@ -1,12 +1,14 @@
-import Pricing from 'src/layouts/pricing'
-import Benefits from "src/layouts/benefits";
+
 import Contact from "src/layouts/contact";
 import Footer from "src/layouts/footer";
 import Header from "src/layouts/header";
 import Hero from "src/layouts/hero";
-import ServiceOverview from "src/layouts/service-overview";
-import Testimonials from "src/layouts/testimonials";
-import { ServiceOverviewContainer } from 'src/components/service-overview-container';
+import { Suspense, lazy } from 'react';
+const ServiceOverview = lazy(() => import("src/layouts/service-overview"));
+const Testimonials = lazy(() => import("src/layouts/testimonials"));
+const ServiceOverviewContainer = lazy(() => import("src/components/service-overview-container").then(module => {return {default:module.ServiceOverviewContainer}}));
+const Pricing = lazy(() => import("src/layouts/pricing"));
+const Benefits = lazy(() => import("src/layouts/benefits"));
 import speechToTextImage from 'src/assets/images/speech-to-text.png';
 import webpSpeechToTextImage from 'src/assets/images/speech-to-text.webp';
 import textToSpeechImage from 'src/assets/images/text-to-speech.png';
@@ -15,7 +17,6 @@ import subtitlesToVideoImage from 'src/assets/images/subtitles-to-video.png';
 import webpSubtitlesToVideoImage from 'src/assets/images/subtitles-to-video.webp';
 import subtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.png';
 import webpSubtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.webp';
-import { Suspense } from 'react';
 import Loader from 'src/layouts/loader';
 export default function Home() {
     const imagePaths = [

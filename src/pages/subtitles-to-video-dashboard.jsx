@@ -1,11 +1,11 @@
-import { Suspense, useState } from "react";
+import { Suspense, lazy, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
-import DashboardHeader from "src/layouts/dashboards/dashboard-header";
-import DashboardRightSection from "src/layouts/dashboards/dashboard-right-section";
-import DashboardVideoLeftSection from "src/layouts/dashboards/dashboard-video-left-section";
-import DashboardServiceOptionsRow from "src/layouts/dashboards/service-options/dashboard-service-options-row";
+const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
+const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
+const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-video-left-section"));
+const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
 import Loader from "src/layouts/loader";
-import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, subtitlesColorOptions, trueFalseOptions, textStrokeOptions } from "src/utils/dashboard-static-data";
+import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions } from "src/utils/dashboard-static-data";
 import { sendData, setLanguageProperties } from "src/utils/utilities";
 import fileDownload from "js-file-download";
 import DownloadingLoader from "src/layouts/downloading-loader";
