@@ -8,7 +8,7 @@ import pauseImage from 'src/assets/images/pause.png';
 import webpPauseImage from 'src/assets/images/pause.webp';
 import { useLocation } from "react-router-dom";
 
-export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile,textInput }) {
+export function DashboardServiceOutput({ isFileAttached, setTextInput, setFile, textInput }) {
     const textAreaRef = useRef();
     const location = useLocation();
     const path = location.pathname;
@@ -17,10 +17,15 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile,te
     var audioChunks = [];
 
     useEffect(() => {
-        if (textInput === "" && (isFileAttached || !isFileAttached)) {
-            textAreaRef.current.value = "";
+        if (textAreaRef.current) {
+            if (textInput === "") {
+                textAreaRef.current.value = "";
+            }
+            else if (isFileAttached, !isFileAttached) {
+                textAreaRef.current.value = "";
+            }
         }
-    }, [isFileAttached,textInput]);
+    }, [isFileAttached, textInput]);
 
     function enableMicrophone() {
         navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then((mediaStream) => {
@@ -30,12 +35,12 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput,setFile,te
                     audioChunks.push(event.data);
                 }
             };
-    
+
             mediaRecorder.onstop = () => {
                 const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
                 const reader = new FileReader();
                 reader.onload = () => {
-                    const file = new File([audioBlob],"audio.wav",{type:"audio/wav"});
+                    const file = new File([audioBlob], "audio.wav", { type: "audio/wav" });
                     setFile(file);
                 };
                 reader.readAsArrayBuffer(audioBlob);

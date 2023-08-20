@@ -1950,8 +1950,12 @@ footer {
 .expanded {
   max-height: 2000px;
   transition: max-height 0.5s ease-in;
+  overflow: scroll;
+  scrollbar-width: 0px;
 }
-
+.expanded::-webkit-scrollbar {
+  display: none;
+}
 .text-to-speech-dashboard .dashboard__select-box p,
 .speech-to-text-dashboard .dashboard__select-box p,
 .subtitles-to-video-dashboard .dashboard__select-box p {
@@ -1967,7 +1971,9 @@ footer {
 .speech-to-text-dashboard .section-heading {
   width: fit-content;
 }
-
+.video-preview__control:last-of-type {
+  margin-top: 50px;
+}
 .video-preview {
   text-align: center;
   width: 500px;

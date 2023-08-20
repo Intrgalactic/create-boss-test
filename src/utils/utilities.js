@@ -158,7 +158,7 @@ export async function sendData(fetchUrl, data, states, stateSetters) {
         body: data,
         signal
     }
-
+    console.log(data);
     try {
 
         setTimeout(() => {
@@ -167,7 +167,7 @@ export async function sendData(fetchUrl, data, states, stateSetters) {
         await fetch(`${fetchUrl}`, options).then(async (res) => {
             var rawFileResponse;
             var data = await res.json();
-            console.log(data);
+
             if (res.status === 200) {
                 const outputExtension = states.outputExtension.toLowerCase() === "ogg" ? "opus" : states.outputExtension.toLowerCase();
                 const fileName = data.fileName;

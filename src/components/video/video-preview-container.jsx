@@ -11,6 +11,9 @@ export function VideoPreviewContainer({ videoFile, setVideoFile, sendToGetSubtit
         if (fileRef.current && videoFile) {
             setLabelText("Attached");
         }
+        else {
+            setLabelText("Choose Video");
+        }
     }, [videoFile, fileRef.current])
     return (
         <div className="video-preview__container">
@@ -21,6 +24,9 @@ export function VideoPreviewContainer({ videoFile, setVideoFile, sendToGetSubtit
             <VideoPreview videoFile={videoFile} />
             <VideoPreviewControl>
                 <button onClick={() => {!filePath ? sendToGetSubtitles() : downloadFile()}} ref={modifyRef} >{filePath ? "Download" : "Modify"}</button>
+            </VideoPreviewControl>
+            <VideoPreviewControl>
+                <button onClick={() => {setVideoFile();setFilePath();}} ref={modifyRef} >Reset</button>
             </VideoPreviewControl>
         </div>
     )

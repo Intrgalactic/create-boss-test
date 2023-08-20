@@ -96,13 +96,15 @@ export default function TTSDashboard() {
             setLoadingState(true);
             if (file) {
                 if (file.type === "text/plain" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf") {
+                    console.log(file);
                     createDataAndSend({
                         code: languageCode,
                         gender: voiceGender,
                         pitch: voicePitch,
                         effectsProfileId: speakersType,
                         audioEncoding: outputExtension,
-                        speakingRate: audioSpeed
+                        speakingRate: audioSpeed,
+                        file: file,
                     }, file, outputExtension, stateSetters, 'api/text-to-speech');
                 }
                 else {

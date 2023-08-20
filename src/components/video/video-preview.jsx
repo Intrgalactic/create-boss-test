@@ -39,10 +39,10 @@ export function VideoPreview({videoFile,setVideoFile}) {
             }
             
             <div className='video-controls'>
-                {!isPlaying && videoUrl && videoFile.type.startsWith("video") ? <button onClick={() => {videoRef.current.play();setIsPlaying(true)}}>
+                {!isPlaying && videoUrl && (videoFile ? videoFile.type.startsWith("video") : false ) ? <button onClick={() => {videoRef.current.play();setIsPlaying(true)}}>
                     <Picture images={[webpPlayBtnImg,playBtnImg]} alt="play button" imgWidth="45px" imgHeight="68.25px"/>
                 </button> :
-                (!isPlaying && !videoUrl) || !videoFile.type.startsWith("video") ?
+                (!isPlaying && !videoUrl) || !videoFile || (videoFile ? !videoFile.type.startsWith("video") : false) ?
                     <p>Please Choose A Video</p> :
                 <button onClick={() => {videoRef.current.pause();setIsPlaying(false)}}>
                     <Picture images={[webpPauseBtnImg,pauseBtnImg]} alt="play button" imgWidth="54px" imgHeight="68.25px"/>
