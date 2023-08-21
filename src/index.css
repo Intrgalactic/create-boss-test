@@ -49,20 +49,20 @@ body {
   overflow-x: hidden;
   background-color: #000020;
 }
-::-webkit-scrollbar {
+html::-webkit-scrollbar {
   width: 10px;
 }
 
-::-webkit-scrollbar-track {
+html::-webkit-scrollbar-track {
   background: transparent;
 }
 
-::-webkit-scrollbar-thumb {
+html::-webkit-scrollbar-thumb {
   background: rgba(11, 50, 255, 0.5);
   border-radius: 8px;
 }
 
-::-webkit-scrollbar-thumb:hover {
+html::-webkit-scrollbar-thumb:hover {
   background: rgba(11, 50, 255, 0.75);
 }
 
@@ -125,7 +125,7 @@ header {
 }
 
 .dashboard-header img {
-  width: 80%;
+  width: 100%;
   height: auto;
 }
 
@@ -423,7 +423,7 @@ input[type="checkbox"]:hover,
 .testimonial__box-user-details picture {
   width: 80px;
   height: 80px;
-  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 2px 1px rgba(0, 0, 0, 0.3);
   overflow: hidden;
   border-radius: 50%;
 }
@@ -439,7 +439,7 @@ input[type="checkbox"]:hover,
 }
 
 .testimonial__box picture img:not(.testimonial__box-user-details picture img) {
-  filter: drop-shadow(0px 5px 5px rgba(0, 0, 0, 0.2));
+  filter: drop-shadow(0px 2px 1px rgba(0, 0, 0, 0.2));
   max-width: 100%;
   height: auto;
 }
@@ -2783,7 +2783,7 @@ footer {
   }
 
   .dashboard-header img:not(.dashboard-header nav img) {
-    width: 30%;
+    width: 60%;
   }
 
   .dashboard__container {
@@ -3004,8 +3004,12 @@ footer {
   .header__container {
     -webkit-justify-content: space-between;
     justify-content: space-between;
-  }
 
+  }
+  .header__container img {
+    max-width: 80%;
+    height: auto;
+  }
   .footer-links-single-container h5 {
     font-size: 0.8em;
   }
@@ -3497,9 +3501,9 @@ footer {
   }
 
   .dashboard-header img:not(.dashboard-header nav img) {
-    height: 40px;
-    max-width: 80%;
-    width: auto;
+    height: auto;
+    max-width: 100%;
+    width: 100%;
   }
 
   .dashboard-header nav {

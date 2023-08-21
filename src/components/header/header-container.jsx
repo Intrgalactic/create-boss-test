@@ -22,7 +22,7 @@ export function HeaderContainer() {
     }
     return (
         <div className="header__container">
-            <img src={logo} alt="createBoss logo" width="112px" height="48px" />
+            <img src={logo} alt="createBoss logo" width="240px" height="42px" />
             <Nav ref={navRef} toggleNav={toggleNav} isNavOpened={isNavOpened} />
             <NavButton toggleNav={toggleNav} />
         </div>

@@ -26,6 +26,9 @@ export default function STVDashboard() {
     const [languageFilter, setLanguageFilter] = useState('');
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     const [languageCode, setLanguageCode] = useState('en-US');
+    const [emotionsEnabled,setEmotionsEnabled] = useState("No");
+    const [italicize,setItalicize] = useState("No");
+    const [uppercaseSubtitles,setUppercaseSubtitles] = useState("No");
     const [subColor, setSubColor] = useState();
     const [filePath, setFilePath] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
@@ -73,11 +76,24 @@ export default function STVDashboard() {
             acceptList: "application/font-*,.ttf, .otf, .woff, .woff2"
         },
         {
+            heading: "Italicize",
+            options: trueFalseOptions,
+            setOption: setItalicize,
+            text: italicize
+        },
+        {
             heading: "Subtitles Color",
             type: "color",
             color: subColor,
             setColor: setSubColor,
         },
+        {
+            heading: "Uppercase Subtitles",
+            options: trueFalseOptions,
+            setOption: setUppercaseSubtitles,
+            text: uppercaseSubtitles
+        },
+
         {
             text: subtitlesSize,
             options: fontSizeOptions,
@@ -97,6 +113,12 @@ export default function STVDashboard() {
             options: trueFalseOptions,
             setOption: setEnableTextStroke,
             heading: "Enable Stroke"
+        },
+        {
+            text:emotionsEnabled,
+            options:trueFalseOptions,
+            setOption: setEmotionsEnabled,
+            heading: "Emotions Detection"
         },
         {
             heading: "Stroke Color",
