@@ -14,6 +14,11 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput, setFile, 
     const listenButton = useRef();
     const [microphoneStream, setMicrophoneStream] = useState();
     var audioChunks = [];
+    useEffect(() => {
+        if (isFileAttached) {
+            setTextInput && setTextInput("");
+        }
+    },[isFileAttached])
 
     function enableMicrophone() {
         navigator.mediaDevices.getUserMedia({ video: false, audio: true }).then((mediaStream) => {
@@ -42,7 +47,7 @@ export function DashboardServiceOutput({ isFileAttached, setTextInput, setFile, 
         microphoneStream.stop();
         setMicrophoneStream();
     }
-    console.log(isFileAttached);
+    
     return (
         <>
             {isFileAttached ?

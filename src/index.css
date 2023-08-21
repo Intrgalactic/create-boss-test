@@ -49,6 +49,22 @@ body {
   overflow-x: hidden;
   background-color: #000020;
 }
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(11, 50, 255, 0.5);
+  border-radius: 8px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(11, 50, 255, 0.75);
+}
 
 header,
 .dashboard-header,
@@ -437,8 +453,8 @@ input[type="checkbox"]:hover,
   background-color: white;
   color: black;
   padding-block: 40px;
-  border-radius: 40px;
-  box-shadow: 0px 4px 20px rgba(255, 255, 255, 0.6), 5px 0px 20px 10px rgba(0, 0, 0, 0.25) inset;
+  border-radius: 5px;
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.4), 5px 0px 20px 10px rgba(0, 0, 0, 0.25) inset;
   text-align: left;
   width: 400px;
   height: fit-content;
@@ -492,11 +508,11 @@ input[type="checkbox"]:hover,
 }
 
 .pricing__box:first-of-type {
-  box-shadow: 0px 4px 20px rgba(255, 255, 255, 0.6), 5px 0px 10px 10px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.4), 5px 0px 10px 10px rgba(0, 0, 0, 0.25) inset;
 }
 
 .pricing__box:last-of-type {
-  box-shadow: 0px 4px 20px rgba(255, 255, 255, 0.6), -5px 0px 10px 10px rgba(0, 0, 0, 0.25) inset;
+  box-shadow: 0px 4px 10px rgba(255, 255, 255, 0.4), -5px 0px 10px 10px rgba(0, 0, 0, 0.25) inset;
 }
 
 .pricing__box-description {
@@ -617,7 +633,7 @@ textarea {
   appearance: none;
   border: none;
   font-size: 1.5em;
-  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.125) inset;
+  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.25) inset;
 }
 
 .contact-section__form-container form textarea {
@@ -640,13 +656,14 @@ form label:hover {
 }
 
 input[type="checkbox"] {
-  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.125) inset;
+  box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, 0.25) inset;
   height: 40px;
   width: 50px;
   max-width: 50px;
   min-width: 43px;
   max-height: 40px;
   min-height: 34px;
+  margin:0;
   -webkit-appearance: initial;
   appearance: initial;
   border-radius: 5px;
@@ -1951,7 +1968,7 @@ footer {
   max-height: 2000px;
   transition: max-height 0.5s ease-in;
   overflow: scroll;
-  scrollbar-width: 0px;
+  scrollbar-width: none;
 }
 .expanded::-webkit-scrollbar {
   display: none;
@@ -2537,10 +2554,10 @@ footer {
 
   .contact-section__form-container form input:not(input[type="checkbox"]),
   textarea {
-    width: 60%;
-    max-width: 60%;
+    width: 80%;
+    max-width: 80%;
     font-size: 1.2em;
-    min-width: 60%;
+    min-width: 80%;
   }
 
   form label {
@@ -3134,6 +3151,13 @@ footer {
 
   .pricing__box {
     min-height: 500px;
+  }
+  .pricing-section__boxes-container {
+    flex-direction: column;
+    row-gap: 50px;
+  }
+  .pricing-section .carousel-buttons-container {
+    display:none;
   }
 }
 
