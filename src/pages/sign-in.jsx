@@ -27,12 +27,7 @@ export default function SignIn() {
             signInWithCredential(auth, userCredentials).then(async () => {
                 setLoadingState(false);
                 const userData = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}get-user?email=${auth.currentUser.email}`);
-                if (userData.isNew) {
-                    navigate('/onboard');
-                }
-                else {
-                    navigate('/dashboard');
-                }
+                navigate('/dashboard'); 
             })
                 .catch(err => {
                     validateCallback([getFirebaseErr], err.message, setFirebaseError);

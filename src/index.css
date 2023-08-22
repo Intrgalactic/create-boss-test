@@ -3183,6 +3183,13 @@ footer {
   .pricing-section .carousel-buttons-container {
     display:none;
   }
+  .dashboard {
+    background-image: url('assets/images/low-mobile-dashboard-bg.webp');
+    background-image: image-set(url('assets/images/low-mobile-dashboard-bg.webp') type('image/webp'),
+        url('assets/images/low-mobile-dashboard-bg.jpg') type('image/jpeg'),
+      );
+    background-size: 100% 100%;
+  }
 }
 
 @media only screen and (min-width:512px) and (max-width:768px) {
