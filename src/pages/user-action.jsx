@@ -65,7 +65,6 @@ export default function UserAction() {
             setIsEmailVerified(true);
             setLoadingState(false);
         }).catch(err => {
-            console.log(err)
             checkIsCodeGood(err.message);
         })
     }
@@ -90,8 +89,8 @@ export default function UserAction() {
                     <>
                         <AuthContainer heading="Reset Your Account Password">
                             <AuthForm>
-                                <input type="password" placeholder="Old Password" onChange={(e) => { userData.current.password = e.target.value }} />
-                                <input type="password" placeholder="New Password" onChange={(e) => { userData.current.newPassword = e.target.value }} />
+                                <input type="password" placeholder="New Password" onChange={(e) => { userData.current.password = e.target.value }} />
+                                <input type="password" placeholder="Repeat New Password" onChange={(e) => { userData.current.newPassword = e.target.value }} />
                                 {validateErr ? <font className="auth-form__err">{validateErr}</font> : firebaseErr ? <font className="auth-form__err">{firebaseErr}</font> : successState && <font className="auth__form-success">{successState}</font>}
                                 {!successState ? <CtaButton text="Verify" action={resetUserPassword} /> : <CtaButton text={auth.currentUser ? "Dashboard" : "Login"} action={redirect} />}
                             </AuthForm>

@@ -30,6 +30,7 @@ export default function SignIn() {
                 navigate('/dashboard'); 
             })
                 .catch(err => {
+                    console.log(err);
                     validateCallback([getFirebaseErr], err.message, setFirebaseError);
                     setLoadingState(false);
                 })

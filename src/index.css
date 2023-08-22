@@ -114,11 +114,11 @@ header {
   position: relative;
 }
 
-header nav a:not(.dashboard-header nav a) {
+header nav a {
   position: relative;
 }
 
-header nav a:after:not(.dashboard-header nav a:after) {
+header nav a:after {
   bottom: -5px;
   transition-duration: 200ms;
   left: 0;
@@ -133,7 +133,7 @@ header nav a:after:not(.dashboard-header nav a:after) {
   content: '';
 }
 
-header nav a:hover:after:not(.dashboard-header nav a:hover:after) {
+header nav a:hover:after {
   transform: scaleX(1);
   transform-origin: left;
 }
@@ -1065,7 +1065,7 @@ footer {
   color: #08FE00;
   max-width: 80%;
   font-size: 1.5em;
-  ;
+  font-family: NexaHeavy;
   margin: auto;
   flex-basis: 100%;
 }
@@ -1082,8 +1082,9 @@ footer {
   color: black;
   text-shadow: none;
   flex-basis: 100%;
+  text-align: center;
+  margin-bottom: 0px;
 }
-
 .search-bar input {
   width: 30vw;
   border-radius: 10px;

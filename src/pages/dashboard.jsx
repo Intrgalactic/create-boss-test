@@ -29,8 +29,7 @@ import { Tooltip, XAxis, ResponsiveContainer, LineChart, Line } from "recharts";
 import { auth } from "../../firebase.js";
 import { checkIsLoggedAndFetch, setLanguageProperties } from "src/utils/utilities.js";
 import Loader from "src/layouts/loader.jsx";
-const CustomTooltip = lazy(() => import("src/components/dashboard/charts/customTooltip.jsx").then(module => { return { default: module.CustomTooltip } }));
-
+import { CustomTooltip } from "src/components/dashboard/charts/customTooltip.jsx";
 
 export default function Dashboard() {
     const [audioSpeed, setAudioSpeed] = useState('1');
