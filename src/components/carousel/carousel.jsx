@@ -1,5 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import { CarouselButton } from "./carousel-button";
+import { motion } from "framer-motion";
 
 export const Carousel = forwardRef((props, ref) => {
     const [scrollCount, setScrollCount] = useState(1);
@@ -63,7 +64,7 @@ export const Carousel = forwardRef((props, ref) => {
     }
     console.log(scrollCount);
     return (
-        <div className="carousel" ref={ref}>
+        <motion.div className="carousel" initial={{opacity:0}} whileInView={{opacity:1}} ref={ref}>
             {windowSize < 512 ?
                 <>
                     {props.children}
@@ -78,7 +79,7 @@ export const Carousel = forwardRef((props, ref) => {
                     {props.children}
                     <CarouselButton images={props.images} alt={props.alt} imgWidth={props.imgWidth} imgHeight={props.imgHeight} onClick={scrollToNextElem} buttonClass="right-carousel-button" />
                 </> : null}
-        </div>
+        </motion.div>
     )
 });
 

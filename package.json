@@ -12,6 +12,7 @@
   "dependencies": {
     "@grammarly/editor-sdk-react": "^2.5.1",
     "firebase": "^10.1.0",
+    "framer-motion": "^10.16.1",
     "js-file-download": "^0.4.12",
     "path": "^0.12.7",
     "react": "^18.2.0",

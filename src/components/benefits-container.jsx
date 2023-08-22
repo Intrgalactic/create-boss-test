@@ -4,11 +4,14 @@ import moneyImage from 'src/assets/images/money.png';
 import webpMoneyImage from 'src/assets/images/money.webp';
 import { Picture } from "./picture";
 import { SectionHeading } from "./section-heading";
+import { motion } from "framer-motion";
 export function BenefitsContainer() {
- 
+
     return (
         <div className="benefits-section__container" >
-            <Picture images={[moneyImage, webpMoneyImage]} imgHeight="290.89px" imgWidth="404.25px" alt="money bag" />
+            <motion.div initial={{x:-500}} whileInView={{x:0}}>
+                <Picture images={[moneyImage, webpMoneyImage]} imgHeight="290.89px" imgWidth="404.25px" alt="money bag" />
+            </motion.div>
             <div className="benefits-section__pre-container">
                 <SectionHeading heading="Discover the Advantages of Our Speech Conversion Services" />
                 <ContentContainer containerClass="benefits-section__boxes-container">

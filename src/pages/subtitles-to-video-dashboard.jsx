@@ -208,7 +208,10 @@ export default function STVDashboard() {
                 strokeColor: strokeColor,
                 enableSubBg: enableSubBg,
                 subBgOpacity: subBgOpacity,
-                enableShadow: subtitlesShadow
+                enableShadow: subtitlesShadow,
+                enableEmotions:emotionsEnabled,
+                italicize:italicize,
+                uppercaseSubs:uppercaseSubtitles
             };
             createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr);
         }
