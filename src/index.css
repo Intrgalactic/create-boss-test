@@ -102,12 +102,16 @@ h2 {
   text-shadow: 0px 4px 10px black;
 }
 
-.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading, .verify-page .section-heading, .reset-password-page .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading, .speech-to-text-dashboard__container .section-heading, .subtitles-to-video-dashboard .section-heading) {
+.section-heading:not(.benefits-section .section-heading, .contact-section .section-heading,.service-overview-section .section-heading, .verify-page .section-heading, .reset-password-page .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading, .speech-to-text-dashboard__container .section-heading, .subtitles-to-video-dashboard .section-heading) {
   width: 60%;
   padding-block: 50px;
   margin: auto;
 }
-
+.service-overview-section .section-heading {
+  width: 60%;
+  padding-block: 50px;
+  margin:auto;
+}
 header {
   height: 108px;
   background-color: #0B32FF;
@@ -137,7 +141,6 @@ header nav a:hover:after {
   transform: scaleX(1);
   transform-origin: left;
 }
-
 .dashboard-header {
   margin-left: 0;
   background-color: rgba(0, 0, 0, 0.3);
@@ -169,6 +172,7 @@ header nav a:hover:after {
   box-shadow: 0px 2px 5px black;
   border-radius: 10px;
   content: '';
+  transform: scale(1);
   left: 0;
   bottom: -10px;
 }
@@ -968,7 +972,7 @@ footer {
 }
 
 .auth-container {
-  min-height: 800px;
+  min-height: 900px;
   position: relative;
   padding-block: 50px;
 }
@@ -2332,7 +2336,9 @@ footer {
     text-align: left;
     background-color: black;
   }
-
+  header .visible a:after {
+    display:none;
+  }
   header nav .nav-button hr {
     display: none;
   }
@@ -2558,11 +2564,15 @@ footer {
     font-size: clamp(0.8em, 3.75vw, 1.1em);
   }
 
-  .section-heading:not(.benefits-section .section-heading, .about-us-section__container .section-heading, .reset-password-page .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading, .text-to-speech-dashboard .section-heading, .speech-to-text-dashboard .section-heading, .subtitles-to-video-dashboard .section-heading) {
+  .section-heading:not(.benefits-section .section-heading,.service-overview-section .section-heading, .about-us-section__container .section-heading, .reset-password-page .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading, .text-to-speech-dashboard .section-heading, .speech-to-text-dashboard .section-heading, .subtitles-to-video-dashboard .section-heading) {
     width: 100%;
     padding-bottom: 25px;
   }
-
+  .service-overview-section .section-heading {
+    margin-bottom: 50px;
+    padding-block: 0px;
+    width: 80vw;
+  }
   .contact-section__container {
     display: block;
   }
