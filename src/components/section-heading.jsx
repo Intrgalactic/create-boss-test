@@ -3,7 +3,7 @@ import { useMemo } from "react";
 import { useLocation } from "react-router-dom"
 
 export function SectionHeading({heading}) {
-    const location = useMemo(() => {return useLocation()});
+    const location = useLocation();
     const sentence = {
         hidden: {opacity:1},
         visible: {

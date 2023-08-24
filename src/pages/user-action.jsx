@@ -1,9 +1,9 @@
-import {  applyActionCode, confirmPasswordReset, signInWithCredential, verifyPasswordResetCode } from "firebase/auth";
+import { applyActionCode, confirmPasswordReset, signInWithCredential, verifyPasswordResetCode } from "firebase/auth";
 import { Suspense, lazy, useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx").then(module => {return { default: module.AuthContainer }}));
-const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => {return { default: module.AuthForm }}));
-const CtaButton = lazy(() => import("src/components/cta-button").then(module => {return { default: module.CtaButton }}));
+const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx").then(module => { return { default: module.AuthContainer } }));
+const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => { return { default: module.AuthForm } }));
+const CtaButton = lazy(() => import("src/components/cta-button").then(module => { return { default: module.CtaButton } }));
 import Footer from "src/layouts/footer";
 import Header from "src/layouts/header";
 import { getFirebaseErr, isEqual, validatePassword } from "src/utils/utilities";
@@ -30,16 +30,18 @@ export default function UserAction() {
 
 
     useEffect(() => {
-        switch (search.get("mode")) {
-            case "resetPassword": verifyPasswordResetCode(auth, actionCode).then(() => {
-                setLoadingState(false);
-            }).catch(err => {
-                checkIsCodeGood(err.message);
-            })
-                break;
-            case "verifyEmail": verifyUserEmail();
-                break;
+        if (!successState) {
+            switch (search.get("mode")) {
+                case "resetPassword": verifyPasswordResetCode(auth, actionCode).then(() => {
+                    setLoadingState(false);
+                }).catch(err => {
+                    checkIsCodeGood(err.message);
+                })
+                    break;
+                case "verifyEmail": verifyUserEmail();
+                    break;
 
+            }
         }
     }, [actionCode, checkIsCodeGood, navigate, search]);
 

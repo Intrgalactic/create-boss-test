@@ -1,9 +1,9 @@
 import { Suspense } from "react";
 import Loader from "src/layouts/loader";
 
-export function Picture({ images, alt, imgHeight, imgWidth }) {
+export function Picture({ images, alt, imgHeight, imgWidth,picClass }) {
     return (
-        <picture>
+        <picture className={picClass ? picClass : ""}>
             <source srcSet={images[0]} />
             <source srcSet={images[1]} />
             <Suspense fallback={<Loader />}>

@@ -25,9 +25,9 @@ export default function SignIn() {
         if (validateForm(userData.current, setValidateErr)) {
             setLoadingState(true);
             signInWithCredential(auth, userCredentials).then(async () => {
-                setLoadingState(false);
                 const userData = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}get-user?email=${auth.currentUser.email}`);
-                navigate('/dashboard'); 
+                await navigate('/dashboard'); 
+                setLoadingState(false)
             })
                 .catch(err => {
                     console.log(err);
