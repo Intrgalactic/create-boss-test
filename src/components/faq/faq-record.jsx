@@ -5,9 +5,6 @@ export function FaqRecord({question,answer}) {
     const [isOpened,setIsOpened] = useState(false);
     function unHideRecord() {
         answerRef.current.classList.toggle("visible-record");
-        setTimeout(() => {
-            answerRef.current.style.wordSpacing = "0";
-        },0);
         setIsOpened(!isOpened);
     }
     return (

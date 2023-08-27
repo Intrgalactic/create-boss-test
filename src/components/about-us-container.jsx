@@ -8,8 +8,9 @@ export function AboutUsContainer() {
     return (
         <div className="about-us-section__container">
             <SectionHeading heading="Empowering Voices, Redefining Communication: Our Story at CreateBoss" />
+            <p className="section-heading-description">Step into the world of CreateBoss, where every word becomes a powerful tool for change and connection.</p>
             <ContentContainer containerClass="about-us-section__content">
-                <Picture images={[about,webpAbout]} alt="about us" imgWidth="750px" imgHeight="750px"/>
+                <Picture images={[about,webpAbout]} alt="about us" imgWidth="483px" imgHeight="610px"/>
                 <p>At CreateBoss, we are trailblazers in the field of speech conversion, revolutionizing the way content is created and communicated. Headquartered in Poland, we are a powerhouse of innovation and cutting-edge technology, setting new industry standards and exceeding expectations.
                     <br/>
                     <br/>

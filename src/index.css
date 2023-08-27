@@ -53,22 +53,6 @@ body {
   background-color: #000020;
 }
 
-html::-webkit-scrollbar {
-  width: 10px;
-}
-
-html::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-html::-webkit-scrollbar-thumb {
-  background: rgba(11, 50, 255, 0.5);
-  border-radius: 8px;
-}
-
-html::-webkit-scrollbar-thumb:hover {
-  background: rgba(11, 50, 255, 0.75);
-}
 
 header,
 .dashboard-header,
@@ -119,6 +103,7 @@ header {
   height: 108px;
   background-color: #0B32FF;
   position: relative;
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.7);
 }
 
 header nav a {
@@ -844,23 +829,29 @@ footer {
   height: fit-content;
   min-height: 90vh;
   color: white;
-  background-color: #0B6CFF;
+  background-image:   url('assets/images/faq-bg.webp');
+  background-image:image-set(
+    url('assets/images/faq-bg.webp') type('image/webp'),
+    url('assets/images/faq-bg.jpg') type('image/jpeg')
+  );
+  background-size: 100% 100%;
   padding-bottom: 100px;
 }
 
 .about-us-section__container .section-heading,
 .faq-container .section-heading {
-  text-shadow: 0px 2px 2px black;
-  background-color: #004FC5;
   padding-block: 50px;
   padding-inline: 10%;
   width: 80%;
+  margin-bottom: 0px;
 }
 
 .about-us-section__content {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  gap:5vw;
+  margin-bottom: 100px;
   padding-bottom: 50px;
 }
 
@@ -869,8 +860,8 @@ footer {
 }
 
 .about-us-section__content p {
-  width: 720px;
-  text-shadow: 0px 2px 2px black;
+  width: 37.5vw;
+  text-shadow: 0px 2px 5px black;
   font-size: 1.1em;
   display: block;
   margin: auto;
@@ -878,13 +869,17 @@ footer {
 }
 
 .faq-container {
-  background-color: #0B6CFF;
+  background-image: url('assets/images/faq-bg.jpg');
+  background-image:image-set(
+    url('assets/images/faq-bg.webp') type('image/webp'),
+    url('assets/images/faq-bg.jpg') type('image/jpeg')
+  );
+  background-size:100% 100%;
 }
 
 .faq-container .section-heading {
   color: white;
   padding-top: 50px;
-  text-shadow: 0px 2px 2px black;
   margin-bottom: 0;
 }
 
@@ -895,12 +890,12 @@ footer {
   margin: auto;
   padding-block: 10px;
   transition-duration: 300ms;
-  background-color: rgba(0, 0, 0, 0.6);
-  border-radius: 10px;
+  background-color:rgba(0,0,0,0.2);
+  border-radius:5px;
   color: white;
   position: relative;
-  box-shadow: 0px 0px 2px rgba(255, 255, 255, 0.8);
-  text-shadow: 0px 2px 2px black;
+  border:1px solid rgba(255,255,255,0.3);
+  text-shadow: 0px 2px 5px black;
 }
 
 .faq__record:hover {
@@ -910,7 +905,7 @@ footer {
 .faq-container__records-container {
   display: flex;
   flex-wrap: wrap;
-  padding-top: 20px;
+  padding-top: 30px;
   padding-bottom: 300px;
   row-gap: 30px;
 }
@@ -925,18 +920,18 @@ footer {
 
 .faq__record p {
   text-align: left;
-  display: none;
   font-size: 1em;
-  width: 70%;
-  word-spacing: -20px;
+  width: 80%;
+  max-height: 0px;
+  transition-duration: 350ms;
+  overflow: hidden;
+  transition-timing-function: ease-in-out;
   font-family: NexaRegular;
   margin-left: 10%;
-  transition-duration: 200ms;
+  margin-block:0;
 }
 
-.faq__record p {
-  word-spacing: -30px;
-}
+
 
 .faq__record-heading {
   display: flex;
@@ -946,8 +941,7 @@ footer {
 }
 
 .faq__record .visible-record {
-  display: block;
-
+  max-height: 150px;
 }
 
 .section-heading-description {
@@ -958,8 +952,7 @@ footer {
   padding-bottom: 50px;
   width: 80%;
   padding-inline: 10%;
-  background-color: #004FC5;
-  text-shadow: 0px 2px 2px black;
+  text-shadow: 0px 4px 10px black
 }
 
 .plus-sign {
@@ -1105,10 +1098,9 @@ footer {
 }
 .search-bar input {
   width: 30vw;
-  border-radius: 10px;
-  box-shadow: 0px 0px 2px rgba(255, 255, 255, 0.8);
-  border: none;
-  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 5px;
+  border:1px solid rgba(255,255,255,0.3);
+  background-color: rgba(0, 0, 0, 0.2);
   color: white;
   font-size: 1.2em;
   padding-inline: 10px;
@@ -2735,15 +2727,15 @@ footer {
     font-size: 0.8em;
   }
 
-  .faq__record,
-  .search-bar input {
+  .faq__record {
     width: 50vw;
   }
-
+  .search-bar input {
+    width: calc(50vw - 20px);
+  }
   .faq-container .section-heading,
   .section-heading-description {
     text-align: left;
-    padding-inline: 10vw;
     width: 80vw;
     max-width: 80vw;
   }
@@ -3108,11 +3100,12 @@ footer {
     font-size: 0.85em;
   }
 
-  .faq__record,
-  .search-bar input {
+  .faq__record {
     width: 80vw;
   }
-
+  .search-bar input {
+    width: calc(80vw - 20px);
+  }
   .auth-form {
     width: 80vw;
   }
@@ -3503,11 +3496,6 @@ footer {
 
     display: block;
     padding-bottom: 100px;
-  }
-
-  .about-us-section__content img {
-    width: 95%;
-    height: auto;
   }
 
   .about-us-section__content p {
