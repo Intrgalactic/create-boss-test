@@ -18,8 +18,8 @@ export function VideoPreviewContainer({ videoFile, setVideoFile, sendToGetSubtit
     return (
         <div className="video-preview__container">
             <VideoPreviewControl>
-                <label ref={fileRef} onClick={() => { fileInputRef.current.click() }} onDrop={(e) => { handleFileDrop(e, setVideoFile); }} onDragEnd={(e) => { () => { removeDragEffect(setLabelText) } }} onDragOver={(e) => { handleFileInputDrag(e, setLabelText) }} onDragLeave={() => { removeDragEffect(setLabelText) }}>{labelText}</label>
-                <input type="file" accept="video/*" ref={fileInputRef} onChange={(e) => { setVideoFile(e.target.files[0]);setFilePath() }} />
+                <label ref={fileRef} onClick={() => { fileInputRef.current.click() }} onDrop={(e) => { handleFileDrop(e, setVideoFile); }} onDragEnd={(e) => { () => { removeDragEffect(setLabelText) } }} onDragOver={(e) => { handleFileInputDrag(e, setLabelText) }} onDragLeave={() => { removeDragEffect(setLabelText) }}>{labelText}
+                <input type="file" accept="video/*" ref={fileInputRef} onChange={(e) => { setVideoFile(e.target.files[0]);setFilePath() }} /></label>
             </VideoPreviewControl>
             <VideoPreview videoFile={videoFile} />
             <VideoPreviewControl>

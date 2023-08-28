@@ -104,6 +104,7 @@ header {
   background-color: #0B32FF;
   position: relative;
   box-shadow: 0px 5px 20px rgba(0,0,0,0.4);
+
 }
 
 header nav a {
@@ -220,7 +221,9 @@ header nav a {
   -webkit-align-items: center;
   height: 100%;
   position: relative;
+  padding-inline:0;
   justify-content: center;
+  gap:10px;
   -webkit-justify-content: center;
 }
 
@@ -632,6 +635,8 @@ input[type="checkbox"]:hover,
   font-family: NexaHeavy;
   font-size: 2em;
   text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.5);
+  padding-bottom: 25px;
+  margin-block:0;
 }
 
 .contact-section__form-container {
@@ -840,7 +845,8 @@ footer {
 
 .about-us-section__container .section-heading,
 .faq-container .section-heading {
-  padding-block: 50px;
+  padding-top:50px;
+  padding-bottom: 25px;
   padding-inline: 10%;
   width: 80%;
   margin-bottom: 0px;
@@ -864,7 +870,7 @@ footer {
   width: 37.5vw;
   text-shadow: 0px 2px 10px rgba(0,0,0,0.4);
   font-size: 1.1em;
-  font-family: NexaHeavy  ;
+  font-family: NexaHeavy;
   display: block;
   margin: auto;
   text-align: left;
@@ -1145,7 +1151,7 @@ footer {
   background-color: rgba(0, 0, 0, 0.2);
   position: absolute;
   top: 0;
-  z-index: 999;
+  z-index: 998;
   height: 100%;
   width: 100vw;
   display: grid;
@@ -2123,15 +2129,15 @@ footer {
 }
 
 .video-preview__control input {
-  width: 100%;
-  opacity: 0;
-  height: 100%;
+  position: absolute;
+  display:none;
 }
 
 .video-preview__control:first-of-type label {
   width: 100%;
   display: grid;
   align-items: center;
+  position: relative;
   height: 100%;
   font-family: NexaHeavy;
   font-size: 2em;
@@ -2369,6 +2375,7 @@ footer {
     height: 100vh;
     padding-top: calc(10vh - 20px);
     transition-duration: 150ms;
+    z-index: 999;
     left: -50vw;
   }
 
@@ -2606,7 +2613,7 @@ footer {
     font-size: 16px;
   }
 
-  .section-heading:not(.benefits-section .section-heading,.service-overview-section .section-heading, .about-us-section__container .section-heading, .reset-password-page .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading, .text-to-speech-dashboard .section-heading, .speech-to-text-dashboard .section-heading, .subtitles-to-video-dashboard .section-heading) {
+  .section-heading:not(.benefits-section .section-heading,.service-overview-section .section-heading, .about-us-section__container .section-heading, .reset-password-page .section-heading, .faq-container, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard__box .section-heading, .dashboard__container .section-heading, .text-to-speech-dashboard .section-heading, .speech-to-text-dashboard .section-heading, .subtitles-to-video-dashboard .section-heading,.faq-container .section-heading) {
     width: 100%;
     padding-bottom: 25px;
   }
@@ -3111,7 +3118,7 @@ footer {
   }
 
   .about-us-section__content p {
-    font-size: 1.3em;
+    font-size: 1em;
   }
 
   .faq__record {
@@ -3264,7 +3271,9 @@ footer {
       );
     background-size: 100% 100%;
   }
-
+  .section-heading-description {
+    padding-bottom: 25px;
+  }
 }
 
 @media only screen and (min-width:512px) and (max-width:768px) {
@@ -3683,7 +3692,6 @@ footer {
     width: 400px;
     min-width: 400px;
   }
-
   .pricing-section .carousel {
     column-gap: 50px;
   }
@@ -3795,5 +3803,4 @@ footer {
   .dashboard-video-section .service-overview__box {
     width: 20vw;
   }
-
 }

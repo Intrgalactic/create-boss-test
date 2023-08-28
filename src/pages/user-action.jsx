@@ -74,6 +74,7 @@ export default function UserAction() {
     function checkIsCodeGood(err) {
         if (err === "Firebase: Error (auth/invalid-action-code)." || (err === "Firebase: Error (auth/internal-error)." && !isEmailVerified)) {
             setFirebaseErr("Something went wrong.");
+            navigate('/')
         }
         else {
             getFirebaseErr(err, setFirebaseErr);

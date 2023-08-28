@@ -6,6 +6,7 @@ export function FileInputContainer({ file, setFile, textInput,acceptedFormats,se
     function addClassList(remove,add) {
         !remove ? fileRef.current.classList.add("drop-file") : fileRef.current.classList.remove("drop-file");
         add &&  fileRef.current.classList.add("attached-file") 
+        console.log(fileRef.current.classList);
     }
     return (
         <div className='file-input-container' onClick={() => { fileInputRef.current.click() }} ref={fileRef} onDrop={(e) => {handleFileDrop(e,setFile,setErrorAtDownload,addClassList)}} onDragEnd={(e) => {() => {removeDragEffect(false,addClassList)}}}onDragOver={(e) => {handleFileInputDrag(e,false,addClassList)}} onDragLeave={() => {removeDragEffect(false,addClassList   )}} >

@@ -1,6 +1,6 @@
 import Nav from "src/layouts/nav";
 import { NavButton } from "./nav-button";
-import logo from 'src/assets/images/logo.png';
+import logo from 'src/assets/images/logo.svg';
 import { useRef, useState } from "react";
 
 export function HeaderContainer() {
@@ -22,7 +22,7 @@ export function HeaderContainer() {
     }
     return (
         <div className="header__container">
-            <img src={logo} alt="createBoss logo" width="240px" height="42px" />
+            <img src={logo} alt="createBoss logo" width="262px" height="46px" />
             <Nav ref={navRef} toggleNav={toggleNav} isNavOpened={isNavOpened} />
             <NavButton toggleNav={toggleNav} />
         </div>
