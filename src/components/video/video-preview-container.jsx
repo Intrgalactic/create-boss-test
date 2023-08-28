@@ -18,15 +18,15 @@ export function VideoPreviewContainer({ videoFile, setVideoFile, sendToGetSubtit
     return (
         <div className="video-preview__container">
             <VideoPreviewControl>
-                <label ref={fileRef} onClick={() => { fileInputRef.current.click() }} onDrop={(e) => { handleFileDrop(e, setVideoFile); }} onDragEnd={(e) => { () => { removeDragEffect(setLabelText) } }} onDragOver={(e) => { handleFileInputDrag(e, setLabelText) }} onDragLeave={() => { removeDragEffect(setLabelText) }}>{labelText}
+                <label ref={fileRef} onDrop={(e) => { handleFileDrop(e, setVideoFile); }} onDragEnd={(e) => { () => { removeDragEffect(setLabelText) } }} onDragOver={(e) => { handleFileInputDrag(e, setLabelText) }} onDragLeave={() => { removeDragEffect(setLabelText) }}>{labelText}
                 <input type="file" accept="video/*" ref={fileInputRef} onChange={(e) => { setVideoFile(e.target.files[0]);setFilePath() }} /></label>
             </VideoPreviewControl>
             <VideoPreview videoFile={videoFile} />
             <VideoPreviewControl>
-                <button onClick={() => {!filePath ? sendToGetSubtitles() : downloadFile()}} ref={modifyRef} >{filePath ? "Download" : "Modify"}</button>
+                <button onClick={() => {setVideoFile();setFilePath();}} ref={modifyRef} >Reset</button>
             </VideoPreviewControl>
             <VideoPreviewControl>
-                <button onClick={() => {setVideoFile();setFilePath();}} ref={modifyRef} >Reset</button>
+                <button onClick={() => {!filePath ? sendToGetSubtitles() : downloadFile()}} ref={modifyRef} >{filePath ? "Download" : "Modify"}</button>
             </VideoPreviewControl>
         </div>
     )

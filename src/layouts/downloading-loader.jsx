@@ -7,7 +7,7 @@ export default function DownloadingLoader({images,alt,imgWidth,imgHeight,heading
     return (
         <div className="loader">
             <div className="downloading-loader-container">
-                <Picture images={[webpHourglassImage,hourglassImage]} alt="hourglass" imgWidth="82px" imgHeight="103px"/>
+                <Picture images={[webpHourglassImage,hourglassImage]} alt="hourglass" imgWidth="52px" imgHeight="73px"/>
                 <p>{heading}</p>
                 <p>The bigger size it is, processing time can get extended</p>
                 <div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
