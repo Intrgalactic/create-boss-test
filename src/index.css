@@ -86,7 +86,7 @@ h2 {
   margin-top: 0;
   font-family: NexaHeavy;
   font-size: 3em;
-  text-shadow: 0px 4px 10px black;
+  text-shadow: 0px 4px 5px rgba(0,0,0,0.2);
 }
 
 .section-heading:not(.benefits-section .section-heading, .contact-section .section-heading,.service-overview-section .section-heading, .verify-page .section-heading, .reset-password-page .section-heading, .about-us-section__container .section-heading, .faq-container .section-heading, .sign-in-page .section-heading, .sign-up-page .section-heading, .onboard-page .section-heading, .dashboard .section-heading, .text-to-speech-dashboard__container .section-heading, .speech-to-text-dashboard__container .section-heading, .subtitles-to-video-dashboard .section-heading) {
@@ -103,7 +103,7 @@ header {
   height: 108px;
   background-color: #0B32FF;
   position: relative;
-  box-shadow: 0px 5px 20px rgba(0,0,0,0.7);
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.4);
 }
 
 header nav a {
@@ -135,7 +135,7 @@ header nav a:hover:after {
   position: fixed;
   padding-inline: 0;
   left: 0;
-  box-shadow: 8px 0px 10px rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 5px 20px rgba(0,0,0,0.4);
   height: 100vh;
   width: 12.5vw;
 }
@@ -319,7 +319,7 @@ header nav,
 
 .content-box {
   background-color: black;
-  box-shadow: 0px 4px 10px black;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.75);
   border-radius: 30px;
 }
 
@@ -844,6 +844,7 @@ footer {
   padding-inline: 10%;
   width: 80%;
   margin-bottom: 0px;
+  text-shadow: 0px 4px 10px rgba(0,0,0,0.4);
 }
 
 .about-us-section__content {
@@ -861,8 +862,9 @@ footer {
 
 .about-us-section__content p {
   width: 37.5vw;
-  text-shadow: 0px 2px 5px black;
+  text-shadow: 0px 2px 10px rgba(0,0,0,0.4);
   font-size: 1.1em;
+  font-family: NexaHeavy  ;
   display: block;
   margin: auto;
   text-align: left;
@@ -894,8 +896,9 @@ footer {
   border-radius:5px;
   color: white;
   position: relative;
-  border:1px solid rgba(255,255,255,0.3);
-  text-shadow: 0px 2px 5px black;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
+  border:1px solid rgba(0,0,0,0.5);
+  text-shadow: 0px 4px 10px rgba(0,0,0,0.4);
 }
 
 .faq__record:hover {
@@ -907,20 +910,25 @@ footer {
   flex-wrap: wrap;
   padding-top: 30px;
   padding-bottom: 300px;
+  width: 95vw;
+  margin:auto;
+
+  column-gap: 5vw;
   row-gap: 30px;
 }
 
 .faq__record h3 {
-  font-size: 1.2em;
-  margin-block: 0;
+  font-size: 1em;
+  margin-bottom: 0;
   width: 80%;
+  margin-top: 10px;
   text-align: left;
   font-family: NexaHeavy;
 }
 
 .faq__record p {
   text-align: left;
-  font-size: 1em;
+  font-size: 0.8em;
   width: 80%;
   max-height: 0px;
   transition-duration: 350ms;
@@ -928,16 +936,19 @@ footer {
   transition-timing-function: ease-in-out;
   font-family: NexaRegular;
   margin-left: 10%;
-  margin-block:0;
+  margin-top:0;
+  margin-bottom: 10px;
+
 }
 
 
 
 .faq__record-heading {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  width: 80%;
+  margin-inline:10%;
 }
 
 .faq__record .visible-record {
@@ -952,7 +963,7 @@ footer {
   padding-bottom: 50px;
   width: 80%;
   padding-inline: 10%;
-  text-shadow: 0px 4px 10px black
+  text-shadow: 0px 4px 10px rgba(0,0,0,0.4);
 }
 
 .plus-sign {
@@ -1097,9 +1108,10 @@ footer {
   margin-bottom: 0px;
 }
 .search-bar input {
-  width: 30vw;
+  width: calc(90vw - 20px);
   border-radius: 5px;
-  border:1px solid rgba(255,255,255,0.3);
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.4);
+  border:1px solid rgba(0,0,0,0.5);
   background-color: rgba(0, 0, 0, 0.2);
   color: white;
   font-size: 1.2em;
@@ -2728,10 +2740,10 @@ footer {
   }
 
   .faq__record {
-    width: 50vw;
+    width: 80vw;
   }
   .search-bar input {
-    width: calc(50vw - 20px);
+    width: calc(80vw - 20px);
   }
   .faq-container .section-heading,
   .section-heading-description {
@@ -2739,7 +2751,9 @@ footer {
     width: 80vw;
     max-width: 80vw;
   }
-
+  .section-heading-description {
+    font-size: 1.1em;
+  }
   .pricing__box-expand-list-container {
     height: 150px;
   }
@@ -3485,7 +3499,7 @@ footer {
   .about-us-section__container .section-heading,
   .faq-container .section-heading,
   .onboard-page .section-heading {
-    font-size: 1.3em;
+    font-size: 1.8em;
   }
 
   .section-heading-description {
