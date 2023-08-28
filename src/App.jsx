@@ -20,6 +20,10 @@ import ResetPassword from './pages/reset-password'
 import SFVDashboard from './pages/subtitles-from-video-dashboard'
 function App() {
   const [isLogged, setIsLogged] = useState();
+  const data = new Date();
+  const ms = data.getTime();
+  const newData = new Date(ms + 604800000);
+  console.log(newData.toLocaleDateString("pl-PL"));
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {

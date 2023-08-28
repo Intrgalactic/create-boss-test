@@ -11,15 +11,15 @@ import webpPricingCarouselButtonImage from 'src/assets/images/pricing-carousel-b
 
 export function PricingContainer() {
     const carouselRef = useRef();
-    const packagesAmounts = [["10,000", "10", "5", "5"], ["25,000", "15", "10", "10","Access to Video Enhancer", "Advanced Options For Subtitles"], ["50,000", "25", "20", "20","Access to Video Enhancer", "Advanced Options For Subtitles","Access to Voice Cloning", "Instant Personal Support"], ["?", "?", "?", "?","Access to Video Enhancer", "Advanced Options For Subtitles","Access to Voice Cloning", "Instant Personal Support",'High Volume']];
-    const starterServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video"];
-    const essentialServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","Access to Video Enhancer", "Advanced Options For Subtitles"];
-    const professionalServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","Access to Video Enhancer", "Advanced Options For Subtitles","Access to Voice Cloning", "Instant Personal Support"];
-    const enterpriseServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","Access to Video Enhancer", "Advanced Options For Subtitles","Access to Voice Cloning", "Instant Personal Support","Access to High Volume Use"]
+    const packagesAmounts = [["10,000", "10", "5", "5","All Filler Words Removal"], ["25,000", "15", "10", "10","Access to Video Enhancer", "Advanced Options For Subtitles","Audio Quality Enhancer","All Filler Words Removal"], ["100,000", "25", "20", "20","Access to Video Enhancer", "Advanced Options For Subtitles","Audio Quality Enhancer","All Filler Words Removal","Studio Quality For Text To Speech","Access to Voice Cloning", "Instant Personal Support"], ["?", "?", "?", "?","Access to Video Enhancer", "Advanced Options For Subtitles","Audio Quality Enhancer","All Filler Words Removal","Studio Quality For Text To Speech","Access to Voice Cloning", "Instant Personal Support","Access to High Volume Use"]];
+    const starterServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","All Filler Words Removal"];
+    const essentialServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","All Filler Words Removal","Access to Video Enhancer", "Advanced Options For Subtitles","Audio Quality Enhancer"];
+    const professionalServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","All Filler Words Removal","Access to Video Enhancer", "Advanced Options For Subtitles","Audio Quality Enhancer","Studio Quality For Text To Speech","Access to Voice Cloning", "Instant Personal Support"];
+    const enterpriseServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","All Filler Words Removal","Access to Video Enhancer", "Advanced Options For Subtitles","Audio Quality Enhancer","Studio Quality For Text To Speech","Access to Voice Cloning", "Instant Personal Support","Access to High Volume Use"]
 
-    const starterDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes'];
-    const essentialDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes','Yes'];
-    const professionalDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes','Yes','Yes'];
+    const starterDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes'];
+    const essentialDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes'];
+    const professionalDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes'];
     const enterpriseDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month"];
 
     return (
