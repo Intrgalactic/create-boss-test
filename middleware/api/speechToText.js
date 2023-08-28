@@ -9,13 +9,11 @@ const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const ffprobe = require('ffprobe-static');
 const fontkit = require('fontkit');
-
 const speechToText = (storage, isVideoApi) => {
   return asyncHandler(async (req, res) => {
     try {
       var summary, fullSpeechToTextContent, contentType, diarizeOn, topicsOn;
       var topics = [];
-      console.log(req.body);
       if (isVideoApi) {
         var logoIndex = req.body.logo && req.body.logo;
         var logo = req.files[logoIndex] && req.files[logoIndex];
@@ -27,7 +25,7 @@ const speechToText = (storage, isVideoApi) => {
         var font = req.files[fontIndex] && req.files[fontIndex];
         var fontExtension = req.files[fontIndex] && req.files[fontIndex].originalname.slice(font.originalname.lastIndexOf('.'));
         var fontSize = req.body.subtitlesFontSize;
-       
+
         var enableTextStroke = req.body.enableTextStroke === "No" ? false : true;
         var enableSubBg = req.body.enableSubBg === "No" ? false : true;
         var enableShadow = req.body.enableShadow === "No" ? false : true;
@@ -35,8 +33,11 @@ const speechToText = (storage, isVideoApi) => {
         var formattedStrokeColor = enableTextStroke ? convertColorToReversedHex(req.body.strokeColor, "000000") : null;
         var formattedSubBgColor = enableSubBg ? convertColorToReversedHex(req.body.subBgColor, "000000", parseFloat(req.body.subBgOpacity)) : null;
         var textStroke = enableTextStroke ? req.body.textStroke.slice(0, req.body.textStroke.indexOf('P')) : null;
+        var emotionsEnabled = req.body.enableEmotions === "No" ? false : true;
+        var italicizeSubs = req.body.italicize === "No" ? false : true;
+        var uppercaseSubs = req.body.uppercaseSubs === "No" ? false : true;
       }
- 
+
       const videoStream = isVideoApi ? req.files[0] : req.file;
       const mimetype = videoStream.mimetype;
       const outputExtension = isVideoApi ? videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')) : req.body.audioEncoding;
@@ -51,7 +52,7 @@ const speechToText = (storage, isVideoApi) => {
       const punctuationOn = req.body.punctuationOn ? convertToBoolean(req.body.punctuationOn) : true;
       const subtitlesOn = convertToBoolean(req.body.subtitlesOn);
       const summarizeOn = req.body.summarizeOn ? req.body.summarizeOn === "No" ? false : 'v2' : false;
-      
+
       const options = {
         tier: tier,
         model: "general",
@@ -82,7 +83,13 @@ const speechToText = (storage, isVideoApi) => {
       }
       if (subtitlesOn) {
         var subtitles = [];
-        !isVideoApi ? subtitles = await addSubtitles(response) : subtitles = await addSubtitles(response, videoStream);
+        !isVideoApi ? subtitles = await addSubtitles(response) : subtitles = await addSubtitles(response,{
+          video:videoStream,
+          uppercaseSubs:uppercaseSubs,
+          emotionsEnabled:emotionsEnabled,
+          fontBuffer:font ? font.buffer : false,
+          fontSize:fontSize
+        });
       }
 
       if (diarizeOn) {
@@ -111,7 +118,7 @@ const speechToText = (storage, isVideoApi) => {
 
       else {
         const srtSubtitles = convertToSrt(subtitles.join(''));
-        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), srtSubtitles, formattedSubtitlesColor, enableSubBg, formattedSubBgColor, videoStream.buffer, font, fontSize, fontExtension, req.body.subtitlesAlign, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign, enableShadow, enableTextStroke, textStroke, formattedStrokeColor, enableSubBg);
+        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), srtSubtitles, formattedSubtitlesColor, enableSubBg, formattedSubBgColor, videoStream.buffer, font, fontSize, fontExtension, req.body.subtitlesAlign, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign, enableShadow, enableTextStroke, textStroke, formattedStrokeColor, enableSubBg, italicizeSubs);
         const endVideoBuffer = fs.readFileSync(videoPath);
         fs.unlinkSync(videoPath);
         await sendToStorage(`${outputFileName.substring(0, outputFileName.lastIndexOf('.'))}.${outputExtension}`, endVideoBuffer, contentType, storage);
@@ -159,10 +166,22 @@ function convertToBoolean(variable) {
   }
 }
 
-async function addSubtitles(response, video) {
+async function addSubtitles(response,subtitlesProps) {
   var pDuration = 6;
   var aspectRatio;
   var subtitles = [];
+  var wordsEmotionallyLabeled = require("../../data/emotions/en-US/words.json");
+  var colorsPalette = ["0CFF00", "0046FF", "FFD500", "5900FF", "FF7000", "FF0000"];
+  var happyWords = wordsEmotionallyLabeled.happy;
+  var sadWords = wordsEmotionallyLabeled.sad;
+  var anxiousWords = wordsEmotionallyLabeled.anxious;
+  var surprisedWords = wordsEmotionallyLabeled.surprised;
+  var afraidWords = wordsEmotionallyLabeled.afraid
+  var angryWords = wordsEmotionallyLabeled.angry;
+  var emotionsArr = [happyWords, sadWords, anxiousWords, surprisedWords, afraidWords, angryWords];
+  if(subtitlesProps) {
+    var {video,uppercaseSubs,emotionsEnabled,fontBuffer,fontSize} = subtitlesProps;
+  }
   function getAspectRatio() {
     if (video) {
       return new Promise((resolve, reject) => {
@@ -202,10 +221,14 @@ async function addSubtitles(response, video) {
     }
   }
   aspectRatio = await getAspectRatio();
+  aspectRatio <= 1.2 ? pDuration = 24 : 6;
   for (let utterance of response.results.utterances) {
-    if (aspectRatio <= 1) {
-      for (let i = 0; i < utterance.words.length; i++) {
-        subtitles.push(`[${utterance.words[i].start.toFixed(2)} - ${utterance.words[i].end.toFixed(2)}]${utterance.words[i].word.toUpperCase()}\n`);
+    if (aspectRatio <= 1.2) {
+      for (let i = 0; i < utterance.words.length; i+=3) {
+        const wordsArr =  uppercaseSubs ? `${utterance.words[i].word} ${utterance.words[i + 1] ? utterance.words[i + 1].word : ""} ${utterance.words[i + 2] ? utterance.words[i + 2].word : ""}`.toUpperCase() : `${utterance.words[i].word} ${utterance.words[i + 1] ? utterance.words[i + 1].word : ""} ${utterance.words[i + 2] ? utterance.words[i + 2].word : ""}`
+        const end = utterance.words[i + 2] ? utterance.words[i + 2].end.toFixed(2) : utterance.words[i + 1] ? utterance.words[i + 1].end.toFixed(2) : utterance.words[i].end.toFixed(2);
+        const defaultWord = utterance.words[i].word;
+        checkAndPushToArray(emotionsEnabled, wordsArr, emotionsArr, colorsPalette, subtitles, utterance.words[i].start.toFixed(2),end, defaultWord);
       }
     }
     else {
@@ -221,20 +244,31 @@ async function addSubtitles(response, video) {
           for (let i = 0; i < transcriptLen / pDuration; i++) {
             transcriptPart += transcriptArrInParts[j][i] !== undefined ? (transcriptArrInParts[j][i] + " ") : '';
           }
-          subtitles.push(`[${startTimeStamp.toFixed(2)} - ${endTimeStamp.toFixed(2)}]${transcriptPart}\n`);
+          subtitles.push(`[${startTimeStamp.toFixed(2)} - ${endTimeStamp.toFixed(2)}]${uppercaseSubs ? transcriptPart.toUpperCase() : transcriptPart}\n`);
           startTimeStamp += speakingTime;
           endTimeStamp += speakingTime;
           transcriptPart = "";
         }
       }
       else {
-        subtitles.push(`[${utterance.start.toFixed(2)} - ${utterance.end.toFixed(2)}]${utterance.transcript}\n`);
+        checkAndPushToArray(emotionsEnabled, uppercaseSubs ? utterance.transcript.toUpperCase() : utterance.transcript, emotionsArr, colorsPalette, subtitles, utterance.start.toFixed(2),utterance.end.toFixed(2), utterance.transcript);
       }
     }
   }
+
+
   return subtitles;
 }
 
+function checkAndPushToArray(emotionsEnabled, subsToCheck, emotionsArr, colorsPalette, subtitles, start,end, transcriptWord) {
+  if (emotionsEnabled) {
+    let modifiedWord = addEmotionsToSubtitles(subsToCheck, emotionsArr, colorsPalette);
+    subtitles.push(`[${start} - ${end}]${modifiedWord}\n`);
+  }
+  else {
+    subtitles.push(`[${start} - ${end}]${transcriptWord}\n`);
+  }
+}
 
 function splitToNChunks(array, n) {
   let result = [];
@@ -244,12 +278,12 @@ function splitToNChunks(array, n) {
   return result;
 }
 
-async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor, enableSubBg, subBgColor, videoBuffer, font, fontSize, fontExtension, subtitlesAlign, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign, enableShadow, enableTextStroke, stroke, strokeColor, enableSubBg) {
+async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor, enableSubBg, subBgColor, videoBuffer, font, fontSize, fontExtension, subtitlesAlign, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign, enableShadow, enableTextStroke, stroke, strokeColor, enableSubBg, italicizeSubs) {
 
   Ffmpeg.setFfmpegPath(ffmpegPath);
 
   var tempFolder = path.join(__dirname, '../.././temporary');
-  const fontTempFolder = path.join(__dirname,'./temporary');
+  const fontTempFolder = path.join(__dirname, './temporary');
   var detectedFont, fontFamilyName;
   var logoFileName, logoAlignFFmpegFormat, logoVideoFileName, videoWithLogoPath;
   var watermarkFileName, watermarkAlignFFmpegFormat, watermarkVideoFileName, videoWithWatermarkPath;
@@ -299,10 +333,10 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
   var textStroke = enableTextStroke ? `,Outline=${stroke}` : ",Outline=0";
   var outlineColor = enableTextStroke ? `,OutlineColour=${strokeColor}` : "";
   var subBg = enableSubBg ? `,BorderStyle=4,MarginV=${subtitlesAlign === "Bottom" ? "20" : "0"},BackColour=${subBgColor}` : "";
-  console.log(subBgColor);
+  var italicize = italicizeSubs ? ",Italic=1" : "";
   const endVideoPath = await createModifiedVideos();
   return endVideoPath;
-  
+
   function createModifiedVideos() {
     return new Promise((resolve, reject) => {
       Ffmpeg()
@@ -310,7 +344,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
         .complexFilter([
           {
             filter: 'subtitles',
-            options: `./temporary/${subtitlesFileName}:force_style='Alignment=${subtitlesAlignFFmpegFormat},Fontsize=${fontSize},Fontsdir=./temporary,Fontfile=${subtitlesFontFileName},PrimaryColour=${subtitlesColor},Fontname=${fontFamilyName}${shadow}${textStroke}${outlineColor}${subBg}'`
+            options: `./temporary/${subtitlesFileName}:force_style='Alignment=${subtitlesAlignFFmpegFormat},Fontsize=${fontSize},Fontsdir=./temporary,Fontfile=${subtitlesFontFileName},PrimaryColour=${subtitlesColor},Fontname=${fontFamilyName}${shadow}${textStroke}${outlineColor}${subBg}${italicize}'`
 
           }])
         .toFormat(videoExtension.slice(videoExtension.indexOf('.') + 1))
@@ -532,5 +566,39 @@ function convertColorToReversedHex(color, variant, opacity) {
     console.error('Error converting color:', err.message);
     return null;
   }
+}
+
+function addEmotionsToSubtitles(subtitles, emotionsArr, colorsPalette) {
+  const subtilesCopy = subtitles.split(" ");
+  var modifiedSubtitles = "";
+  for (let i = 0; i < subtilesCopy.length; i++) {
+    var isAdded = false;
+    for (let j = 0; j < emotionsArr.length; j++) {
+      for (let k = 0; k < emotionsArr[j].length; k++) {
+        if (subtilesCopy[i].toLowerCase() === emotionsArr[j][k]) {
+          switch (j) {
+            case 0: modifiedSubtitles += `<font color="#${colorsPalette[0]}">${subtilesCopy[i]}</font> `; isAdded = true;
+              break;
+            case 1: modifiedSubtitles += `<font color="#${colorsPalette[1]}">${subtilesCopy[i]}</font> `; isAdded = true;
+              break;
+            case 2: modifiedSubtitles += `<font color="#${colorsPalette[2]}">${subtilesCopy[i]}</font> `; isAdded = true;
+              break;
+            case 3: modifiedSubtitles += `<font color="#${colorsPalette[3]}">${subtilesCopy[i]}</font> `; isAdded = true;
+              break;
+            case 4: modifiedSubtitles += `<font color="#${colorsPalette[4]}">${subtilesCopy[i]}</font> `; isAdded = true;
+              break;
+            case 5: modifiedSubtitles += `<font color="#${colorsPalette[5]}">${subtilesCopy[i]}</font> `; isAdded = true;
+              break;
+            default: modifiedSubtitles += `${subtilesCopy[i]}`;
+              break;
+          }
+        }
+        else if (j === emotionsArr.length - 1 && k === emotionsArr[j].length - 1 && !isAdded) {
+          modifiedSubtitles += `${subtilesCopy[i]} `
+        }
+      }
+    }
+  }
+  return modifiedSubtitles;
 }
 module.exports = speechToText;
