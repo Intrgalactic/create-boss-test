@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useReducer, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 const DashboardHeader = lazy(() => import('src/layouts/dashboards/dashboard-header'));
 const DashboardLeftSection = lazy(() => import('src/layouts/dashboards/dashboard-left-section'));
@@ -7,27 +7,33 @@ const DashboardServiceOptionsRow = lazy(() => import('src/layouts/dashboards/ser
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
 import { speakersTypeOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions, audioSpeedOptions } from "src/utils/dashboard-static-data";
-import { createDataAndSend, sendData, setLanguageProperties } from "src/utils/utilities";
+import { createDataAndSend } from "src/utils/utilities";
 import { handleTextChange } from "src/utils/utilities";
 
 export default function TTSDashboard() {
-    const [voicePitch, setVoicePitch] = useState("0");
-    const [language, setLanguage] = useState("English (US)");
-    const [audioSpeed, setAudioSpeed] = useState('1');
-    const [languageCode, setLanguageCode] = useState("en-US");
-    const [voiceGender, setVoiceGender] = useState('Male');
-    const [speakersType, setSpeakersType] = useState('Home');
+    const TTSInitialState = {
+        voicePitch: "0",
+        language: "English (US)",
+        audioSpeed: '1',
+        languageCode: "en-US",
+        voiceGender: 'Male',
+        speakersType: 'Home',
+        outputExtension: "MP3"
+      };
+    
+    const [textToSpeechProps,dispatch] = useReducer(TTSReducer,TTSInitialState);
     const [ableToTranslate, setAbleToTranslate] = useState('No');
-    const [outputExtension, setOutputExtension] = useState("MP3");
+
     const [textInput, setTextInput] = useState("");
     const [isTranslated, setIsTranslated] = useState(false);
     const [filePath, setFilePath] = useState('');
-    const controls = [`Text Length: ${textInput.length} / 10 000`, `Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`,"Reset", "Translate"];
+    const controls = [`Text Length: ${textInput.length} / 10 000`, `Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${textToSpeechProps.outputExtension}`, "Reset", "Translate"];
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
     const [languageFilter, setLanguageFilter] = useState();
     const languageFilterRegEx = new RegExp(languageFilter, "i");
+
     const stateSetters = {
         setLoadingState: setLoadingState,
         setErrorAtDownload: setErrorAtDownload,
@@ -35,51 +41,58 @@ export default function TTSDashboard() {
         setIsTranslated: setIsTranslated
     }
     const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
-
+    function TTSReducer(state,action) {
+        const payload = action.payload;
+        switch(action.type) {
+            case "Language": return {...state,language: payload[1],languageCode: payload[0]};
+            case "Voice Pitch": return {...state,voicePitch: payload};
+            case "Voice Gender": return {...state,voiceGender: payload};
+            case "Audio Speed": return {...state,audioSpeed: payload};
+            case "Speakers Type": return {...state,speakersType: payload};
+            case "Output Extension": return {...state,outputExtension: payload};
+        }
+    }
     const voiceOptionsRowActions = [
         {
-            text: voicePitch,
+            text: textToSpeechProps.voicePitch,
             options: voicePitchOptions,
-            setOption: setVoicePitch,
+            setOption: passToReducer,
             heading: "Voice Pitch",
         },
         {
-            text: language,
+            text:  textToSpeechProps.language,
             options: filteredLanguagesData,
-            setOption: setLanguageProps,
+            setOption: passToReducer,
             setFilter: setLanguageFilter,
             heading: "Language",
         },
         {
-            text: voiceGender,
+            text:  textToSpeechProps.voiceGender,
             options: voiceGenderOptions,
-            setOption: setVoiceGender,
+            setOption: passToReducer,
             heading: "Voice Gender",
         },
         {
-            text: audioSpeed,
+            text:  textToSpeechProps.audioSpeed,
             options: audioSpeedOptions,
-            setOption: setAudioSpeed,
+            setOption: passToReducer,
             heading: "Audio Speed"
         }
     ]
     const voiceMiscellaneousOptionsRowActions = [
         {
-            text: speakersType,
+            text:  textToSpeechProps.speakersType,
             options: speakersTypeOptions,
-            setOption: setSpeakersType,
+            setOption: passToReducer,
             heading: "Speakers Type",
         },
         {
-            text: outputExtension,
+            text:  textToSpeechProps.outputExtension,
             options: outputExtensionOptions,
-            setOption: setOutputExtension,
+            setOption: passToReducer,
             heading: "Output Extension",
         }
     ]
-    function setLanguageProps(code, name) {
-        setLanguageProperties(setLanguage, setLanguageCode, code, name);
-    }
     function handleTextInput(e) {
         handleTextChange(e, {
             isTranslated: isTranslated,
@@ -134,7 +147,12 @@ export default function TTSDashboard() {
         }
         fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
     }
-
+    function passToReducer(actionType, payload) {
+        dispatch({
+            type: actionType,
+            payload: payload
+        });
+    }
     return (
         <div className="text-to-speech-dashboard">
             <Suspense fallback={<Loader />}>

@@ -187,10 +187,7 @@ export async function sendData(fetchUrl, data, states, stateSetters) {
     }
 }
 
-export function setLanguageProperties(setLanguage, setLanguageCode, code, name) {
-    setLanguage(name);
-    setLanguageCode(code);
-}
+
 export function handleTextChange(e, states, stateSetters) {
     if (states.setIsTranslated || states.errorAtDownload) {
         stateSetters.setErrorAtDownload(false);
@@ -304,4 +301,17 @@ export function createDataAndSend(dataToSend,file,outputExtension,stateSetters,f
         file: file,
         outputExtension: outputExtension
     }, stateSetters);
+}
+
+export function STTReducer(state,action) {
+    const payload = action.payload;
+    switch(action.type) {
+        case "Language": return {...state,language: payload[1],languageCode: payload[0]};
+        case "Output Extension": return {...state,outputExtension: payload};
+        case "Detect Diarization": return {...state,diarization: payload};
+        case "Summarize": return {...state,summarization: payload};
+        case "Topic Detection": return {...state,detectTopic: payload};
+        case "Punctuation": return {...state,punctuation: payload};
+        case "Show Timestamps": return {...state,timeStamps: payload};
+    }
 }

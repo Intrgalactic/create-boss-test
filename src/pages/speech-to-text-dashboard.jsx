@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useReducer, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
 const DashboardLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-left-section"));
@@ -7,25 +7,28 @@ const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/ser
 import fileDownload from "js-file-download";
 import Loader from "src/layouts/loader";
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
-import { createDataAndSend, setLanguageProperties } from "src/utils/utilities";
+import { STTReducer, createDataAndSend } from "src/utils/utilities";
 
 export default function STTDashboard() {
-
-    const [language, setLanguage] = useState("English (US)");
-    const [languageCode, setLanguageCode] = useState("en-US");
+    const STTInitialState = {
+        language: "English (US)",
+        languageCode: "en-US",
+        outputExtension: "TXT",
+        diarization: "No",
+        summarization: "No",
+        detectTopic: "No",
+        punctuation: "Yes",
+        timeStamps: "No",
+    }
+    const [speechToTextProps, dispatch] = useReducer(STTReducer, STTInitialState);
     const [ableToTranslate, setAbleToTranslate] = useState('No');
     const [outputExtension, setOutputExtension] = useState("TXT");
     const [isTranslated, setIsTranslated] = useState(false);
     const [filePath, setFilePath] = useState('');
-    const controls = [`Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`,"Reset", "Translate"];
+    const controls = [`Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`, "Reset", "Translate"];
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
-    const [diarization, setDiarization] = useState("No");
-    const [summarization, setSummarization] = useState('No');
-    const [detectTopic, setDetectTopic] = useState("No");
-    const [punctuation, setPunctuation] = useState('Yes');
-    const [timeStamps, setTimeStamps] = useState("No");
     const [languageFilter, setLanguageFilter] = useState();
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     const stateSetters = {
@@ -57,53 +60,49 @@ export default function STTDashboard() {
     ];
     const firstServiceOptionsRowActions = [
         {
-            text: language,
+            text: speechToTextProps.language,
             options: filteredLanguagesData,
-            setOption: setLanguageProps,
+            setOption: passToReducer,
             setFilter: setLanguageFilter,
             heading: "Language",
         },
         {
-            text: outputExtension,
+            text: speechToTextProps.outputExtension,
             options: STTOutputExtensionOptions,
             setOption: setOutputExtension,
             heading: "Output Extension",
         },
         {
-            text: diarization,
+            text: speechToTextProps.diarization,
             options: trueFalseOptions,
-            setOption: setDiarization,
+            setOption: passToReducer,
             heading: "Detect Diarization",
         },
         {
-            text: summarization,
+            text: speechToTextProps.summarization,
             options: trueFalseOptions,
-            setOption: setSummarization,
+            setOption: passToReducer,
             heading: "Summarize",
         },
         {
-            text: detectTopic,
+            text: speechToTextProps.detectTopic,
             options: trueFalseOptions,
-            setOption: setDetectTopic,
+            setOption: passToReducer,
             heading: "Topic Detection",
         },
         {
-            text: punctuation,
+            text: speechToTextProps.punctuation,
             options: trueFalseOptions,
-            setOption: setPunctuation,
+            setOption: passToReducer,
             heading: "Punctuation",
         },
         {
-            text: timeStamps,
+            text: speechToTextProps.timeStamps,
             options: trueFalseOptions,
-            setOption: setTimeStamps,
+            setOption: passToReducer,
             heading: "Show Timestamps",
         },
     ]
-    function setLanguageProps(code, name) {
-        setLanguageProperties(setLanguage, setLanguageCode, code, name);
-    }
-
     async function sendToSynthetize() {
         if (file) {
             setLoadingState(true);
@@ -114,25 +113,31 @@ export default function STTDashboard() {
             ) {
                 const objWithdata = {
                     file: file,
-                    languageCode: languageCode,
-                    audioEncoding: outputExtension,
-                    punctuationOn: punctuation,
-                    topicsOn: detectTopic,
-                    diarizeOn: diarization,
-                    summarizeOn: summarization,
-                    subtitlesOn: timeStamps
+                    languageCode: speechToTextProps.languageCode,
+                    audioEncoding: speechToTextProps.outputExtension,
+                    punctuationOn: speechToTextProps.punctuation,
+                    topicsOn: speechToTextProps.detectTopic,
+                    diarizeOn: speechToTextProps.diarization,
+                    summarizeOn: speechToTextProps.summarization,
+                    subtitlesOn: speechToTextProps.timeStamps
                 };
-                createDataAndSend(objWithdata,file,outputExtension,stateSetters,'api/speech-to-text',false);
+                createDataAndSend(objWithdata, file, outputExtension, stateSetters, 'api/speech-to-text', false);
             }
-           
+
         }
     }
-  
+
     async function downloadFile() {
         const outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.${outputExtension.toLowerCase()}`;
         fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
     }
 
+    function passToReducer(actionType, payload) {
+        dispatch({
+            type: actionType,
+            payload: payload
+        });
+    }
     return (
         <div className="speech-to-text-dashboard">
             <Suspense fallback={<Loader />}>

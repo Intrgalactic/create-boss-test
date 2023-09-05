@@ -4,6 +4,7 @@ import expandImage from 'src/assets/images/expand.png';
 import webpExpandImage from 'src/assets/images/expand.webp';
 import { Picture } from "src/components/picture";
 import { expandList } from "src/utils/utilities";
+import { dashboardSelectButtonContext } from "src/context/DashboardSelectButtonContext";
 
 export default function DashboardServiceOptionsRow({ actions, heading }) {
     const [isToggled, setIsToggled] = useState(false);
@@ -14,14 +15,14 @@ export default function DashboardServiceOptionsRow({ actions, heading }) {
     }
     return (
         <div className="dashboard__service-options-row__container" onClick={expandOptionsList} >
-
             <div className="dashboard__service-options-row__container-heading" ref={headingRef}>
                 <h1>{heading}</h1>
                 <Picture images={[webpExpandImage, expandImage]} alt="expand arrow" imgHeight="21px" imgWidth="40px" /></div>
-
             <div className="dashboard__service-options-row" ref={rowRef} onClick={(e) => { e.stopPropagation() }}>
                 {actions.map((action, index) => (
-                    <DashboardServiceOptionButton text={action.text} setFilter={action.setFilter} options={action.options} setOption={action.setOption} key={index} heading={action.heading} type={action.type} file={action.file} setFile={action.setFile} acceptList={action.acceptList} color={action.color} setColor={action.setColor} />
+                    <dashboardSelectButtonContext.Provider value={action}>
+                       <DashboardServiceOptionButton key={index}/>
+                    </dashboardSelectButtonContext.Provider>
                 ))}
             </div>
         </div>

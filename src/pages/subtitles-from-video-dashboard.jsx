@@ -1,4 +1,4 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useReducer, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
@@ -6,7 +6,7 @@ const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dash
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
 import Loader from "src/layouts/loader";
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
-import {  createDataAndSend, setLanguageProperties } from "src/utils/utilities";
+import {  STTReducer, createDataAndSend } from "src/utils/utilities";
 import fileDownload from "js-file-download";
 
 export default function SFVDashboard() {
@@ -14,16 +14,21 @@ export default function SFVDashboard() {
     const [loadingState, setLoadingState] = useState(false);
     const [languageFilter, setLanguageFilter] = useState('');
     const languageFilterRegEx = new RegExp(languageFilter, "i");
-    const [languageCode, setLanguageCode] = useState('en-US');
     const [filePath, setFilePath] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
-    const [language, setLanguage] = useState("English (US)")
     const [outputExtension, setOutputExtension] = useState("TXT");
-    const [diarization, setDiarization] = useState("No");
-    const [summarization, setSummarization] = useState('No');
-    const [detectTopic, setDetectTopic] = useState("No");
-    const [punctuation, setPunctuation] = useState('Yes');
-    const [timeStamps, setTimeStamps] = useState("No");
+
+    const SFVInitialState = {
+        language: "English (US)",
+        languageCode: "en-US",
+        outputExtension: "TXT",
+        diarization: "No",
+        summarization: "No",
+        detectTopic: "No",
+        punctuation: "Yes",
+        timeStamps: "No",
+    }
+    const [SFVProps,dispatch] = useReducer(STTReducer,SFVInitialState);
 
     const stateSetters = {
         setLoadingState: setLoadingState,
@@ -32,49 +37,49 @@ export default function SFVDashboard() {
     }
 
     const filteredLanguagesData = STTlanguageData.filter(obj => languageFilterRegEx.test(obj.optgroup));
-
+    
     const subtitlesOptionsRowActions = [
         {
-            text: language,
+            text: SFVProps.language,
             options: filteredLanguagesData,
-            setOption: setLanguageProps,
+            setOption: passToReducer,
             setFilter: setLanguageFilter,
             heading: "Language",
         },
         {
-            text: outputExtension,
+            text: SFVProps.outputExtension,
             options: STTOutputExtensionOptions,
-            setOption: setOutputExtension,
+            setOption: passToReducer,
             heading: "Output Extension",
         },
         {
-            text: diarization,
+            text: SFVProps.diarization,
             options: trueFalseOptions,
-            setOption: setDiarization,
+            setOption: passToReducer,
             heading: "Detect Diarization",
         },
         {
-            text: summarization,
+            text: SFVProps.summarization,
             options: trueFalseOptions,
-            setOption: setSummarization,
+            setOption: passToReducer,
             heading: "Summarize",
         },
         {
-            text: detectTopic,
+            text: SFVProps.detectTopic,
             options: trueFalseOptions,
-            setOption: setDetectTopic,
+            setOption: passToReducer,
             heading: "Topic Detection",
         },
         {
-            text: punctuation,
+            text: SFVProps.punctuation,
             options: trueFalseOptions,
-            setOption: setPunctuation,
+            setOption: passToReducer,
             heading: "Punctuation",
         },
         {
-            text: timeStamps,
+            text: SFVProps.timeStamps,
             options: trueFalseOptions,
-            setOption: setTimeStamps,
+            setOption: passToReducer,
             heading: "Show Timestamps",
         },
     ]
@@ -85,25 +90,29 @@ export default function SFVDashboard() {
         if (videoFile) {
             setLoadingState(true);
             createDataAndSend({
-                audioEncoding: outputExtension,
-                punctuationOn: punctuation,
-                topicsOn: detectTopic,
-                diarizeOn: diarization,
-                summarizeOn: summarization,
-                subtitlesOn: timeStamps,
-                languageCode:languageCode,
+                audioEncoding: STTProps.outputExtension,
+                punctuationOn: STTProps.punctuation,
+                topicsOn: STTProps.detectTopic,
+                diarizeOn: STTProps.diarization,
+                summarizeOn: STTProps.summarization,
+                subtitlesOn: STTProps.timeStamps,
+                languageCode:STTProps.languageCode,
                 file: videoFile
-            },videoFile,outputExtension.toLowerCase(),stateSetters,'api/subtitles-from-video',false);
+            },videoFile,STTProps.outputExtension.toLowerCase(),stateSetters,'api/subtitles-from-video',false);
         }
-    }
-    function setLanguageProps(code, name) {
-        setLanguageProperties(setLanguage, setLanguageCode, code, name);
     }
 
     async function downloadFile() {
         fileDownload(filePath,`${videoFile && videoFile.name ? `${videoFile.name.slice(0,videoFile.name.lastIndexOf(".") - 1)}.${outputExtension.toLowerCase()}` : `output.${videoFile}.${outputExtension.toLowerCase()}`}`);
     }
-    
+
+    function passToReducer(actionType, payload) {
+        dispatch({
+            type: actionType,
+            payload: payload
+        });
+    }
+
     return (
         <div className="subtitles-to-video-dashboard">
             <Suspense fallback={<Loader />}>

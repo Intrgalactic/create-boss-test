@@ -17,10 +17,10 @@ export function PricingContainer() {
     const professionalServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","All Filler Words Removal","Access to Video Enhancer", "Advanced Options For Subtitles","Audio Quality Enhancer","Studio Quality For Text To Speech","Access to Voice Cloning", "Instant Personal Support"];
     const enterpriseServices = ["Text to Speech", "Speech to Text", "Subtitles to Video", "Subtitles from Video","All Filler Words Removal","Access to Video Enhancer", "Advanced Options For Subtitles","Audio Quality Enhancer","Studio Quality For Text To Speech","Access to Voice Cloning", "Instant Personal Support","Access to High Volume Use"]
 
-    const starterDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes'];
-    const essentialDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes'];
-    const professionalDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month",'Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes'];
-    const enterpriseDescriptions = ["words per month", "hours of audio per month", "videos per month", "videos per month"];
+    const starterDescriptions = ["words per month", "hours of audio per month", "hours of videos per month", "hours of videos per month",'Yes','Yes','Yes'];
+    const essentialDescriptions = ["words per month", "hours of audio per month", "hours of videos per month", "hours of videos per month",'Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes'];
+    const professionalDescriptions = ["words per month", "hours of audio per month", "hours of videos per month", "hours of videos per month",'Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes','Yes'];
+    const enterpriseDescriptions = ["words per month", "hours of audio per month", "hours of videos per month", "hours of videos per month"];
 
     return (
         <div className="pricing-section__container" >

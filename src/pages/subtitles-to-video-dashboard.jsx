@@ -1,163 +1,242 @@
-import { Suspense, lazy, useState } from "react";
+import { Suspense, lazy, useReducer, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
 const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-video-left-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
 import Loader from "src/layouts/loader";
-import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions } from "src/utils/dashboard-static-data";
-import { createDataAndSend, sendData, setLanguageProperties } from "src/utils/utilities";
+import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions, wordsPerLineOptions } from "src/utils/dashboard-static-data";
+import { createDataAndSend } from "src/utils/utilities";
 import fileDownload from "js-file-download";
 import DownloadingLoader from "src/layouts/downloading-loader";
 
 export default function STVDashboard() {
-    const [logoAlignment, setLogoAlignment] = useState("Bottom Center");
+    const videoInitialState = {
+        logoFile: undefined,
+        logoAlignment: "Bottom Center",
+        enableLogo: "No",
+        watermarkFile: undefined,
+        watermarkAlignment: "Top Center",
+        enableWatermark: "No",
+        subtitlesFontFile: undefined,
+        subtitlesSize: "48PX",
+        wordsPerLine: "Choose",
+        subtitlesAlignment: "Top Center",
+        subtitlesColor: undefined,
+        enableUpperCaseSubtitles: "No",
+        enableSubBg: "No",
+        subBgOpacity: 1,
+        subBgColor: undefined,
+        enableTextStroke: "No",
+        strokeSize: "1PX",
+        strokeColor: undefined,
+        enableItalicize: "No",
+        enableSubtitlesShadow: "No",
+        enableWordFollow: "No",
+        enableEmotions: "No",
+        wordFollowColor: undefined,
+        languageCode: 'en-US',
+        language: "English (US)",
+        fadeIn: 'No',
+        scale: "No",
+    }
+
+    const [videoProps, dispatch] = useReducer(videoPropsReducer, videoInitialState);
     const [videoFile, setVideoFile] = useState();
-    const [watermarkFile, setWatermarkFile] = useState();
-    const [subtitlesFontFile, setSubtitlesFontFile] = useState();
-    const [logoFile, setLogoFile] = useState();
+    const [errorAtDownload, setErrorAtDownload] = useState();
     const [loadingState, setLoadingState] = useState(false);
-    const [watermarkAlignment, setWatermarkAlignment] = useState('Top Center');
-    const [subtitlesSize, setSubtitlesSize] = useState("48PX");
-    const [subtitlesAlignment, setSubtitlesAlignment] = useState("Bottom");
-    const [subBgOpacity, setSubBgOpacity] = useState(1);
-    const [subBgColor, setSubBgColor] = useState();
-    const [enableTextStroke, setEnableTextStroke] = useState('No');
     const [languageFilter, setLanguageFilter] = useState('');
     const languageFilterRegEx = new RegExp(languageFilter, "i");
-    const [languageCode, setLanguageCode] = useState('en-US');
-    const [emotionsEnabled,setEmotionsEnabled] = useState("No");
-    const [italicize,setItalicize] = useState("No");
-    const [uppercaseSubtitles,setUppercaseSubtitles] = useState("No");
-    const [subColor, setSubColor] = useState();
     const [filePath, setFilePath] = useState();
-    const [errorAtDownload, setErrorAtDownload] = useState();
-    const [enableSubBg, setEnableSubBg] = useState("No");
-    const [textStroke, setTextStroke] = useState("1PX");
-    const [subtitlesShadow, setSubtitlesShadow] = useState("No");
-    const [language, setLanguage] = useState("English (US)")
-    const [strokeColor, setStrokeColor] = useState("");
+
     const stateSetters = {
         setLoadingState: setLoadingState,
         setErrorAtDownload: setErrorAtDownload,
         setFilePath: setFilePath,
     }
+
     const filteredLanguagesData = STTlanguageData.filter(obj => languageFilterRegEx.test(obj.optgroup));
+
     const filesArr = [
         {
             allowedTypes: [".ttf", '.otf', '.woff', 'woff2'],
-            file: subtitlesFontFile,
+            file: videoProps.subtitlesFontFile,
             name: "subtitles"
         },
         {
             allowedTypes: ["image"],
-            file: logoFile,
+            file: videoProps.logoFile,
             name: "logo"
         },
         {
             allowedTypes: ["image"],
-            file: watermarkFile,
+            file: videoProps.watermarkFile,
             name: "watermark"
         }
     ]
+
+    function videoPropsReducer(state, action) {
+        const payload = action.payload;
+        switch (action.type) {
+            case "Language": return { ...state, languageCode: payload[0], language: payload[1] };
+            case "Subtitles Font": return { ...state, subtitlesFontFile: action.payload };
+            case "Italicize": return { ...state, enableItalicize: action.payload };
+            case "Subtitles Color": return { ...state, subtitlesColor: action.payload };
+            case "Uppercase Subtitles": return { ...state, enableUpperCaseSubtitles: payload };
+            case "Subtitles Size": return { ...state, subtitlesSize: payload };
+            case "Subtitles Align": return { ...state, subtitlesAlignment: payload };
+            case "Emotions Detection": return { ...state, enableEmotions: payload };
+            case "Enable Stroke": return { ...state, enableTextStroke: payload };
+            case "Stroke Color": return { ...state, strokeColor: payload };
+            case "Stroke Size": return { ...state, strokeSize: payload };
+            case "Subtitles Shadow": return { ...state, enableSubtitlesShadow: payload };
+            case "Word Follow": return { ...state, enableWordFollow: payload };
+            case "Word Follow Color": return { ...state, wordFollowColor: payload };
+            case "Enable Sub BG": return { ...state, enableSubBg: payload };
+            case "Subtitles BG Color": return { ...state, subBgColor: payload };
+            case "Sub Bg Opacity": return { ...state, subBgOpacity: payload };
+            case "Logo": return { ...state, logoFile: payload };
+            case "Logo Align": return { ...state, logoAlignment: payload };
+            case "Enable Logo": return { ...state, enableLogo: payload };
+            case "Watermark": return { ...state, watermarkFile: payload };
+            case "Watermark Align": return { ...state, watermarkAlignment: payload };
+            case "Enable Watermark": return { ...state, enableWatermark: payload };
+            case "Fade In": return { ...state, fadeIn: payload };
+            case "Slide Up": return { ...state, slideUp: payload };
+            case "Slide Down": return { ...state, slideDown: payload };
+            case "Scale": return { ...state, scale: payload };
+            case "Words Per Line": return {...state, wordsPerLine: payload};
+        }
+    }
     const subtitlesOptionsRowActions = [
         {
-            text: language,
+            text: videoProps.language,
             options: filteredLanguagesData,
-            setOption: setLanguageProps,
+            setOption: passToReducer,
             setFilter: setLanguageFilter,
             heading: "Language",
         },
         {
             heading: "Subtitles Font",
             type: "input",
-            file: subtitlesFontFile,
-            setFile: setSubtitlesFontFile,
+            file: videoProps.subtitlesFontFile,
+            setFile: passToReducer,
             acceptList: "application/font-*,.ttf, .otf, .woff, .woff2"
         },
         {
             heading: "Italicize",
             options: trueFalseOptions,
-            setOption: setItalicize,
-            text: italicize
+            setOption: passToReducer,
+            text: videoProps.enableItalicize
         },
         {
             heading: "Subtitles Color",
             type: "color",
-            color: subColor,
-            setColor: setSubColor,
+            color: videoProps.subtitlesColor,
+            setColor: passToReducer,
         },
         {
             heading: "Uppercase Subtitles",
             options: trueFalseOptions,
-            setOption: setUppercaseSubtitles,
-            text: uppercaseSubtitles
+            setOption: passToReducer,
+            text: videoProps.enableUpperCaseSubtitles
         },
 
         {
-            text: subtitlesSize,
+            text: videoProps.subtitlesSize,
             options: fontSizeOptions,
-            setOption: setSubtitlesSize,
+            setOption: passToReducer,
             heading: "Subtitles Size",
 
         },
         {
-            text: subtitlesAlignment,
+            text: videoProps.subtitlesAlignment,
             options: mainAlignmentOptions,
-            setOption: setSubtitlesAlignment,
+            setOption: passToReducer,
             heading: "Subtitles Align",
 
         },
         {
-            text: enableTextStroke,
+            text: videoProps.enableEmotions,
             options: trueFalseOptions,
-            setOption: setEnableTextStroke,
-            heading: "Enable Stroke"
+            setOption: passToReducer,
+            heading: "Emotions Detection"
         },
         {
-            text:emotionsEnabled,
-            options:trueFalseOptions,
-            setOption: setEmotionsEnabled,
-            heading: "Emotions Detection"
+            text: videoProps.enableTextStroke,
+            options: trueFalseOptions,
+            setOption: passToReducer,
+            heading: "Enable Stroke"
         },
         {
             heading: "Stroke Color",
             type: "color",
-            color: strokeColor,
-            setColor: setStrokeColor
+            color: videoProps.strokeColor,
+            setColor: passToReducer
         },
         {
-            text: textStroke,
+            text: videoProps.strokeSize,
             options: textStrokeOptions,
-            setOption: setTextStroke,
+            setOption: passToReducer,
             heading: "Stroke Size"
         },
         {
-            text: subtitlesShadow,
+            text: videoProps.enableSubtitlesShadow,
             options: trueFalseOptions,
-            setOption: setSubtitlesShadow,
+            setOption: passToReducer,
             heading: "Subtitles Shadow"
+        },
+        {
+            text: videoProps.wordsPerLine,
+            options: wordsPerLineOptions,
+            setOption: passToReducer,
+            heading: "Words Per Line"
+        },
+        {
+            text: videoProps.enableWordFollow,
+            options: trueFalseOptions,
+            setOption: passToReducer,
+            heading: "Word Follow"
+        },
+        {
+            heading: "Word Follow Color",
+            type: "color",
+            color: videoProps.wordFollowColor,
+            setColor: passToReducer,
         },
 
     ]
+    const subtitlesEffectsOptionsRowActions = [{
+        text: videoProps.fadeIn,
+        options: trueFalseOptions,
+        setOption: passToReducer,
+        heading: "Fade In",
+    },
+    {
+        text: videoProps.scale,
+        options: trueFalseOptions,
+        setOption: passToReducer,
+        heading: "Scale"
+    }
+    ]
     const subtitlesBackgroundOptionsRowActions = [
         {
-            color: subBgColor,
+            color: videoProps.subBgColor,
             options: subBgColorOptions,
-            setColor: setSubBgColor,
+            setColor: passToReducer,
             type: "color",
             heading: "Subtitles BG Color",
         },
         {
-            text: subBgOpacity,
+            text: videoProps.subBgOpacity,
             options: subBgOpacityOptions,
-            setOption: setSubBgOpacity,
+            setOption: passToReducer,
             heading: "Sub Bg Opacity",
         },
         {
-            text: enableSubBg,
+            text: videoProps.enableSubBg,
             options: trueFalseOptions,
-            setOption: setEnableSubBg,
+            setOption: passToReducer,
             heading: "Enable Sub BG"
         }
     ]
@@ -165,63 +244,85 @@ export default function STVDashboard() {
         {
             heading: "Logo",
             type: "input",
-            file: logoFile,
-            setFile: setLogoFile,
+            file: videoProps.logoFile,
+            setFile: passToReducer,
             acceptList: "image/*, .svg",
+        },
+        {
+            text: videoProps.logoAlignment,
+            options: detailedAlignmentOptions,
+            setOption: passToReducer,
+            heading: "Logo Align",
+        },
+        {
+            text: videoProps.enableLogo,
+            options: trueFalseOptions,
+            setOption: passToReducer,
+            heading: "Enable Logo"
         },
         {
             heading: "Watermark",
             type: "input",
-            file: watermarkFile,
-            setFile: setWatermarkFile,
+            file: videoProps.watermarkFile,
+            setFile: passToReducer,
             acceptList: "image/*, .svg",
         },
         {
-            text: logoAlignment,
+            text: videoProps.watermarkAlignment,
             options: detailedAlignmentOptions,
-            setOption: setLogoAlignment,
-            heading: "Logo Align",
+            setOption: passToReducer,
+            heading: "Watermark Align",
         },
         {
-            text: watermarkAlignment,
-            options: detailedAlignmentOptions,
-            setOption: setWatermarkAlignment,
-            heading: "Watermark Align",
+            text: videoProps.enableWatermark,
+            options: trueFalseOptions,
+            setOption: passToReducer,
+            heading: "Enable Watermark"
         }
-
     ]
 
     async function sendToGetSubtitles() {
         if (videoFile) {
             setLoadingState(true);
             const objWithdata = {
-                languageCode: languageCode,
+                languageCode: videoProps.languageCode,
                 files: videoFile,
-                subtitlesFontSize: subtitlesSize,
-                watermarkAlign: watermarkAlignment,
-                logoAlign: logoAlignment,
-                subtitlesAlign: subtitlesAlignment,
-                subtitlesColor: subColor,
-                enableTextStroke: enableTextStroke,
-                subBgColor: subBgColor,
-                textStroke: textStroke,
-                strokeColor: strokeColor,
-                enableSubBg: enableSubBg,
-                subBgOpacity: subBgOpacity,
-                enableShadow: subtitlesShadow,
-                enableEmotions:emotionsEnabled,
-                italicize:italicize,
-                uppercaseSubs:uppercaseSubtitles
+                subtitlesFontSize: videoProps.subtitlesSize,
+                watermarkAlign: videoProps.watermarkAlignment,
+                logoAlign: videoProps.logoAlignment,
+                subtitlesAlign: videoProps.subtitlesAlignment,
+                subtitlesColor: videoProps.subtitlesColor,
+                enableTextStroke: videoProps.enableTextStroke,
+                subBgColor: videoProps.subBgColor,
+                textStroke: videoProps.strokeSize,
+                strokeColor: videoProps.strokeColor,
+                enableSubBg: videoProps.enableSubBg,
+                subBgOpacity: videoProps.subBgOpacity,
+                enableShadow: videoProps.enableSubtitlesShadow,
+                enableEmotions: videoProps.enableEmotions,
+                italicize: videoProps.enableItalicize,
+                uppercaseSubs: videoProps.enableUpperCaseSubtitles,
+                enableWordFollow: videoProps.enableWordFollow,
+                wordFollowColor: videoProps.wordFollowColor,
+                enableScale: videoProps.scale,
+                enableFade: videoProps.fadeIn,
+                enableLogo: videoProps.enableLogo,
+                enableWatermark: videoProps.enableWatermark,
+                wordsPerLine: videoProps.wordsPerLine
             };
             createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr);
         }
     }
-    function setLanguageProps(code, name) {
-        setLanguageProperties(setLanguage, setLanguageCode, code, name);
-    }
 
     async function downloadFile() {
         fileDownload(filePath, `${videoFile && videoFile.name ? videoFile.name : `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`}`);
+    }
+
+    function passToReducer(actionType, payload) {
+        dispatch({
+            type: actionType,
+            payload: payload
+        });
     }
 
     return (
@@ -232,6 +333,7 @@ export default function STVDashboard() {
                     <DashboardVideoLeftSection heading="Video To Modify" videoFile={videoFile} setVideoFile={setVideoFile} sendToGetSubtitles={sendToGetSubtitles} filePath={filePath} downloadFile={downloadFile} setFilePath={setFilePath} />
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Blank Logo Without Watermark">
                         <DashboardServiceOptionsRow actions={subtitlesOptionsRowActions} heading="Subtitles" />
+                        <DashboardServiceOptionsRow actions={subtitlesEffectsOptionsRowActions} heading="Subtitles Effects" />
                         <DashboardServiceOptionsRow actions={subtitlesBackgroundOptionsRowActions} heading="Subtitles Background" />
                         <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Miscellaneous" />
                     </DashboardRightSection>

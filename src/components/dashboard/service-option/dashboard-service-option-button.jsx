@@ -1,12 +1,17 @@
 
 import { lazy } from "react";
-const DashboardSelectButton = lazy(() => import("./dashboard-select-button").then(module => {return {default: module.DashboardSelectButton}}));
+import { useContext } from "react";
+import { dashboardSelectButtonContext } from "src/context/DashboardSelectButtonContext";
+const DashboardSelectButton = lazy(() => import("./dashboard-select-button").then(module => { return { default: module.DashboardSelectButton } }));
 
-export function DashboardServiceOptionButton({heading,text,options,setOption,setFilter,type,setFile,file,acceptList,color,setColor}) {
+export function DashboardServiceOptionButton() {
+    const dashboardSelectButtonProps = useContext(dashboardSelectButtonContext);
     return (
         <div className="dashboard__service-option-button">
-            <p>{heading}</p>
-            <DashboardSelectButton text={text} options={options} setOption={setOption} setFilter={setFilter} type={type} file={file} setFile={setFile} acceptList={acceptList} color={color} setColor={setColor} />
+            <p>{dashboardSelectButtonProps.heading}</p>
+            <dashboardSelectButtonContext.Provider value={dashboardSelectButtonProps}>
+                <DashboardSelectButton/>
+            </dashboardSelectButtonContext.Provider>
         </div>
     )
 }

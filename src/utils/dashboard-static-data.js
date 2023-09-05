@@ -92,11 +92,6 @@ export const STTOutputExtensionOptions = ["TXT","DOCX","PDF"];
 export const trueFalseOptions = ['Yes','No'];
 export const STTlanguageData = [
   {
-    optgroup: "Afrikaans",
-    options: ["Afrikaans (South Africa)"],
-    code: ["af-ZA"],
-  },
-  {
     optgroup: "Danish",
     options: ["Danish (Denmark)"],
     code: ["da"],
@@ -161,11 +156,6 @@ export const STTlanguageData = [
     optgroup: "Japanese",
     options: ["Japanese"],
     code: ["ja"],
-  },
-  {
-    optgroup: "Korean",
-    options: ["Korean"],
-    code: ["ko"],
   },
   {
     optgroup: "Dutch",
@@ -502,5 +492,6 @@ export const videoTypeOptions = ["Wide","Narrow","Tiktok"];
 export const subtitlesColorOptions = ["White","Black",'Yellow',"Red","Blue","Green"];
 export const subBgColorOptions = ["White","Black","Yellow"];
 export const subBgOpacityOptions = ['1','0.8','0.5','0.2','0.1'];
+export const wordsPerLineOptions = ['Choose','1','2','3','4','5','6','7'];
 export const textStrokeOptions = ["1PX","2PX","3PX"];
 export const fontSizeOptions = ["48PX","36PX","32PX","24PX","16PX","12PX","8PX"];

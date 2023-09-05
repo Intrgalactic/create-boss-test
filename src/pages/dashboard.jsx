@@ -1,5 +1,5 @@
 import { ContentContainer } from "src/components/content-container";
-import { Suspense, lazy, useContext, useEffect, useState } from "react";
+import { Suspense, lazy, useContext, useEffect, useReducer, useState } from "react";
 const DashboardBox = lazy(() => import("src/components/dashboard/boxes/dashboard-box").then(module => { return { default: module.DashboardBox } }));
 const DashboardBoxContent = lazy(() => import("src/components/dashboard/boxes/dashboard-box-content").then(module => { return { default: module.DashboardBoxContent } }));
 import { SectionHeading } from "src/components/section-heading";
@@ -27,23 +27,39 @@ import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, XAxis, ResponsiveContainer, LineChart, Line } from "recharts";
 import { auth } from "../../firebase.js";
-import { checkIsLoggedAndFetch, setLanguageProperties } from "src/utils/utilities.js";
+import { checkIsLoggedAndFetch, } from "src/utils/utilities.js";
 import Loader from "src/layouts/loader.jsx";
 import { CustomTooltip } from "src/components/dashboard/charts/customTooltip.jsx";
+import { dashboardSelectButtonContext } from "src/context/DashboardSelectButtonContext.jsx";
 
 export default function Dashboard() {
-    const [audioSpeed, setAudioSpeed] = useState('1');
-    const [voiceGender, setVoiceGender] = useState('Male');
-    const [TTSLanguage, setTSSLanguage] = useState("English (US)");
-    const [STTLanguage, setSTTLanguage] = useState("English (US)");
-    const [TTSLanguageCode, setTSSLanguageCode] = useState("en-US");
-    const [STTLanguageCode, setSTTLanguageCode] = useState("en-US");
+    const dashboardInitialState = {
+        audioSpeed: '1',
+        voiceGender: 'Male',
+        TTSLanguage: "English (US)",
+        STTLanguage: "English (US)",
+        TTSLanguageCode: "en-US",
+        STTLanguageCode: "en-US"
+    }
+    const [dashboardProps,dispatch] = useReducer(dashboardReducer,dashboardInitialState)
     const [TTSLanguageFilter, setTTSLanguageFilter] = useState();
     const [STTLanguageFilter, setSTTLanguageFilter] = useState();
     const TTSfilterRegEx = new RegExp(TTSLanguageFilter, "i");
     const STTfilterRegEx = new RegExp(STTLanguageFilter, "i");
     const isLogged = useContext(authContext);
     const [isPaying, setIsPaying] = useState(false);
+    function dashboardReducer(state,action) {
+        console.clear();
+        console.log(action);
+        switch(action.type) {
+            case "Set Voice Gender": return {...state,voiceGender: action.payload};
+            case "Set TTS Language": return {...state,TTSLanguage:action.payload[1],TTSLanguageCode:action.payload[0]};
+            case "Set STT Language": return {...state,STTLanguage: action.payload[1],STTLanguageCode:action.payload[0]};
+            case "Set Audio Speed": return {...state,audioSpeed: action.payload};
+
+
+        }
+    }
     function setTTSOptionsToDefault() {
         setAudioSpeed("1");
         setVoiceGender("Male");
@@ -110,11 +126,11 @@ export default function Dashboard() {
             SFV: 1230
         },
     ];
-    function setTTSLanguageProps(code, name) {
-        setLanguageProperties(setTSSLanguage, setTSSLanguageCode, code, name);
-    }
-    function setSTTLanguageProps(code, name) {
-        setLanguageProperties(setSTTLanguage, setSTTLanguageCode, code, name);
+    function passToReducer(actionType, payload) {
+        dispatch({
+            type: actionType,
+            payload: payload
+        });
     }
 
     return (
@@ -130,7 +146,7 @@ export default function Dashboard() {
                         <DashboardBox heading="Current Plan Details">
                             <DashboardBoxContent>
                                 {planDetailsData.map((item, index) => (
-                                    <PlanDetailsRecord heading={item.heading} images={item.images} description={item.description} imgHeight={item.imgHeight} imgWidth={item.imgWidth} key={index} alt={item.alt}/>
+                                    <PlanDetailsRecord heading={item.heading} images={item.images} description={item.description} imgHeight={item.imgHeight} imgWidth={item.imgWidth} key={index} alt={item.alt} />
                                 ))}
                             </DashboardBoxContent>
                         </DashboardBox>
@@ -141,7 +157,7 @@ export default function Dashboard() {
                                     <LineChart data={data}
                                         margin={{ right: 30, left: 20, bottom: 5 }}>
                                         <XAxis dataKey="name" axisLine={false} style={{ fontFamily: "NexaHeavy" }} tick={{ fill: "white" }} />
-                                        <Tooltip content={<CustomTooltip/>} />
+                                        <Tooltip content={<CustomTooltip />} />
                                         <Line type="monotone" dataKey="STT" stroke="#0059ff" strokeWidth={3} />
                                         <Line type="monotone" dataKey="TTS" stroke="#7800ff" strokeWidth={3} />
                                         <Line type="monotone" dataKey="STV" stroke="#e000ff" strokeWidth={3} />
@@ -164,13 +180,19 @@ export default function Dashboard() {
                                     <CtaButton text="Set" action={setTTSOptionsToDefault} />
                                 </DashboardSettingsRecord>
                                 <DashboardSettingsRecord description="Set Language">
-                                    <DashboardSelectButton text={TTSLanguage} options={filteredTTSLanguagesData} setOption={setTTSLanguageProps} setFilter={setTTSLanguageFilter} />
+                                    <dashboardSelectButtonContext.Provider value={{ heading:"Set TTS Language",text: dashboardProps.TTSLanguage, options: filteredTTSLanguagesData, setOption: passToReducer, setFilter: setTTSLanguageFilter }}>
+                                        <DashboardSelectButton />
+                                    </dashboardSelectButtonContext.Provider>
                                 </DashboardSettingsRecord>
                                 <DashboardSettingsRecord description="Set Voice Speed">
-                                    <DashboardSelectButton text={audioSpeed} options={audioSpeedOptions} setOption={setAudioSpeed} />
+                                    <dashboardSelectButtonContext.Provider value={{ heading:"Set Audio Speed",text: dashboardProps.audioSpeed, options: audioSpeedOptions, setOption: passToReducer }}>
+                                        <DashboardSelectButton />
+                                    </dashboardSelectButtonContext.Provider>
                                 </DashboardSettingsRecord>
                                 <DashboardSettingsRecord description="Set Voice Gender">
-                                    <DashboardSelectButton text={voiceGender} options={voiceGenderOptions} setOption={setVoiceGender} />
+                                    <dashboardSelectButtonContext.Provider value={{ heading:"Set Voice Gender",text: dashboardProps.voiceGender, options: voiceGenderOptions, setOption: passToReducer }}>
+                                        <DashboardSelectButton />
+                                    </dashboardSelectButtonContext.Provider>
                                 </DashboardSettingsRecord>
                             </DashboardBoxContent>
                         </DashboardBox>
@@ -180,7 +202,9 @@ export default function Dashboard() {
                                     <CtaButton text="Set" action={setSTTOptionsToDefault} />
                                 </DashboardSettingsRecord>
                                 <DashboardSettingsRecord description="Set Language">
-                                    <DashboardSelectButton text={STTLanguage} options={filteredSTTLanguagesData} setOption={setSTTLanguageProps} setFilter={setSTTLanguageFilter} />
+                                    <dashboardSelectButtonContext.Provider value={{ heading:"Set STT Language",text: dashboardProps.STTLanguage, options: filteredSTTLanguagesData, setOption: passToReducer, setFilter: setSTTLanguageFilter }}>
+                                        <DashboardSelectButton />
+                                    </dashboardSelectButtonContext.Provider>
                                 </DashboardSettingsRecord>
                             </DashboardBoxContent>
                         </DashboardBox>

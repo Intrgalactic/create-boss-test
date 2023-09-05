@@ -409,7 +409,7 @@ input[type="checkbox"]:hover,
   width: 800px;
   min-width: 800px;
   padding-block: 20px;
-  overflow-x: hidden;
+  overflow-x: scroll;
 }
 .testimonial__box .testimonial-description {
   color:white;
@@ -531,7 +531,7 @@ input[type="checkbox"]:hover,
   width: 1300px;
   min-width: 1300px;
   padding-inline: 25px;
-  overflow-x: hidden;
+  overflow-x: scroll;
   padding-block: 50px;
   display: flex;
   justify-content: flex-start;
@@ -870,7 +870,7 @@ footer {
   width: 37.5vw;
   text-shadow: 0px 2px 10px rgba(0,0,0,0.4);
   font-size: 1.1em;
-  font-family: NexaHeavy;
+  font-family: Nunito;
   display: block;
   margin: auto;
   text-align: left;
@@ -1632,7 +1632,7 @@ footer {
   max-width: 100%;
   margin: 0;
   border-radius: 5px;
-  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
 }
 
 .speech-to-text-dashboard textarea {
@@ -1678,7 +1678,7 @@ footer {
 }
 
 .speech-to-text-dashboard .textarea-container {
-  border-radius: 5px;
+  border-radius: 2px;
   height: 300px;
   max-height: 300px;
   display: grid;
@@ -1686,7 +1686,7 @@ footer {
   width: 100%;
   align-items: center;
   text-align: center;
-  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
 }
 
 .speech-to-text-dashboard textarea:disabled {
@@ -1702,7 +1702,7 @@ footer {
 .dashboard__left-section-content-container-control-input {
   height: 70px;
   width: calc(12.5vw - 30px);
-  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow:  0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   background-color: rgba(0, 0, 0, 0.3);
   align-items: center;
   display: grid;
@@ -1773,7 +1773,7 @@ footer {
   border-radius: 5px;
   color: white;
   height: 50px;
-  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 1px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 4px 20px 1px rgba(0, 0, 0, 0.5) inset;
   background-color: rgba(0, 0, 0, 0.25);
 }
 
@@ -1795,7 +1795,7 @@ footer {
 
 .file-output-container {
   position: relative;
-  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   border-radius: 5px;
   height: calc(250px - 46.4px);
   background-color:
@@ -1916,7 +1916,7 @@ footer {
 .dashboard__service-options-container {
   background-color: rgba(0, 0, 0, 0.3);
   padding-block: 80px;
-  box-shadow: 0px 0px 3px rgba(255, 255, 255, 0.5), 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  box-shadow: 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
   border-radius: 5px;
 }
 
@@ -2066,7 +2066,7 @@ footer {
   background-color: rgba(0, 0, 0, 0.4);
   border-radius: 15px;
   margin-block: 50px;
-  box-shadow: 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset, 0px 0px 3px rgba(255, 255, 255, 0.25);
+  box-shadow: 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset, 0px 0px 2px 0px rgba(255, 255, 255, 0.15);;
 }
 
 .video-preview__video {
@@ -2108,10 +2108,10 @@ footer {
 
 .video-preview__control {
   width: 500px;
-  border-radius: 15px;
+  border-radius: 10px;
   height: 70px;
-  box-shadow: 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset, 0px 0px 4px 0px rgba(255, 255, 255, 0.25);
-  background-color: rgba(0, 0, 0, 0.3);
+  box-shadow: 0px 4px 20px 5px rgba(0, 0, 0, 0.5) inset;
+  background-color: rgba(0, 0, 0, 0.1);
 }
 .video-preview__control button:hover,.video-preview__control label:hover {
   cursor: pointer;
@@ -2119,13 +2119,12 @@ footer {
 .video-preview__control button {
   width: 100%;
   border: none;
-  border-radius: 15px;
+  border-radius: 10px;
   height: 100%;
   font-size: 2em;
   font-family: NexaHeavy;
   color: white;
-  box-shadow: 0px 0px 4px 0px rgba(255, 255, 255, 0.25);
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.1);
   display: grid;
   align-items: center;
 }
@@ -2851,7 +2850,7 @@ footer {
     display: block;
     position: relative;
     width: 100vw;
-    height: 20vh;
+    height: 15vh;
     margin-inline: 0;
     border-radius: 0;
     margin-block: 0;
