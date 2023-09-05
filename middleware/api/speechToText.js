@@ -9,35 +9,39 @@ const ffmpegPath = require('ffmpeg-static');
 const fs = require('fs');
 const ffprobe = require('ffprobe-static');
 const fontkit = require('fontkit');
+
 const speechToText = (storage, isVideoApi) => {
   return asyncHandler(async (req, res) => {
     try {
       var summary, fullSpeechToTextContent, contentType, diarizeOn, topicsOn;
       var topics = [];
       if (isVideoApi) {
-        var logoIndex = req.body.logo && req.body.logo;
-        var logo = req.files[logoIndex] && req.files[logoIndex];
+        var logoIndex = req.body.enableLogo === "Yes" && req.body.logo && req.body.logo;
+        var logo = req.body.enableLogo === "Yes" && req.files[logoIndex] && req.files[logoIndex];
         var logoExtension = logo && logo.originalname.slice(logo.originalname.lastIndexOf('.'));
-        var watermarkIndex = req.body.watermark && req.body.watermark;
-        var watermark = req.files[watermarkIndex] && req.files[watermarkIndex];
+        var watermarkIndex = req.body.enableWatermark === "Yes" && req.body.watermark && req.body.watermark;
+        var watermark = req.body.enableWatermark === "Yes" && req.files[watermarkIndex] && req.files[watermarkIndex];
         var watermarkExtension = watermark && watermark.originalname.slice(watermark.originalname.lastIndexOf('.'));
         var fontIndex = req.body.subtitles && req.body.subtitles;
         var font = req.files[fontIndex] && req.files[fontIndex];
         var fontExtension = req.files[fontIndex] && req.files[fontIndex].originalname.slice(font.originalname.lastIndexOf('.'));
         var fontSize = req.body.subtitlesFontSize;
-
+        var wordsPerLine = req.body.wordsPerLine === "Choose" ? null : req.body.wordsPerLine;
         var enableTextStroke = req.body.enableTextStroke === "No" ? false : true;
         var enableSubBg = req.body.enableSubBg === "No" ? false : true;
         var enableShadow = req.body.enableShadow === "No" ? false : true;
+        var enableWordFollow = req.body.enableWordFollow === "No" ? false : true;
+        var enableScale = req.body.enableScale === "No" ? false : true;
+        var enableFade = req.body.enableFade === "No" ? false : true;
         var formattedSubtitlesColor = convertColorToReversedHex(req.body.subtitlesColor, "FFFFFF");
         var formattedStrokeColor = enableTextStroke ? convertColorToReversedHex(req.body.strokeColor, "000000") : null;
         var formattedSubBgColor = enableSubBg ? convertColorToReversedHex(req.body.subBgColor, "000000", parseFloat(req.body.subBgOpacity)) : null;
+        var formattedWordFollowColor = enableWordFollow ? "&H" + req.body.wordFollowColor.substring(1).toUpperCase().split("").reverse().join("") : null;
         var textStroke = enableTextStroke ? req.body.textStroke.slice(0, req.body.textStroke.indexOf('P')) : null;
         var emotionsEnabled = req.body.enableEmotions === "No" ? false : true;
         var italicizeSubs = req.body.italicize === "No" ? false : true;
         var uppercaseSubs = req.body.uppercaseSubs === "No" ? false : true;
       }
-
       const videoStream = isVideoApi ? req.files[0] : req.file;
       const mimetype = videoStream.mimetype;
       const outputExtension = isVideoApi ? videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')) : req.body.audioEncoding;
@@ -81,15 +85,20 @@ const speechToText = (storage, isVideoApi) => {
       if (topicsOn) {
         addTopics(response, topics);
       }
+
       if (subtitlesOn) {
         var subtitles = [];
-        !isVideoApi ? subtitles = await addSubtitles(response) : subtitles = await addSubtitles(response,{
-          video:videoStream,
-          uppercaseSubs:uppercaseSubs,
-          emotionsEnabled:emotionsEnabled,
-          fontBuffer:font ? font.buffer : false,
-          fontSize:fontSize
-        });
+        !isVideoApi ? subtitles = await addSubtitles(response) : subtitles = await addSubtitles(response, {
+          video: videoStream,
+          uppercaseSubs: uppercaseSubs,
+          emotionsEnabled: emotionsEnabled,
+          defaultColor: formattedSubtitlesColor,
+          wordFollowEnabled: enableWordFollow,
+          wordFollowColor: formattedWordFollowColor,
+          enableScale: enableScale,
+          enableFade: enableFade,
+          wordsPerLine: wordsPerLine
+        }, req.body.languageCode);
       }
 
       if (diarizeOn) {
@@ -117,11 +126,19 @@ const speechToText = (storage, isVideoApi) => {
       }
 
       else {
+        const subtitlesAlign = returnAlignment(req.body.subtitlesAlign);
+        const fontName = detectFont(font);
+        var ASSSubtitlesTemplate = `[Script Info]\nTitle: Subtitles\nScriptType: v4.00+\nWrapStyle: 0\n\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\nStyle: Default,${fontName},${fontSize.substring(0, fontSize.indexOf("P"))},&HFFFFFF,${enableWordFollow ? formattedSubtitlesColor : "&HFFFFFF"},${formattedStrokeColor ? formattedStrokeColor : "&H000000"},${formattedSubBgColor ? formattedSubBgColor : "&H000000"},-1,${italicizeSubs ? "1" : "0"},0,0,100,100,0,0,1,${textStroke ? textStroke : 0},${enableShadow ? "2" : "0"},${subtitlesAlign},0,0,0,1\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`
         const srtSubtitles = convertToSrt(subtitles.join(''));
-        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), srtSubtitles, formattedSubtitlesColor, enableSubBg, formattedSubBgColor, videoStream.buffer, font, fontSize, fontExtension, req.body.subtitlesAlign, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign, enableShadow, enableTextStroke, textStroke, formattedStrokeColor, enableSubBg, italicizeSubs);
+        const srtSubtitlesArr = srtSubtitles.split('\n');
+        for (let i = 0; i < srtSubtitlesArr.length; i++) {
+          ASSSubtitlesTemplate += `${srtSubtitlesArr[i]}\n`;
+        }
+        console.log(ASSSubtitlesTemplate);
+        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), ASSSubtitlesTemplate, videoStream.buffer, font, fontExtension, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign);
         const endVideoBuffer = fs.readFileSync(videoPath);
         fs.unlinkSync(videoPath);
-        await sendToStorage(`${outputFileName.substring(0, outputFileName.lastIndexOf('.'))}.${outputExtension}`, endVideoBuffer, contentType, storage);
+        sendToStorage(`${outputFileName.substring(0, outputFileName.lastIndexOf('.'))}.${outputExtension}`, endVideoBuffer, contentType, storage);
         res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
       }
 
@@ -166,11 +183,16 @@ function convertToBoolean(variable) {
   }
 }
 
-async function addSubtitles(response,subtitlesProps) {
-  var pDuration = 6;
+async function addSubtitles(response, subtitlesProps, languageBookmark) {
   var aspectRatio;
   var subtitles = [];
-  var wordsEmotionallyLabeled = require("../../data/emotions/en-US/words.json");
+
+  if (subtitlesProps) {
+    var { video, uppercaseSubs, emotionsEnabled, defaultColor, wordFollowEnabled, wordFollowColor, enableScale, enableFade, wordsPerLine } = subtitlesProps;
+  }
+
+  const fileName = getLanguageFromBookmark(languageBookmark);
+  var wordsEmotionallyLabeled = require(`../../data/emotions/${fileName}/words.json`);
   var colorsPalette = ["0CFF00", "0046FF", "FFD500", "5900FF", "FF7000", "FF0000"];
   var happyWords = wordsEmotionallyLabeled.happy;
   var sadWords = wordsEmotionallyLabeled.sad;
@@ -178,119 +200,73 @@ async function addSubtitles(response,subtitlesProps) {
   var surprisedWords = wordsEmotionallyLabeled.surprised;
   var afraidWords = wordsEmotionallyLabeled.afraid
   var angryWords = wordsEmotionallyLabeled.angry;
+
   var emotionsArr = [happyWords, sadWords, anxiousWords, surprisedWords, afraidWords, angryWords];
-  if(subtitlesProps) {
-    var {video,uppercaseSubs,emotionsEnabled,fontBuffer,fontSize} = subtitlesProps;
-  }
+  var wordsIt = 0;
+
   function getAspectRatio() {
     if (video) {
-      return new Promise((resolve, reject) => {
-
-        var tempFolder = path.join(__dirname, '../.././temporary');
-        var aspectRadioVideoFileName = generateRandomFileName(video.originalname.slice(video.originalname.lastIndexOf('.')));
-        fs.writeFileSync(path.join(tempFolder, aspectRadioVideoFileName), video.buffer);
-        const ffprobePath = ffprobe.path;
-
-        const ffprobeProcess = spawn(ffprobePath, ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height,r_frame_rate', '-of', 'json', path.join(tempFolder, aspectRadioVideoFileName)]);
-
-        let ffprobeOutput = '';
-
-        ffprobeProcess.stdout.on('data', (data) => {
-          ffprobeOutput += data.toString();
-        });
-
-        ffprobeProcess.stderr.on('data', (data) => {
-          console.error(data.toString());
-        });
-
-
-        ffprobeProcess.on('close', (code) => {
-          fs.unlinkSync(path.join(tempFolder, aspectRadioVideoFileName));
-          if (code === 0) {
-            const videoInfo = JSON.parse(ffprobeOutput);
-            const videoWidth = videoInfo.streams[0].width;
-            const videoHeight = videoInfo.streams[0].height;
-            aspectRatio = videoWidth / videoHeight;
-            resolve(aspectRatio);
-          } else {
-            console.error('FFprobe process exited with code', code);
-            reject(new Error(`FFprobe process exited with code ${code}`));
-          }
-        });
-      })
+      var ratio = getVideoMetrics(video, "aspectRatio");
     }
+    return ratio;
   }
-  aspectRatio = await getAspectRatio();
-  aspectRatio <= 1.2 ? pDuration = 24 : 6;
+
+  if (!wordsPerLine) {
+    aspectRatio = await getAspectRatio();
+  }
+
+  aspectRatio ? aspectRatio <= 1.2 ? pLength = 4 : pLength = 8 : pLength = parseInt(wordsPerLine);
+  var pLengthCopy = pLength;
+
   for (let utterance of response.results.utterances) {
-    if (aspectRatio <= 1.2) {
-      for (let i = 0; i < utterance.words.length; i+=3) {
-        const wordsArr =  uppercaseSubs ? `${utterance.words[i].word} ${utterance.words[i + 1] ? utterance.words[i + 1].word : ""} ${utterance.words[i + 2] ? utterance.words[i + 2].word : ""}`.toUpperCase() : `${utterance.words[i].word} ${utterance.words[i + 1] ? utterance.words[i + 1].word : ""} ${utterance.words[i + 2] ? utterance.words[i + 2].word : ""}`
-        const end = utterance.words[i + 2] ? utterance.words[i + 2].end.toFixed(2) : utterance.words[i + 1] ? utterance.words[i + 1].end.toFixed(2) : utterance.words[i].end.toFixed(2);
-        const defaultWord = utterance.words[i].word;
-        checkAndPushToArray(emotionsEnabled, wordsArr, emotionsArr, colorsPalette, subtitles, utterance.words[i].start.toFixed(2),end, defaultWord);
+    pLength = pLengthCopy;
+    wordsIt = 0;
+    for (let i = 0; i < utterance.words.length; i += pLengthCopy) {
+      var wordsArr = "";
+      var karaokeArr = [];
+      var endArr = [];
+
+      for (let x = wordsIt; x < pLength; x++) {
+        utterance.words[x] ? endArr.push(utterance.words[x].start, utterance.words[x].end) : null;
       }
-    }
-    else {
-      if (utterance.start + pDuration < utterance.end) {
-        const transcriptionInArr = utterance.transcript.split(' ');
-        const transcriptArrInParts = splitToNChunks(transcriptionInArr, pDuration);
-        const transcriptLen = utterance.transcript.split(' ').length;
-        const speakingTime = (utterance.end - utterance.start) / pDuration;
-        var startTimeStamp = utterance.start
-        var endTimeStamp = utterance.start + speakingTime;
-        var transcriptPart = "";
-        for (let j = 0; j < pDuration; j++) {
-          for (let i = 0; i < transcriptLen / pDuration; i++) {
-            transcriptPart += transcriptArrInParts[j][i] !== undefined ? (transcriptArrInParts[j][i] + " ") : '';
-          }
-          subtitles.push(`[${startTimeStamp.toFixed(2)} - ${endTimeStamp.toFixed(2)}]${uppercaseSubs ? transcriptPart.toUpperCase() : transcriptPart}\n`);
-          startTimeStamp += speakingTime;
-          endTimeStamp += speakingTime;
-          transcriptPart = "";
+
+      for (let j = wordsIt; j < pLength; j++) {
+        wordsArr += utterance.words[j] ? uppercaseSubs ? `${utterance.words[j].word.toUpperCase()} ` : `${utterance.words[j].word} ` : "";
+        if (utterance.words[j]) {
+          wordFollowEnabled ? karaokeArr.push(((utterance.words[j].end - utterance.words[j].start) * 100).toFixed(2)) : null;
         }
+
       }
-      else {
-        checkAndPushToArray(emotionsEnabled, uppercaseSubs ? utterance.transcript.toUpperCase() : utterance.transcript, emotionsArr, colorsPalette, subtitles, utterance.start.toFixed(2),utterance.end.toFixed(2), utterance.transcript);
-      }
+
+      const start = parseFloat(Math.min(...endArr)).toFixed(2);
+      const end = parseFloat(Math.max(...endArr)).toFixed(2);
+      wordsIt += pLengthCopy;
+      pLength += pLengthCopy;
+      checkAndPushToArray(emotionsEnabled, wordsArr, emotionsArr, colorsPalette, subtitles, start, end, wordFollowEnabled ? wordFollowColor : defaultColor, wordFollowEnabled ? karaokeArr : false, enableScale, enableFade);
     }
   }
-
 
   return subtitles;
 }
 
-function checkAndPushToArray(emotionsEnabled, subsToCheck, emotionsArr, colorsPalette, subtitles, start,end, transcriptWord) {
-  if (emotionsEnabled) {
-    let modifiedWord = addEmotionsToSubtitles(subsToCheck, emotionsArr, colorsPalette);
-    subtitles.push(`[${start} - ${end}]${modifiedWord}\n`);
-  }
-  else {
-    subtitles.push(`[${start} - ${end}]${transcriptWord}\n`);
-  }
+function checkAndPushToArray(emotionsEnabled, subsToCheck, emotionsArr, colorsPalette, subtitles, start, end, defaultColor, karaokeArr, enableScale, enableFade) {
+  let modifiedWord = addEmotionsToSubtitles(subsToCheck, emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled);
+  subtitles.push(`[${start} - ${end}]${modifiedWord}\n`);
 }
 
-function splitToNChunks(array, n) {
-  let result = [];
-  for (let i = n; i > 0; i--) {
-    result.push(array.splice(0, Math.ceil(array.length / i)));
-  }
-  return result;
-}
-
-async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor, enableSubBg, subBgColor, videoBuffer, font, fontSize, fontExtension, subtitlesAlign, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign, enableShadow, enableTextStroke, stroke, strokeColor, enableSubBg, italicizeSubs) {
+async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, font, fontExtension, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign) {
 
   Ffmpeg.setFfmpegPath(ffmpegPath);
 
   var tempFolder = path.join(__dirname, '../.././temporary');
   const fontTempFolder = path.join(__dirname, './temporary');
-  var detectedFont, fontFamilyName;
+  var fontFamilyName;
   var logoFileName, logoAlignFFmpegFormat, logoVideoFileName, videoWithLogoPath;
   var watermarkFileName, watermarkAlignFFmpegFormat, watermarkVideoFileName, videoWithWatermarkPath;
-  var subtitlesFontFileName, subtitlesAlignFFmpegFormat;
+  var subtitlesFontFileName;
 
   const srtSubtitlesBuffer = Buffer.from(srtSubtitles, 'utf-8');
-  const subtitlesFileName = generateRandomFileName('.srt');
+  const subtitlesFileName = generateRandomFileName('.ass');
   const subtitlesVideoFileName = generateRandomFileName(videoExtension)
 
   const videoFileName = generateRandomFileName(videoExtension);
@@ -300,14 +276,11 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
 
   if (font) {
     subtitlesFontFileName = generateRandomFileName(fontExtension);
-    detectedFont = fontkit.create(font.buffer);
-    fontFamilyName = detectedFont.familyName;
+    fontFamilyName = detectFont(font);
     fs.writeFileSync(path.join(fontTempFolder, subtitlesFontFileName), font.buffer);
-    subtitlesAlignFFmpegFormat = returnAlignment(subtitlesAlign);
   }
   else {
     fontFamilyName = "Nexa Heavy";
-    subtitlesAlignFFmpegFormat = returnAlignment(subtitlesAlign);
   }
 
   if (logo) {
@@ -329,11 +302,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
   }
 
   const videoWithSubtitlesPath = path.join(tempFolder, subtitlesVideoFileName);
-  var shadow = enableShadow ? ",Shadow=1" : "";
-  var textStroke = enableTextStroke ? `,Outline=${stroke}` : ",Outline=0";
-  var outlineColor = enableTextStroke ? `,OutlineColour=${strokeColor}` : "";
-  var subBg = enableSubBg ? `,BorderStyle=4,MarginV=${subtitlesAlign === "Bottom" ? "20" : "0"},BackColour=${subBgColor}` : "";
-  var italicize = italicizeSubs ? ",Italic=1" : "";
+
   const endVideoPath = await createModifiedVideos();
   return endVideoPath;
 
@@ -344,9 +313,10 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
         .complexFilter([
           {
             filter: 'subtitles',
-            options: `./temporary/${subtitlesFileName}:force_style='Alignment=${subtitlesAlignFFmpegFormat},Fontsize=${fontSize},Fontsdir=./temporary,Fontfile=${subtitlesFontFileName},PrimaryColour=${subtitlesColor},Fontname=${fontFamilyName}${shadow}${textStroke}${outlineColor}${subBg}${italicize}'`
+            options: `./temporary/${subtitlesFileName}:fontsdir=./temporary/${font ? subtitlesFontFileName : "Nexa-Heavy.ttf"}.`
 
-          }])
+          }
+        ])
         .toFormat(videoExtension.slice(videoExtension.indexOf('.') + 1))
         .on('start', () => {
           console.log('Creating buffer with subtitles...');
@@ -389,7 +359,6 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
       .toFormat('mp4')
       .on('start', () => {
         console.log('Adding watermark...');
-        console.log(videoWithWatermarkPath);
       })
       .on('end', () => {
         fs.unlinkSync(videoWithSubtitlesPath);
@@ -444,13 +413,13 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, subtitlesColor,
 function returnAlignment(alignment) {
   switch (alignment) {
     case "Center":
-      return 10;
+      return '5';
     case "Bottom":
-      return 2;
+      return "2";
     case "Top Center":
-      return 6;
+      return "8";
     default:
-      return 2;
+      return "2";
   }
 }
 function returnDetailedAlignment(alignment, fontSize) {
@@ -479,13 +448,10 @@ function returnDetailedAlignment(alignment, fontSize) {
 }
 function convertToSrt(inputText) {
   const lines = inputText.split('\n');
-  // Initialize the SRT counter
-  let srtCounter = 1;
+  let assCounter = 1;
 
-  // Initialize an array to store the SRT lines
-  const srtLines = [];
+  const assLines = [];
 
-  // Loop through each line and convert it to SRT format
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i].trim();
     if (line !== '') {
@@ -493,31 +459,27 @@ function convertToSrt(inputText) {
       const [startTime, endTime] = timeRange
         .replace('[', '')
         .split(' - ')
-        .map(parseFloat);
-      const srtLine = `${srtCounter}\n${formatTime(startTime)} --> ${formatTime(endTime)}\n${subtitleText}\n`;
-      srtLines.push(srtLine);
-      srtCounter++;
+
+      const formatTime = (time) => {
+        const [seconds, milliseconds] = time.split('.');
+        const totalSeconds = parseInt(seconds, 10);
+        const minutes = Math.floor(totalSeconds / 60);
+        const hours = Math.floor(minutes / 60);
+        return `${hours}:${minutes % 60}:${totalSeconds % 60}.${milliseconds}`;
+      };
+
+      const formattedStartTime = formatTime(startTime);
+      const formattedEndTime = formatTime(endTime);
+
+      const assLine = `Dialogue: 0,${formattedStartTime},${formattedEndTime},Default,,0,0,0,,${subtitleText}\n`;
+      assLines.push(assLine);
+      assCounter++;
     }
   }
 
-  // Format time in SRT format
-  function formatTime(timeInSeconds) {
-    const hours = Math.floor(timeInSeconds / 3600);
-    const minutes = Math.floor((timeInSeconds % 3600) / 60);
-    const seconds = Math.floor(timeInSeconds % 60);
-    const milliseconds = Math.round((timeInSeconds - Math.floor(timeInSeconds)) * 1000);
-    return `${padTime(hours)}:${padTime(minutes)}:${padTime(seconds)},${padTime(milliseconds, 3)}`;
-  }
+  const assContent = assLines.join('');
+  return assContent;
 
-  // Pad time values with leading zeros
-  function padTime(value, length = 2) {
-    return value.toString().padStart(length, '0');
-  }
-
-  // Join the SRT lines and create the final SRT content
-  const srtContent = srtLines.join('\n');
-
-  return srtContent;
 }
 
 function generateRandomFileName(extension) {
@@ -554,11 +516,11 @@ function convertColorToReversedHex(color, variant, opacity) {
     var alphaHex = alphaValue.toString(16).toUpperCase().padStart(2, '0');
   }
   try {
-    var fullHexColorPrefix = opacity ? `0x${alphaHex}` : "0x";
+    var fullHexColorPrefix = opacity ? `&H${alphaHex}` : "&H";
     const cleanHexColor = color.startsWith("#") ? color.substring(1) : color;
     var fullHexColor = fullHexColorPrefix + cleanHexColor.toUpperCase().split("").reverse().join("");
-    if (fullHexColor === "0xDENIFEDNU" || fullHexColor === `0x${alphaHex}DENIFEDNU`) {
-      fullHexColor = !opacity ? `0x${variant}` : `0x${alphaHex}${variant}`;
+    if (fullHexColor === "&HDENIFEDNU" || fullHexColor === `&H${alphaHex}DENIFEDNU`) {
+      fullHexColor = !opacity ? `&H${variant}` : `&H${alphaHex}${variant}`;
     }
     return fullHexColor;
   }
@@ -568,37 +530,117 @@ function convertColorToReversedHex(color, variant, opacity) {
   }
 }
 
-function addEmotionsToSubtitles(subtitles, emotionsArr, colorsPalette) {
+function addEmotionsToSubtitles(subtitles, emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled) {
   const subtilesCopy = subtitles.split(" ");
   var modifiedSubtitles = "";
-  for (let i = 0; i < subtilesCopy.length; i++) {
+  for (let i = 0; i < subtilesCopy.length - 1; i++) {
     var isAdded = false;
     for (let j = 0; j < emotionsArr.length; j++) {
       for (let k = 0; k < emotionsArr[j].length; k++) {
         if (subtilesCopy[i].toLowerCase() === emotionsArr[j][k]) {
           switch (j) {
-            case 0: modifiedSubtitles += `<font color="#${colorsPalette[0]}">${subtilesCopy[i]}</font> `; isAdded = true;
+            case 0: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[0]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 1: modifiedSubtitles += `<font color="#${colorsPalette[1]}">${subtilesCopy[i]}</font> `; isAdded = true;
+            case 1: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[1]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 2: modifiedSubtitles += `<font color="#${colorsPalette[2]}">${subtilesCopy[i]}</font> `; isAdded = true;
+            case 2: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[2]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 3: modifiedSubtitles += `<font color="#${colorsPalette[3]}">${subtilesCopy[i]}</font> `; isAdded = true;
+            case 3: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[3]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 4: modifiedSubtitles += `<font color="#${colorsPalette[4]}">${subtilesCopy[i]}</font> `; isAdded = true;
+            case 4: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[4]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 5: modifiedSubtitles += `<font color="#${colorsPalette[5]}">${subtilesCopy[i]}</font> `; isAdded = true;
+            case 5: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[5]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            default: modifiedSubtitles += `${subtilesCopy[i]}`;
+            default: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[6]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]}`;
               break;
           }
         }
         else if (j === emotionsArr.length - 1 && k === emotionsArr[j].length - 1 && !isAdded) {
-          modifiedSubtitles += `${subtilesCopy[i]} `
+          modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : null}\\c${defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `
         }
       }
     }
+
   }
+
   return modifiedSubtitles;
+
 }
+
+function getLanguageFromBookmark(bookmark) {
+  switch (bookmark) {
+    case "da": return "danish";
+    case "en": return "english";
+    case "en-AU": return "english";
+    case "en-IN": return "english";
+    case "en-NZ": return "english";
+    case "en-US": return "english";
+    case "es-419": return "spanish";
+    case "es": return "spanish";
+    case "fr-CA": return "french";
+    case "fr": return "fr";
+    case "hi": return "hindi";
+    case "hi-Latn": return "hindi";
+    case "id": return "indonesian";
+    case "it": return "italian";
+    case "ja": return "japanese";
+    case "nl": return "dutch";
+    case "pl": return "polish";
+    case "pt-BR": return "portuguese";
+    case "pt": return "portuguese";
+    case "pt-PT": return "portuguese";
+    case "ru": return "russian";
+    case "sv": return "swedish";
+    case "tr": return "turkish";
+    case "uk": return "ukrainian";
+    case "zh-CN": return "chinese";
+    case "zh-TW": return "chinsese";
+  }
+}
+
+function getVideoMetrics(video, type) {
+  return new Promise((resolve, reject) => {
+    var tempFolder = path.join(__dirname, '../.././temporary');
+    var aspectRadioVideoFileName = generateRandomFileName(video.originalname.slice(video.originalname.lastIndexOf('.')));
+    fs.writeFileSync(path.join(tempFolder, aspectRadioVideoFileName), video.buffer);
+    const ffprobePath = ffprobe.path;
+
+    const ffprobeProcess = spawn(ffprobePath, ['-v', 'error', '-select_streams', 'v:0', '-show_entries', 'stream=width,height,r_frame_rate', '-of', 'json', path.join(tempFolder, aspectRadioVideoFileName)]);
+
+    let ffprobeOutput = '';
+
+    ffprobeProcess.stdout.on('data', (data) => {
+      ffprobeOutput += data.toString();
+    });
+
+    ffprobeProcess.stderr.on('data', (data) => {
+      console.error(data.toString());
+    });
+
+
+    ffprobeProcess.on('close', (code) => {
+      fs.unlinkSync(path.join(tempFolder, aspectRadioVideoFileName));
+      if (code === 0) {
+        const videoInfo = JSON.parse(ffprobeOutput);
+        const videoWidth = videoInfo.streams[0].width;
+        const videoHeight = videoInfo.streams[0].height;
+        type === "aspectRatio" ? resolve(videoWidth / videoHeight) : resolve(videoHeight);
+      } else {
+        console.error('FFprobe process exited with code', code);
+        reject(new Error(`FFprobe process exited with code ${code}`));
+      }
+    });
+  })
+}
+
+function detectFont(font) {
+  try {
+    var detectedFont = fontkit.create(font.buffer);
+    return detectedFont.familyName;
+  }
+  catch (err) {
+    return "Nexa Heavy";
+  }
+}
+
 module.exports = speechToText;
