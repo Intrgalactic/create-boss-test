@@ -3,6 +3,13 @@ import { handleFileDrop, handleFileInputDrag, removeDragEffect } from "src/utils
 export function FileInputContainer({ file, setFile, textInput,acceptedFormats,setErrorAtDownload }) {
     const fileRef = useRef();
     const fileInputRef = useRef();
+    useEffect(() => {
+        if (file) {
+            if (!fileRef.current.classList.contains("attached-file")) {
+                fileRef.current.classList.add("attached-file")
+            }
+        }
+    },[file])
     function addClassList(remove,add) {
         !remove ? fileRef.current.classList.add("drop-file") : fileRef.current.classList.remove("drop-file");
         add &&  fileRef.current.classList.add("attached-file") 

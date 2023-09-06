@@ -83,11 +83,9 @@ export const dashboardActionsData = [
     },
 
 ]
-export const audioSpeedOptions = ["0.5","0.75","1","1.25","1.5","1.75","2" ];
-export const voicePitchOptions = ["-20","-15","-10","-5","0","5","10","15","20" ];
-export const voiceGenderOptions = ["Male","Female"];
-export const speakersTypeOptions = ["Home","Wearables","Headphones","Small Speaker","Medium Speaker","Car","Handset Devices","Telephony"];
-export const outputExtensionOptions = ["MP3","OGG","WAV"];
+export const voiceGenderOptions = ["Choose","Male","Female"];
+export const voiceAgeOptions = ["Choose","Young","Middle Aged","Old"];
+export const voiceAccentOptions = ["Choose","British","American","African","Australian","Indian"];
 export const STTOutputExtensionOptions = ["TXT","DOCX","PDF"];
 export const trueFalseOptions = ['Yes','No'];
 export const STTlanguageData = [

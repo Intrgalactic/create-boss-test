@@ -21,7 +21,7 @@ import webpRouteImage from 'src/assets/images/route.webp';
 const DashboardSelectButton = lazy(() => import('src/components/dashboard/service-option/dashboard-select-button').then(module => {
     return { default: module.DashboardSelectButton }
 }))
-import { planDetailsData, dashboardActionsData, audioSpeedOptions, voiceGenderOptions, languagesData } from "src/utils/dashboard-static-data";
+import { planDetailsData, dashboardActionsData, languagesData, } from "src/utils/dashboard-static-data";
 
 import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
@@ -60,15 +60,11 @@ export default function Dashboard() {
 
         }
     }
-    function setTTSOptionsToDefault() {
-        setAudioSpeed("1");
-        setVoiceGender("Male");
-        setTSSLanguage("English (US)");
-    }
+
     function setSTTOptionsToDefault() {
         setSTTLanguage("English (US)");
     }
-    const filteredTTSLanguagesData = languagesData.filter(obj => TTSfilterRegEx.test(obj.optgroup));
+    
     const filteredSTTLanguagesData = languagesData.filter(obj => STTfilterRegEx.test(obj.optgroup));
 
     useEffect(() => {
@@ -174,28 +170,6 @@ export default function Dashboard() {
                         </DashboardBox>
                     </ContentContainer>
                     <ContentContainer containerClass="dashboard__container-row">
-                        <DashboardBox heading="Text To Speech Settings">
-                            <DashboardBoxContent>
-                                <DashboardSettingsRecord description="Set To Default">
-                                    <CtaButton text="Set" action={setTTSOptionsToDefault} />
-                                </DashboardSettingsRecord>
-                                <DashboardSettingsRecord description="Set Language">
-                                    <dashboardSelectButtonContext.Provider value={{ heading:"Set TTS Language",text: dashboardProps.TTSLanguage, options: filteredTTSLanguagesData, setOption: passToReducer, setFilter: setTTSLanguageFilter }}>
-                                        <DashboardSelectButton />
-                                    </dashboardSelectButtonContext.Provider>
-                                </DashboardSettingsRecord>
-                                <DashboardSettingsRecord description="Set Voice Speed">
-                                    <dashboardSelectButtonContext.Provider value={{ heading:"Set Audio Speed",text: dashboardProps.audioSpeed, options: audioSpeedOptions, setOption: passToReducer }}>
-                                        <DashboardSelectButton />
-                                    </dashboardSelectButtonContext.Provider>
-                                </DashboardSettingsRecord>
-                                <DashboardSettingsRecord description="Set Voice Gender">
-                                    <dashboardSelectButtonContext.Provider value={{ heading:"Set Voice Gender",text: dashboardProps.voiceGender, options: voiceGenderOptions, setOption: passToReducer }}>
-                                        <DashboardSelectButton />
-                                    </dashboardSelectButtonContext.Provider>
-                                </DashboardSettingsRecord>
-                            </DashboardBoxContent>
-                        </DashboardBox>
                         <DashboardBox heading="Speech To Text Settings">
                             <DashboardBoxContent>
                                 <DashboardSettingsRecord description="Set To Default" >

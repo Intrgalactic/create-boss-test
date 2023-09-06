@@ -6,33 +6,38 @@ const DashboardRightSection = lazy(() => import('src/layouts/dashboards/dashboar
 const DashboardServiceOptionsRow = lazy(() => import('src/layouts/dashboards/service-options/dashboard-service-options-row'));
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
-import { speakersTypeOptions, languagesData, outputExtensionOptions, voiceGenderOptions, voicePitchOptions, audioSpeedOptions } from "src/utils/dashboard-static-data";
 import { createDataAndSend } from "src/utils/utilities";
 import { handleTextChange } from "src/utils/utilities";
+import { voiceAgeOptions, voiceGenderOptions } from "src/utils/dashboard-static-data";
+import TTSVoiceSelect from "src/layouts/text-to-speech-voice-select";
 
 export default function TTSDashboard() {
     const TTSInitialState = {
-        voicePitch: "0",
-        language: "English (US)",
-        audioSpeed: '1',
-        languageCode: "en-US",
-        voiceGender: 'Male',
-        speakersType: 'Home',
-        outputExtension: "MP3"
-      };
+        voiceDestiny: 'None',
+        age: "Choose",
+        gender: "Choose",
+        accent: "Choose"
+    }
     
-    const [textToSpeechProps,dispatch] = useReducer(TTSReducer,TTSInitialState);
+    const [TTSProps,dispatch] = useReducer(TTSReducer,TTSInitialState);
     const [ableToTranslate, setAbleToTranslate] = useState('No');
-
     const [textInput, setTextInput] = useState("");
     const [isTranslated, setIsTranslated] = useState(false);
     const [filePath, setFilePath] = useState('');
-    const controls = [`Text Length: ${textInput.length} / 10 000`, `Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${textToSpeechProps.outputExtension}`, "Reset", "Translate"];
+    const controls = [`Text Length: ${textInput.length} / 10 000`, `Able To Translate : ${ableToTranslate}`, `Extension Of Output File : mp3`, "Reset", "Translate"];
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
-    const [languageFilter, setLanguageFilter] = useState();
-    const languageFilterRegEx = new RegExp(languageFilter, "i");
+
+    function TTSReducer(state,action) {
+        const payload = action.payload;
+        switch(action.type) {
+            case "Voice Category": return {...state,voiceDestiny: payload};
+            case "Age": return {...state,age:payload};
+            case "Gender": return {...state,gender:payload};
+            case "Accent": return {...state,accent:payload};
+        }
+    }
 
     const stateSetters = {
         setLoadingState: setLoadingState,
@@ -40,59 +45,7 @@ export default function TTSDashboard() {
         setFilePath: setFilePath,
         setIsTranslated: setIsTranslated
     }
-    const filteredLanguagesData = languagesData.filter(obj => languageFilterRegEx.test(obj.optgroup));
-    function TTSReducer(state,action) {
-        const payload = action.payload;
-        switch(action.type) {
-            case "Language": return {...state,language: payload[1],languageCode: payload[0]};
-            case "Voice Pitch": return {...state,voicePitch: payload};
-            case "Voice Gender": return {...state,voiceGender: payload};
-            case "Audio Speed": return {...state,audioSpeed: payload};
-            case "Speakers Type": return {...state,speakersType: payload};
-            case "Output Extension": return {...state,outputExtension: payload};
-        }
-    }
-    const voiceOptionsRowActions = [
-        {
-            text: textToSpeechProps.voicePitch,
-            options: voicePitchOptions,
-            setOption: passToReducer,
-            heading: "Voice Pitch",
-        },
-        {
-            text:  textToSpeechProps.language,
-            options: filteredLanguagesData,
-            setOption: passToReducer,
-            setFilter: setLanguageFilter,
-            heading: "Language",
-        },
-        {
-            text:  textToSpeechProps.voiceGender,
-            options: voiceGenderOptions,
-            setOption: passToReducer,
-            heading: "Voice Gender",
-        },
-        {
-            text:  textToSpeechProps.audioSpeed,
-            options: audioSpeedOptions,
-            setOption: passToReducer,
-            heading: "Audio Speed"
-        }
-    ]
-    const voiceMiscellaneousOptionsRowActions = [
-        {
-            text:  textToSpeechProps.speakersType,
-            options: speakersTypeOptions,
-            setOption: passToReducer,
-            heading: "Speakers Type",
-        },
-        {
-            text:  textToSpeechProps.outputExtension,
-            options: outputExtensionOptions,
-            setOption: passToReducer,
-            heading: "Output Extension",
-        }
-    ]
+
     function handleTextInput(e) {
         handleTextChange(e, {
             isTranslated: isTranslated,
@@ -104,21 +57,15 @@ export default function TTSDashboard() {
         })
         setTextInput(e);
     }
+
     async function sendToSynthetize() {
         if (textInput || file) {
             setLoadingState(true);
             if (file) {
                 if (file.type === "text/plain" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf") {
-                    console.log(file);
                     createDataAndSend({
-                        code: languageCode,
-                        gender: voiceGender,
-                        pitch: voicePitch,
-                        effectsProfileId: speakersType,
-                        audioEncoding: outputExtension,
-                        speakingRate: audioSpeed,
                         file: file,
-                    }, file, outputExtension, stateSetters, 'api/text-to-speech');
+                    }, file, "mp3", stateSetters, 'api/text-to-speech');
                 }
                 else {
                     setErrorAtDownload("The File Extension Is Not Supported");
@@ -128,13 +75,7 @@ export default function TTSDashboard() {
             }
             else if (!file) {
                 createDataAndSend({
-                    code: languageCode,
-                    gender: voiceGender,
-                    pitch: voicePitch,
-                    effectsProfileId: speakersType,
-                    audioEncoding: outputExtension,
                     text: textInput,
-                    speakingRate: audioSpeed
                 }, file, outputExtension, stateSetters, 'api/text-to-speech');
             }
 
@@ -143,10 +84,31 @@ export default function TTSDashboard() {
 
     async function downloadFile() {
         if (file) {
-            var outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.${outputExtension.toLowerCase()}`;
+            var outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.mp3`;
         }
-        fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
+        fileDownload(filePath, `${file && file.name ? outputFileName : `output.mp3`}`);
     }
+
+    const specificVoiceSettingsActions = [
+        {
+            text: TTSProps.age,
+            options: voiceAgeOptions,
+            setOption: passToReducer,
+            heading: "Age"
+        },
+        {
+            text: TTSProps.gender,
+            options: voiceGenderOptions,
+            setOption: passToReducer,
+            heading: "Gender"
+        },
+        {
+            text: TTSProps.accent,
+            options: voiceAgeOptions,
+            setOption: passToReducer,
+            heading: "Accent"
+        } 
+    ]
     function passToReducer(actionType, payload) {
         dispatch({
             type: actionType,
@@ -159,10 +121,7 @@ export default function TTSDashboard() {
                 <DashboardHeader />
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
                     <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setTextInput={setTextInput} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
-                    <DashboardRightSection configurationHeading="Default Configuration Is Set To Male Voice With 1.0 Voice Speed Level">
-                        <DashboardServiceOptionsRow actions={voiceOptionsRowActions} heading="Voice Options" />
-                        <DashboardServiceOptionsRow actions={voiceMiscellaneousOptionsRowActions} heading="Miscellaneous" />
-                    </DashboardRightSection>
+                    <TTSVoiceSelect category={TTSProps.voiceDestiny} setCategory={passToReducer} specificVoiceSettingsActions={specificVoiceSettingsActions}/>
                 </ContentContainer>
                 {loadingState === true && <Loader />}
             </Suspense>
