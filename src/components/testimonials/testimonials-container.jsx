@@ -1,13 +1,5 @@
 import { Carousel } from "../carousel/carousel";
 import { Testimonial } from "./testimonial-box";
-import firstTestimonialUserFace from 'src/assets/images/testimonial-face-1.jpg';
-import webpFirstTestimonialUserFace from 'src/assets/images/testimonial-face-1.webp';
-import secondTestimonialUserFace from 'src/assets/images/testimonial-face-2.jpg';
-import webpSecondTestimonialUserFace from 'src/assets/images/testimonial-face-2.webp';
-import firstTestimonialFemaleUserFace from 'src/assets/images/testimonial-female-user-face-1.png';
-import webpFirstTestimonialFemaleUserFace from 'src/assets/images/testimonial-female-user-face-1.webp';
-import secondTestimonialFemaleUserFace from 'src/assets/images/testimonial-female-user-face-2.png';
-import webpSecondTestimonialFemaleUserFace from 'src/assets/images/testimonial-female-user-face-2.webp';
 import testimonialCarouselButton from 'src/assets/images/testimonial-carousel-button.png';
 import webpTestimonialCarouselButton from 'src/assets/images/testimonial-carousel-button.webp';
 import testimonialuserFaceEx from 'src/assets/images/testimonial-user-face-ex.png';
