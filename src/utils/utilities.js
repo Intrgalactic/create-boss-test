@@ -312,3 +312,10 @@ export function STTReducer(state,action) {
         case "Show Timestamps": return {...state,timeStamps: payload};
     }
 }
+
+export function throwConfigErr(setConfigErr,errMessage) {
+    setConfigErr(errMessage);
+    setTimeout(()=>{
+        setConfigErr(false);
+    },5400);
+}

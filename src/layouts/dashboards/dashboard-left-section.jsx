@@ -13,8 +13,9 @@ import webpDownloadImage from 'src/assets/images/downloaded.webp';
 import errorImage from 'src/assets/images/error.png';
 import webpErrorImage from 'src/assets/images/error.webp';
 import { Link } from "react-router-dom";
+import { ServiceInstruction } from "src/components/dashboard/service-instruction-box";
 
-export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload, setErrorAtDownload,acceptedFormats,setTextInput }) {
+export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload, setErrorAtDownload,acceptedFormats,setTextInput,instructionSteps,instructionHeading }) {
     const [isFileAttached, setIsFileAttached] = useState(false);
     useEffect(() => {
         if (file) {
@@ -68,6 +69,7 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
                                 }
                             </div>
                         </DashboardServiceInputContainer>
+                        <ServiceInstruction heading={instructionHeading} steps={instructionSteps}/>
                     </ContentContainer>
                     <ContentContainer containerClass="dashboard__left-section-control-container">
                         {controls.map((control, index) => (

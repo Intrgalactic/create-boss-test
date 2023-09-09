@@ -1746,6 +1746,39 @@ footer {
 }
 .dashboard__left-section-file-container {
   width: calc(30vw - 40px - 5vw);
+  position: relative;
+}
+.service-instruction {
+  position: absolute;
+  width: 100%;
+  background-color: rgba(0,0,0,0.3);
+  border:1.2px solid rgba(0,0,0,0.5);
+  min-height: 270px;
+  height: fit-content;
+  top:calc(100% + 70px);
+  box-shadow: 0px 4px 5px 1px rgba(0,0,0,0.5);
+  border-radius: 5px;
+}
+
+.service-instruction ul {
+  width: 80%;
+  text-transform: capitalize;
+  font-family: NexaRegular;
+  text-align: left;
+}
+.dashboard__service-input-container  {
+  margin-top: 20px;
+}
+.service-instruction ul li {
+  padding-block: 10px;
+}
+.service-instruction ul a {
+  color:white;
+  text-decoration: none;
+  box-shadow: 0px 0px 10px #3C0BC4;
+  background-color:#003AFE;
+  padding:5px;
+  border-radius: 5px;
 }
 .dashboard__left-section-file-container .section-heading {
   text-align: right;
@@ -2674,6 +2707,9 @@ footer {
     background-image: image-set(url('assets/images/mobile-hero.webp') type('image/webp'),
         url('assets/images/mobile-hero.jpg') type('image/jpeg'));
     background-size: 100% 100%;
+  }
+  .dashboard__left-section-control-container {
+    margin-top:390px;
   }
   .tts-voice-select__category-select button {
     width:20vw;
@@ -3788,7 +3824,11 @@ footer {
     font-size: 1em;
   }
 
-
+  .service-instruction {
+    position:absolute;
+    width: 70vw;
+    left: calc(-70vw + (70vw * 0.4));
+  }
 
   .dashboard_settings-record p {
     font-size: 1em;
@@ -3888,6 +3928,7 @@ footer {
     width: 70vw;
     max-width: 70vw;
     justify-content: center;
+    margin-top:370px;
   }
 
   .dashboard__left-section-content-container-control-input,

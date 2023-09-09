@@ -90,15 +90,15 @@ export default function SFVDashboard() {
         if (videoFile) {
             setLoadingState(true);
             createDataAndSend({
-                audioEncoding: STTProps.outputExtension,
-                punctuationOn: STTProps.punctuation,
-                topicsOn: STTProps.detectTopic,
-                diarizeOn: STTProps.diarization,
-                summarizeOn: STTProps.summarization,
-                subtitlesOn: STTProps.timeStamps,
-                languageCode:STTProps.languageCode,
+                audioEncoding: SFVProps.outputExtension,
+                punctuationOn: SFVProps.punctuation,
+                topicsOn: SFVProps.detectTopic,
+                diarizeOn: SFVProps.diarization,
+                summarizeOn: SFVProps.summarization,
+                subtitlesOn: SFVProps.timeStamps,
+                languageCode:SFVProps.languageCode,
                 file: videoFile
-            },videoFile,STTProps.outputExtension.toLowerCase(),stateSetters,'api/subtitles-from-video',false);
+            },videoFile,SFVProps.outputExtension.toLowerCase(),stateSetters,'api/subtitles-from-video',false);
         }
     }
 

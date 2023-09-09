@@ -7,7 +7,8 @@ const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/ser
 import fileDownload from "js-file-download";
 import Loader from "src/layouts/loader";
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
-import { STTReducer, createDataAndSend, fetchUrl } from "src/utils/utilities";
+import { STTReducer, createDataAndSend, fetchUrl, throwConfigErr } from "src/utils/utilities";
+import { ConfigErr } from "src/components/dashboard/configErr";
 
 export default function STTDashboard() {
     const STTInitialState = {
@@ -20,6 +21,11 @@ export default function STTDashboard() {
         punctuation: "Yes",
         timeStamps: "No",
     }
+    const instructionHeading = "Steps to convert Speech To Text";
+    const instructionSteps = ["Attach a file","Select language of the audio","click the translate button",{
+        text: "you can check list of available languages",
+        href: "https://create-boss-test.onrender.com"
+    }];
     const [speechToTextProps, dispatch] = useReducer(STTReducer, STTInitialState);
     const [ableToTranslate, setAbleToTranslate] = useState('No');
     const [outputExtension, setOutputExtension] = useState("TXT");
@@ -30,6 +36,7 @@ export default function STTDashboard() {
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
     const [languageFilter, setLanguageFilter] = useState();
+    const [configErr,setConfigErr] = useState(false);
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     const stateSetters = {
         setLoadingState: setLoadingState,
@@ -105,12 +112,12 @@ export default function STTDashboard() {
     ]
     async function sendToSynthetize() {
         if (file) {
-            setLoadingState(true);
             if (
                 mimetypesArr.includes(file.type) ||
                 (file.type === "audio/mpeg" && mimetypesArr.includes("audio/mp3")) ||
                 (file.type === "audio/mpeg" && mimetypesArr.includes("audio/x-mp3"))
             ) {
+                setLoadingState(true);
                 const objWithdata = {
                     file: file,
                     languageCode: speechToTextProps.languageCode,
@@ -123,7 +130,13 @@ export default function STTDashboard() {
                 };
                 createDataAndSend(objWithdata, file, outputExtension, stateSetters, 'api/speech-to-text', false);
             }
-
+            else {
+                throwConfigErr(setConfigErr,"The file extension is not supported");
+            }
+        }
+        else {
+            throwConfigErr(setConfigErr,"Please attach a file");
+           
         }
     }
 
@@ -144,12 +157,13 @@ export default function STTDashboard() {
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="speech-to-text-dashboard__container">
-                    <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg" />
+                    <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To English Language">
                         <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Voice Options" />
                     </DashboardRightSection>
                 </ContentContainer>
                 {loadingState === true && <Loader />}
+                {configErr && <ConfigErr errMessage={configErr}/>}
             </Suspense>
         </div>
     )
