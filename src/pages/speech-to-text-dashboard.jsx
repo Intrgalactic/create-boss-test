@@ -1,4 +1,4 @@
-import { Suspense, lazy, useReducer, useState } from "react";
+import { Suspense, lazy, useEffect, useReducer, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
 const DashboardLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-left-section"));
@@ -7,7 +7,7 @@ const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/ser
 import fileDownload from "js-file-download";
 import Loader from "src/layouts/loader";
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
-import { STTReducer, createDataAndSend } from "src/utils/utilities";
+import { STTReducer, createDataAndSend, fetchUrl } from "src/utils/utilities";
 
 export default function STTDashboard() {
     const STTInitialState = {
@@ -138,6 +138,7 @@ export default function STTDashboard() {
             payload: payload
         });
     }
+  
     return (
         <div className="speech-to-text-dashboard">
             <Suspense fallback={<Loader />}>

@@ -1571,6 +1571,7 @@ footer {
 .speech-to-text-dashboard__container,
 .subtitles-to-video-dashboard__container {
   min-height: 90vh;
+  position: relative;
   padding-inline: 10%;
   padding-bottom: 150px;
   margin-left: 5vw;
@@ -1912,6 +1913,7 @@ footer {
   border-top-right-radius: 10px;
   align-items: center;
   justify-content: space-between;
+  flex-wrap: wrap;
 }
 .tts-voice-select__category-select button {
   width: 10vw;
@@ -1923,13 +1925,107 @@ footer {
   border-radius: 5px;
   background-color: rgba(0,0,0,0.25);
 }
-
+.tts-voice-select__voice-library {
+  display:flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap:200px;
+  row-gap: 50px;
+  padding-top:50px;
+  padding-bottom: 100px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: rgba(0, 0, 0, 0.3);
+  position: relative;
+}
+.tts-voice-select__load-more {
+  flex-basis: 100%;
+  background-color: rgba(0,0,0,0.4);
+  position: absolute;
+  bottom: 0;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  width: 100%;
+}
+.tts-voice-select__load-more:hover {
+  cursor: pointer;
+}
+.text-to-speech-select-voice {
+  width: 25vw;
+  text-align: left;
+  padding-inline:30px;
+  border-radius: 15px;
+  background-color: rgba(0,0,0,0.3);
+  border:2px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
+}
+.select-voice__buttons-container {
+  display:flex;
+  justify-content: space-between;
+}
+.audio-btn {
+  display: flex;
+  gap:30px;
+  width: 150px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+}
+.audio-btn img {
+  width: 15px;
+  height: auto;
+}
+.voice-use-btn {
+  width: 150px;
+}
+.voice-use-btn,.audio-btn {
+  box-shadow: 0px -1px 15px 5px rgba(255,255,255,0.15);
+  border-top-right-radius: 15px;
+  border-top-left-radius: 15px;
+  border:none;
+  background-color: rgba(0, 0, 0, 0.5);
+  color:white;
+  font-family: NexaRegular;
+}
+.voice-use-btn:hover,.audio-btn:hover {
+  cursor: pointer;
+}
+.text-to-speech-select-voice h3 {
+  font-family: NexaHeavy;
+}
+.text-to-speech-select-voice h4,.text-to-speech-select-voice p {
+  font-family: NexaRegular;
+  text-transform: capitalize;
+}
 .tts-voice-select__category-select button:hover{
   background-color: rgba(0,0,0,0.5);
   cursor: pointer;
 }
 .tts-voice-select__category-select .selected-voice-destiny {
   background-color: rgba(0,0,0,0.7)
+}
+.config-err {
+  position:fixed;
+  top:20px;
+  box-shadow: 0px 2px 10px 2px rgba(0,0,0,0.7);
+  left: 50%;
+  background-color: black;
+  border-radius: 10px;
+  padding:20px;
+  transform:translateX(-50%);
+  text-align: left;
+
+}
+.disabled-config-err {
+  opacity: 0;
+  transition-duration: 300ms;
+}
+
+.config-err p:first-of-type {
+  font-family: NexaHeavy;
+}
+.config-err p:last-of-type {
+  font-family: NexaRegular;
 }
 .specific-voice-setting-select {
   display: flex;
@@ -2052,11 +2148,11 @@ footer {
 }
 
 .visible-list {
-  
   max-height: 150px;
   transition-duration: 200ms;
   transform:scale(1);
   opacity: 1;
+  width: 100%;
 }
 
 
@@ -2148,7 +2244,12 @@ footer {
   border-top-right-radius: 5px;
   max-height: 500px;
 }
-
+.video-controls {
+  display:flex;
+  justify-content: center;
+  column-gap: 15%;
+  padding-block: 20px;
+}
 .video-preview .video-controls p {
   margin: 0;
   margin-block:30px;
@@ -2222,8 +2323,9 @@ footer {
   height: 100px;
   width: 100%;
   background-color: rgba(0, 0, 0, 0.5);
-  border-top-left-radius: 15px;
-  border-top-right-radius: 15px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
+  margin-block: 0;
   font-size: 1.3em;
   color: red;
   display: grid;
@@ -2391,7 +2493,12 @@ footer {
 .pricing__box .call-to-action-btn {
   margin-bottom: 30px;
 }
-
+.voice-select__container {
+  box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.6);
+  border-radius: 10px;
+  border:1.2px solid rgba(0,0,0,0.5);
+  
+}
 @keyframes lds-ellipsis1 {
   0% {
     transform: scale(0);
@@ -2568,7 +2675,15 @@ footer {
         url('assets/images/mobile-hero.jpg') type('image/jpeg'));
     background-size: 100% 100%;
   }
-
+  .tts-voice-select__category-select button {
+    width:20vw;
+    font-size: 0.9em;
+  }
+  .tts-voice-select__category-select {
+    row-gap: 20px;
+    height: fit-content;
+    padding-block: 20px;    
+  }
   .hero-section__container {
     width: 80vw;
   }
@@ -2617,6 +2732,9 @@ footer {
     margin-top: 0;
     font-size: clamp(1.1em, 1.5em, 2.2em);
     text-align: left;
+  }
+  .text-to-speech-dashboard .section-heading,.speech-to-text-dashboard .section-heading,.subtitles-to-video-dashboard .section-heading {
+    margin-block: 20px;
   }
 
   .benefits-section__pre-container {
@@ -2740,7 +2858,23 @@ footer {
     max-height: 150px;
     min-height: 100px;
   }
-
+  .tts-voice-select__specific-property-select {
+    flex-wrap: wrap;
+    height: fit-content;
+    padding-block: 20px;
+    row-gap: 20px;
+  }
+  .specific-voice-setting-select {
+    width: 100%;
+    max-width: 100%;
+    justify-content:space-between;
+  }
+  .text-to-speech-dashboard .specific-voice-setting-select .dashboard__select-button {
+    width: auto;
+  }
+  .text-to-speech-dashboard .specific-voice-setting-select .dashboard__select-button .call-to-action-btn {
+    width: 40vw;
+  }
   .contact-section__form-container {
     text-align: center;
   }
@@ -2877,7 +3011,9 @@ footer {
   .auth-form {
     width: 80vw;
   }
-
+  .text-to-speech-select-voice {
+    width: 60vw;
+  }
   .auth-form form input {
     height: 40px;
     font-size: 1em;
@@ -3324,7 +3460,21 @@ footer {
   .dashboard-video-section .dashboard-header {
     background-color: rgba(0, 0, 0, 0.3);
   }
-
+  .specific-voice-setting-select h3 {
+    width: 100%;
+    text-align: center;
+  }
+  .tts-voice-select__category-select {
+    justify-content: center;
+  }
+  .specific-voice-setting-select {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .tts-voice-select__category-select button {
+    width:50vw;
+    font-size: 1em;
+  }
   .reset-password-page .auth-container {
     min-height: 550px;
   }
@@ -3332,7 +3482,13 @@ footer {
   .pricing__box {
     min-height: 500px;
   }
-
+  .audio-btn {
+    width: 120px;
+    gap:10px;
+  }
+  .voice-use-btn {
+    width: 80px;
+  }
   .pricing-section__boxes-container {
     flex-direction: column;
     row-gap: 50px;
@@ -3765,7 +3921,24 @@ footer {
   .video-preview {
     width: 100%;
   }
-
+  .voice-select__container {
+    width: 70vw;
+  }
+  .tts-voice-select__category-select button {
+    font-size: 0.9em;
+  }
+  .tts-voice-select__voice-library {
+    gap:100px;
+  }
+  .text-to-speech-select-voice {
+    width: 20vw;
+  }
+  .voice-use-btn, .audio-btn {
+    width:100px;
+  }
+  .audio-btn {
+    gap:10px;
+  }
 }
 
 @media only screen and (width>768px) and (max-width:1024px) {
@@ -3832,7 +4005,20 @@ footer {
     width: 70vw;
     margin: auto;
   }
-
+  .tts-voice-select__specific-property-select {
+    flex-wrap: wrap;
+    justify-content: center;
+    height: fit-content;
+    column-gap: 50px;
+    row-gap: 30px;
+    padding-block: 20px;
+  }
+  .specific-voice-setting-select {
+    width: auto;
+  }
+  .text-to-speech-dashboard .specific-voice-setting-select .dashboard__select-button .call-to-action-btn {
+    width: 15vw;
+  }
   .dashboard__container-row .section-heading {
     font-size: 1.3em;
   }
@@ -3853,6 +4039,24 @@ footer {
   .dashboard__actions-record-heading .section-heading {
     font-size: 1.7em;
   }
+  .text-to-speech-select-voice {
+    width: 50vw;
+  }
+  .voice-use-btn, .audio-btn {
+    width: 170px;
+  }
+  .tts-voice-select__category-select button {
+    width:20vw;
+  }
+  .tts-voice-select__category-select {
+    row-gap: 20px;
+    height: fit-content;
+    padding-block: 20px;    
+  }
+  .text-to-speech-dashboard .specific-voice-setting-select .dashboard__select-button {
+    width: auto;
+  }
+ 
 }
 
 @media only screen and (width > 1024px) and (max-width:1900px) {

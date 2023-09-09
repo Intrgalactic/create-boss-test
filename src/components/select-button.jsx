@@ -1,19 +1,17 @@
 import { useEffect, useRef } from "react"
 
-export function SelectButton({heading,setCategory,category}) {
+export function SelectButton({heading,setSelectedCategory,selectedCategory}) {
     const buttonRef = useRef();
     useEffect(() => {
-        if (category === heading) {
+        if (heading === selectedCategory) {
             buttonRef.current.classList.add("selected-voice-destiny");
         }
         else {
             buttonRef.current.classList.remove("selected-voice-destiny");
         }
-    },[category])
-
-    console.log(category,heading,buttonRef.current && buttonRef.current.classList);
+    },[selectedCategory])
     return (
-        <button onClick={() => setCategory("Voice Category",heading)} ref={buttonRef}>
+        <button onClick={() => heading === selectedCategory ? setSelectedCategory("") : setSelectedCategory(heading)} ref={buttonRef}>
             {heading}
         </button>
     )

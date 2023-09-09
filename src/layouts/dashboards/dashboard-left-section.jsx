@@ -14,7 +14,6 @@ import errorImage from 'src/assets/images/error.png';
 import webpErrorImage from 'src/assets/images/error.webp';
 import { Link } from "react-router-dom";
 
-
 export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload, setErrorAtDownload,acceptedFormats,setTextInput }) {
     const [isFileAttached, setIsFileAttached] = useState(false);
     useEffect(() => {

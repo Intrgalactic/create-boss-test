@@ -20,8 +20,8 @@ export function HeaderLinksList({ heading, children }) {
         expandList(isToggled,setIsToggled,linksRef,"expanded-header-links",headingRef);
     }
     return (
-        <div className="links-list" ref={listRef}>
-            <div className="links-list__heading" ref={headingRef} onClick={toggleHeaderLinksList}>
+        <div className="links-list" ref={listRef} onClick={toggleHeaderLinksList}>
+            <div className="links-list__heading" ref={headingRef} >
                 <p>{heading}</p>
                 <Picture images={[webpExpandImage, expandImage]} alt="expand arrow" imgHeight="21px" imgWidth="20px" />
             </div>

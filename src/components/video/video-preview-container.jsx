@@ -15,15 +15,19 @@ export function VideoPreviewContainer({ videoFile, setVideoFile, sendToGetSubtit
             setLabelText("Choose Video");
         }
     }, [videoFile, fileRef.current])
+    function resetVideo() {
+        setVideoFile();
+        setFilePath();
+    }
     return (
         <div className="video-preview__container">
             <VideoPreviewControl>
                 <label ref={fileRef} onDrop={(e) => { handleFileDrop(e, setVideoFile);setFilePath() }} onDragEnd={(e) => { () => { removeDragEffect(setLabelText) } }} onDragOver={(e) => { handleFileInputDrag(e, setLabelText) }} onDragLeave={() => { removeDragEffect(setLabelText) }}>{labelText}
-                <input type="file" accept="video/*" ref={fileInputRef} onChange={(e) => { setVideoFile(e.target.files[0]);setFilePath() }} /></label>
+                <input type="file" accept="video/*" ref={fileInputRef} onChange={(e) => { setVideoFile(e.target.files[0]);setFilePath();fileInputRef.current.value = null}}/></label>
             </VideoPreviewControl>
-            <VideoPreview videoFile={videoFile} />
+            <VideoPreview videoFile={videoFile}/>
             <VideoPreviewControl>
-                <button onClick={() => {setVideoFile();setFilePath();}} ref={modifyRef} >Reset</button>
+                <button onClick={resetVideo} ref={modifyRef} >Reset</button>
             </VideoPreviewControl>
             <VideoPreviewControl>
                 <button onClick={() => {!filePath ? sendToGetSubtitles() : downloadFile()}} ref={modifyRef} >{filePath ? "Download" : "Modify"}</button>

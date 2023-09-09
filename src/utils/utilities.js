@@ -150,7 +150,6 @@ export function checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPayi
 }
 
 export async function sendData(fetchUrl, data, states, stateSetters) {
-
     const controller = new AbortController();
     const signal = controller.signal;
     var options = {
@@ -158,23 +157,19 @@ export async function sendData(fetchUrl, data, states, stateSetters) {
         body: data,
         signal
     }
-    console.log(data);
     try {
-
         setTimeout(() => {
             controller.abort();
         }, 480000);
         await fetch(`${fetchUrl}`, options).then(async (res) => {
             var rawFileResponse;
             var data = await res.json();
-
             if (res.status === 200) {
-                const outputExtension = states.outputExtension.toLowerCase() === "ogg" ? "opus" : states.outputExtension.toLowerCase();
                 const fileName = data.fileName;
-                rawFileResponse = await fetchFile(fetchUrl, '/get/', fileName, outputExtension, stateSetters);
+                rawFileResponse = await fetchFile(fetchUrl, '/get/', fileName, states.outputExtension ? states.outputExtension.toLowerCase() : "mp3", stateSetters);
                 const fileToDownload = await rawFileResponse.blob();
                 setFileAndUnload(stateSetters, fileToDownload);
-                fetch(`${fetchUrl}/delete/${fileName}.${outputExtension}`);
+                fetch(`${fetchUrl}/delete/${fileName}.${states.outputExtension ? states.outputExtension.toLowerCase() : "mp3"}`);
             }
             else {
                 setErrorAndUnload(stateSetters, "Please Try Again");
@@ -183,6 +178,7 @@ export async function sendData(fetchUrl, data, states, stateSetters) {
 
     }
     catch (err) {
+        console.log(err);
         setErrorAndUnload(stateSetters, "Please Try Again");
     }
 }
@@ -280,6 +276,7 @@ export function appendToFormData(objWithData, formData) {
 export function createDataAndSend(dataToSend,file,outputExtension,stateSetters,fetchUrl,filesArr) {
     const data = new FormData();
     const objWithdata = dataToSend;
+    console.log(dataToSend);
     appendToFormData(objWithdata, data);
     if (filesArr) {
         let fileIndex = 1;
