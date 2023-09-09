@@ -105,7 +105,7 @@ export default function TTSDashboard() {
         }
         else if (!configError) {
             if (textInput.length > 5000) {
-                throwConfigErr(setConfigError, "Text length is longer that 5000 characters");
+                throwConfigErr(setConfigError, "Text length is longer than 5000 characters");
             }
             else {
                 throwConfigErr(setConfigError, "Please input the text and select the voice");

@@ -1988,6 +1988,7 @@ footer {
   text-align: left;
   padding-inline:30px;
   border-radius: 15px;
+  display:grid;
   background-color: rgba(0,0,0,0.3);
   border:2px solid rgba(255, 255, 255, 0.4);
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.4);
@@ -1995,6 +1996,7 @@ footer {
 .select-voice__buttons-container {
   display:flex;
   justify-content: space-between;
+  align-self:self-end;
 }
 .audio-btn {
   display: flex;
@@ -2028,7 +2030,11 @@ footer {
 }
 .text-to-speech-select-voice h4,.text-to-speech-select-voice p {
   font-family: NexaRegular;
+  margin-block:10px;
   text-transform: capitalize;
+}
+.text-to-speech-select-voice p {
+  margin-block:20px;
 }
 .tts-voice-select__category-select button:hover{
   background-color: rgba(0,0,0,0.5);
