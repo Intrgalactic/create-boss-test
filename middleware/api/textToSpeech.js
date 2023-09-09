@@ -1,9 +1,7 @@
 
 const asyncHandler = require("express-async-handler");
-const voice = require('elevenlabs-node');
 const sendToStorage = require('./sendToStorage');
 const generateRandomFileName = require('../utils/generateFileName');
-const { AudioContext } = require('node-web-audio-api');
 const fileTypes = [
     'application/pdf',
     'application/rtf',
