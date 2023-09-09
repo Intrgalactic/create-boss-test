@@ -1,11 +1,9 @@
 
 const asyncHandler = require("express-async-handler");
-const listVoices = require('./listVoices');
-const formatEncoding = require('../utils/formatters/formatEncoding');
+const voice = require('elevenlabs-node');
 const sendToStorage = require('./sendToStorage');
 const generateRandomFileName = require('../utils/generateFileName');
-const googleEnv = require("../../config/google.json");
-
+const { AudioContext } = require('node-web-audio-api');
 const fileTypes = [
     'application/pdf',
     'application/rtf',
@@ -14,79 +12,53 @@ const fileTypes = [
     'application/vnd.oasis.opendocument.text', // ODT
     'text/plain',
 ];
-const setContentType = require('../utils/setContentType');
+
 const parseFile = require('../utils/fileParser');
+const getVoices = require('./getVoices');
 
 const textToSpeech = (storage) => {
     return asyncHandler(async (req, res) => {
-        var textToSynthetize;
-        var contentType;
-        var outputFileName = generateRandomFileName(`.${req.body.audioEncoding.toLowerCase()}`);
-        var outputFileNameWithoutExt = outputFileName.substring(0, outputFileName.lastIndexOf("."));
-        var sampleRateHertz = 16000;
-        var audioEncoding;
+        const apiKey = process.env.ELEVENLABS_API_KEY;
+        var textInput;
+        var outputFileName = generateRandomFileName(`.mp3`);
         try {
             if (req.file) {
                 outputFileName = encodeURIComponent(req.file.originalname);
-                textToSynthetize = await getTextToSynthetize(req.file, req)
-
+                textInput = await getTextToSynthetize(req.file, req)
+                console.log(textInput);
             }
             else {
-                textToSynthetize = req.body.text;
+                textInput = req.body.text;
             }
 
-            const textToSpeech = require('@google-cloud/text-to-speech');
-            const gender = req.body.gender.toUpperCase();
-            const pitch = parseInt(req.body.pitch);
-            const environment = formatEncoding(req.body.effectsProfileId)
-            const client = new textToSpeech.TextToSpeechClient();
-            const voices = await listVoices(client, req.body.gender.toUpperCase(), req.body.code)
-            const [voiceVariants, voiceTechnologyType] = await selectBestVoice(voices)
-            req.body.audioEncoding === "WAV" ? (audioEncoding = "LINEAR16", sampleRateHertz = 24000) : req.body.audioEncoding === "OGG" ? audioEncoding = "OGG_OPUS" : (audioEncoding = "MP3", sampleRateHertz = 44100);
-            const speakingRate = parseFloat(req.body.speakingRate);
-            const request = {
-                input: { text: textToSynthetize },
-                voice: { languageCode: req.body.code, ssmlGender: gender, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
-                audioConfig: { audioEncoding: audioEncoding, pitch: pitch, effectsProfileId: [environment], speakingRate: speakingRate, sampleRateHertz: sampleRateHertz },
-            };
-            if (req.file) {
-                if (req.file.size < 5000) {
-                    synthesizeAndSend();
-                }
-                else {
-                    if (req.body.code === "en-US" || req.body.code === "es-US") {
-                        const longClient = new textToSpeech.TextToSpeechLongAudioSynthesizeClient();
-                        console.log(`gs://create-boss/${outputFileName}`)
-                        const request = await longClient.synthesizeLongAudio({
-                            parent: `projects/${googleEnv.project_id}/locations/global`,
-                            audioConfig: { audioEncoding: audioEncoding },
-                            input: { text: textToSynthetize },
-                            voice: { language_code: req.body.code, name: `${req.body.code}-${voiceTechnologyType}-${voiceVariants[Math.floor(Math.random() * (voiceVariants.length - 1))]}` },
-                            output_gcs_uri: `gs://create-boss/example.pdf`
-                        })
+            await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${req.body.voiceId}/stream`, {
+                method: 'POST',
+                headers: {
+                    'Accept': 'audio/mpeg',
+                    'xi-api-key': `${apiKey}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    text: textInput,
+                    model_id: "eleven_multilingual_v2",
+                    voice_settings: {
+                        stability: 0.5,
+                        similarity_boost: 0.5
+                    }
+                })
+            }).then(response => response.arrayBuffer()).then(async arrayBuffer => {
+                const buffer = Buffer.from(arrayBuffer);
+                await sendToStorage(outputFileName, buffer, "audio/mpeg", storage)
+                res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
+            })
 
-                    }
-                    else {
-                        res.status(503).send("Files bigger than 5 Kb must be only in US English or US Spanish");
-                    }
-                }
-            }
-            else {
-                synthesizeAndSend();
-            }
-            async function synthesizeAndSend() {
-                const [response] = await client.synthesizeSpeech(request);
-                contentType = await setContentType(req.body.audioEncoding)
-                const outputExtension = req.body.audioEncoding.toLowerCase() === "ogg" ? "opus" : req.body.audioEncoding.toLowerCase()
-                await sendToStorage(`${outputFileNameWithoutExt}.${outputExtension}`, response.audioContent, contentType, storage)
-                res.status(200).send(JSON.stringify({ fileName: outputFileNameWithoutExt }));
-            }
+
         }
         catch (err) {
             console.log(err);
             res.status(400).send(err.message);
         }
-       
+
     });
 
 }
@@ -112,17 +84,5 @@ async function getTextToSynthetize(file, req) {
     return textToSynthetize
 }
 
-function selectBestVoice(voices) {
-    const modifiedVoices = voices.filter(voice => voice.name.includes("Polyglot")).length >= 1 ? voices.filter(voice => voice.name.includes("Polyglot")) : voices.filter(voice => voice.name.includes('Neural2')).length >= 1 ? voices.filter(voice => voice.name.includes('Neural2')) : voices.filter(voice => voice.name.includes('Wavenet')).length >= 1 ? voices.filter(voice => voice.name.includes('Wavenet')) : voices.filter(voice => voice.name.includes("Standard"));
-    const voiceTechnologyType = modifiedVoices[0].name.split("-")[2];
-    var voiceVariants = [];
-    for (const x of modifiedVoices) {
-        for (const [key, value] of Object.entries(x)) {
-            if (key === "name") {
-                voiceVariants.push(value.split("-")[3]);
-            }
-        }
-    }
-    return [voiceVariants, voiceTechnologyType];
-}
+
 module.exports = textToSpeech;

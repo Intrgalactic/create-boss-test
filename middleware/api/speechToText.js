@@ -134,7 +134,6 @@ const speechToText = (storage, isVideoApi) => {
         for (let i = 0; i < srtSubtitlesArr.length; i++) {
           ASSSubtitlesTemplate += `${srtSubtitlesArr[i]}\n`;
         }
-        console.log(ASSSubtitlesTemplate);
         const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), ASSSubtitlesTemplate, videoStream.buffer, font, fontExtension, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign);
         const endVideoBuffer = fs.readFileSync(videoPath);
         fs.unlinkSync(videoPath);

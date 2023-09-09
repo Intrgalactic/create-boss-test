@@ -4,10 +4,6 @@ const pdfParser = require('pdf-parse');
 const Docxtemplater = require('docxtemplater');
 const unzipper = require('unzipper');
 const xmljs = require('xml-js');
-const { spawn } = require('child_process');
-const { Readable } = require('readable-stream');
-
-const fs = require('fs');
 
 const parseFile = async (fileBuffer, fileType) => {
     switch (fileType) {

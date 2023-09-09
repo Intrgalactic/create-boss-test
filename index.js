@@ -12,6 +12,7 @@ const speechToText = require('./middleware/api/speechToText');
 const deleteFile = require('./middleware/api/deleteFile');
 const { Storage } = require('@google-cloud/storage');
 const { MongoClient } = require('mongodb');
+const getVoices = require('./middleware/api/getVoices');
 
 dotenv.config();
 
@@ -23,7 +24,6 @@ const corsOptions = {
     optionsSuccessStatus: 200
 }
 
-const server = http.createServer(app);
 const uri = process.env.DB_URL;
 
 const path = require('path');
@@ -58,6 +58,7 @@ app.get('/get-user', cors(corsOptions), getUser(usersCollection));
 app.post('/api/text-to-speech', upload.single("file"), cors(corsOptions), textToSpeech(googleCloudStorage));
 app.get('/api/text-to-speech/get/:filename', downloadFile(googleCloudStorage));
 app.get('/api/text-to-speech/delete/:filename', deleteFile(googleCloudStorage))
+app.get('/api/text-to-speech/get-voices',getVoices());
 
 app.post('/api/speech-to-text', upload.single('file'), speechToText(googleCloudStorage, false));
 app.get('/api/speech-to-text/get/:filename', cors(corsOptions), downloadFile(googleCloudStorage));
