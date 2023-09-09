@@ -1,6 +1,7 @@
 
 const asyncHandler = require("express-async-handler");
 const sendToStorage = require('./sendToStorage');
+
 const generateRandomFileName = require('../utils/generateFileName');
 const fileTypes = [
     'application/pdf',
@@ -12,7 +13,7 @@ const fileTypes = [
 ];
 
 const parseFile = require('../utils/fileParser');
-const getVoices = require('./getVoices');
+
 
 const textToSpeech = (storage) => {
     return asyncHandler(async (req, res) => {
@@ -23,12 +24,11 @@ const textToSpeech = (storage) => {
             if (req.file) {
                 outputFileName = encodeURIComponent(req.file.originalname);
                 textInput = await getTextToSynthetize(req.file, req)
-                console.log(textInput);
             }
             else {
                 textInput = req.body.text;
             }
-
+            console.log(textInput);
             await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${req.body.voiceId}/stream`, {
                 method: 'POST',
                 headers: {
@@ -45,9 +45,12 @@ const textToSpeech = (storage) => {
                     }
                 })
             }).then(response => response.arrayBuffer()).then(async arrayBuffer => {
+                console.log(arrayBuffer);
                 const buffer = Buffer.from(arrayBuffer);
                 await sendToStorage(outputFileName, buffer, "audio/mpeg", storage)
                 res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
+            }).catch(err => {
+                console.log(err);
             })
 
 
@@ -79,6 +82,7 @@ async function getTextToSynthetize(file, req) {
     else {
         outputFileName = req.body.text;
     }
+
     return textToSynthetize
 }
 
