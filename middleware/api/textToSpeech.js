@@ -13,9 +13,10 @@ const fileTypes = [
 ];
 
 const parseFile = require('../utils/fileParser');
-
+const fetch = require('node-fetch');
 
 const textToSpeech = (storage) => {
+    
     return asyncHandler(async (req, res) => {
         const apiKey = process.env.ELEVENLABS_API_KEY;
         var textInput;
@@ -28,7 +29,6 @@ const textToSpeech = (storage) => {
             else {
                 textInput = req.body.text;
             }
-            console.log(textInput);
             await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${req.body.voiceId}/stream`, {
                 method: 'POST',
                 headers: {
@@ -45,7 +45,6 @@ const textToSpeech = (storage) => {
                     }
                 })
             }).then(response => response.arrayBuffer()).then(async arrayBuffer => {
-                console.log(arrayBuffer);
                 const buffer = Buffer.from(arrayBuffer);
                 await sendToStorage(outputFileName, buffer, "audio/mpeg", storage)
                 res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
