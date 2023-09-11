@@ -231,6 +231,7 @@ header nav,
 .header__container {
   display: flex;
   column-gap: 70px;
+  z-index: 999;
 }
 
 .hero-section {
@@ -2404,6 +2405,7 @@ footer {
   align-items: center;
   justify-content: space-between;
   font-size: 1em;
+  width: 100%;
 }
 
 .links-list__heading img {

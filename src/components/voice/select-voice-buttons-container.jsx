@@ -19,7 +19,7 @@ export function SelectVoiceButtonsContainer({audioSrc,voiceId,setVoice,usedVoice
     return (
         <div className="select-voice__buttons-container">
             <button onClick={playAudio} className="audio-btn">
-                <audio ref={audioRef} onEnded={() => {setIsPlaying(false)}} key={voiceId}>
+                <audio ref={audioRef} onEnded={() => {setIsPlaying(false)}} key={voiceId} onDurationChange={() => {setIsPlaying(false)}}>
                     <source src={audioSrc} type="audio/mpeg"/>
                 </audio>
                 <p>Sample</p> <Picture images={[audioImg,webpAudioImg]} imgWidth="52px" imgHeight="44px" alt="audio"/>
