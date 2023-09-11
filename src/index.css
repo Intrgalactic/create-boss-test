@@ -1759,7 +1759,10 @@ footer {
   box-shadow: 0px 4px 5px 1px rgba(0,0,0,0.5);
   border-radius: 5px;
 }
-
+.service-instruction h3 {
+  width: 80%;
+  margin-inline:auto;
+}
 .service-instruction ul {
   width: 80%;
   text-transform: capitalize;
@@ -2533,7 +2536,7 @@ footer {
   margin-bottom: 30px;
 }
 .voice-select__container {
-  box-shadow: 0px 0px 10px 5px rgba(0,0,0,0.6);
+  box-shadow: 0px 4px 5px 1px rgba(0, 0, 0, 0.5);
   border-radius: 10px;
   border:1.2px solid rgba(0,0,0,0.5);
   
@@ -2718,11 +2721,14 @@ footer {
     margin-top:390px;
   }
   .tts-voice-select__category-select button {
-    width:20vw;
+    width:40vw;
+    min-width: 40vw;
     font-size: 0.9em;
   }
   .tts-voice-select__category-select {
-    row-gap: 20px;
+    column-gap: 50px;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
     height: fit-content;
     padding-block: 20px;    
   }
@@ -3195,7 +3201,7 @@ footer {
     max-width: calc(100% - 40px);
   }
 
-  .dashboard__left-section-file-container .dashboard__service-input-container:first-of-type .section-heading {
+  .dashboard__left-section-file-container .dashboard__service-input-container .section-heading {
     margin-top: 40px;
   }
 
@@ -3494,7 +3500,9 @@ footer {
   .dashboard__container-welcome-heading .section-heading {
     font-size: 1.5em;
   }
-
+  .service-instruction ul li {
+    font-size: 0.9em;
+  }
   .dashboard__left-section-control-container p {
     font-size: 0.8em;
   }
@@ -3549,6 +3557,7 @@ footer {
       );
     background-size: 100% 100%;
   }
+  
   .section-heading-description {
     padding-bottom: 25px;
   }

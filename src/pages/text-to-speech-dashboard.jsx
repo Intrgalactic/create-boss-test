@@ -39,9 +39,11 @@ export default function TTSDashboard() {
     const [resultsAmount, setResultsAmount] = useState(10);
     const [configError, setConfigError] = useState(false);
     useEffect(() => {
+        setLoadingState(true);
         async function getVoices() {
             const voices = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get-voices`);
             setVoices(voices.voices);
+            setLoadingState(false);
         }
         getVoices();
     }, [setVoices])
@@ -50,7 +52,11 @@ export default function TTSDashboard() {
             const age = TTSProps.age === "Choose" ? "" : TTSProps.age.toLowerCase();
             const gender = TTSProps.gender === "Choose" ? "" : TTSProps.gender.toLowerCase();
             const accent = TTSProps.accent === "Choose" ? "" : TTSProps.accent.toLowerCase();
-            setFilteredVoices(voices.filter(voice => voice.useCase && voice.useCase.includes(selectedCategory.toLowerCase()) && voice.age.includes(age) && gender === "" ? voice.gender.includes(gender) : voice.gender === gender && voice.accent.includes(accent)));
+            const filteredArr = voices.filter(voice => {
+                if ((voice.useCase && voice.useCase.includes(selectedCategory.toLowerCase())) && voice.age.includes(age) && (gender === "" ? voice.gender.includes(gender) : voice.gender === gender) && voice.accent.includes(accent)) {
+                    return voice;
+                }});
+            setFilteredVoices(filteredArr.slice(0,resultsAmount));
         }
     }, [voices, setFilteredVoices, TTSProps.age, TTSProps.gender, TTSProps.accent, selectedCategory]);
     function TTSReducer(state, action) {
@@ -147,6 +153,8 @@ export default function TTSDashboard() {
             payload: payload
         });
     }
+    console.clear();
+    console.log(filteredVoices);
     return (
 
         <div className="text-to-speech-dashboard">
@@ -154,7 +162,7 @@ export default function TTSDashboard() {
                 <DashboardHeader />
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
                     <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setTextInput={setTextInput} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
-                    {filteredVoices && <TTSVoiceSelect specificVoiceSettingsActions={specificVoiceSettingsActions} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} voices={filteredVoices.slice(0, resultsAmount)} setVoice={setVoice} voice={voice} setResultsAmount={setResultsAmount} totalVoicesLength={filteredVoices.length} resultsAmount={resultsAmount} />}
+                    {filteredVoices && <TTSVoiceSelect specificVoiceSettingsActions={specificVoiceSettingsActions} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} voices={filteredVoices} setVoice={setVoice} voice={voice} setResultsAmount={setResultsAmount} totalVoicesLength={filteredVoices.length} resultsAmount={resultsAmount} />}
                     {configError && <ConfigErr errMessage={configError} />}
                 </ContentContainer>
                 {loadingState === true && <Loader />}
