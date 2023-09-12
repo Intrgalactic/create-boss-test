@@ -4,7 +4,6 @@ import mobileVideoPreviewFullImage from 'src/assets/images/mobile-video-preview-
 import mobileWebpVideoPreviewFullImage from 'src/assets/images/mobile-video-preview-full.webp';
 import mobileVideoPreviewFullImage2 from 'src/assets/images/mobile-video-preview-full-2.jpg';
 import mobileWebpVideoPreviewFullImage2 from 'src/assets/images/mobile-video-preview-full-2.webp';
-
 import playBtnImg from 'src/assets/images/play-button.png';
 import webpPlayBtnImg from 'src/assets/images/play-button.webp';
 import pauseBtnImg from 'src/assets/images/pause-button.png';
