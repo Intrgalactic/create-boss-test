@@ -21,7 +21,7 @@ export default function STVDashboard() {
         subtitlesFontFile: undefined,
         subtitlesSize: "48PX",
         wordsPerLine: "Choose",
-        subtitlesAlignment: "Top Center",
+        subtitlesAlignment: "Center",
         subtitlesColor: undefined,
         enableUpperCaseSubtitles: "No",
         enableSubBg: "No",
@@ -34,6 +34,7 @@ export default function STVDashboard() {
         enableSubtitlesShadow: "No",
         enableWordFollow: "No",
         enableEmotions: "No",
+        enableRotate: "No",
         wordFollowColor: undefined,
         languageCode: 'en-US',
         language: "English (US)",
@@ -106,6 +107,7 @@ export default function STVDashboard() {
             case "Slide Down": return { ...state, slideDown: payload };
             case "Scale": return { ...state, scale: payload };
             case "Words Per Line": return {...state, wordsPerLine: payload};
+            case "Random Rotate": return {...state,enableRotate: payload};
         }
     }
     const subtitlesOptionsRowActions = [
@@ -217,6 +219,12 @@ export default function STVDashboard() {
         options: trueFalseOptions,
         setOption: passToReducer,
         heading: "Scale"
+    },
+    {
+        text: videoProps.enableRotate,
+        options: trueFalseOptions,
+        setOption: passToReducer,
+        heading: "Random Rotate"
     }
     ]
     const subtitlesBackgroundOptionsRowActions = [
@@ -308,6 +316,7 @@ export default function STVDashboard() {
                 enableFade: videoProps.fadeIn,
                 enableLogo: videoProps.enableLogo,
                 enableWatermark: videoProps.enableWatermark,
+                enableRotate: videoProps.enableRotate,
                 wordsPerLine: videoProps.wordsPerLine
             };
             createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr);

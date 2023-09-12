@@ -231,9 +231,11 @@ header nav,
 .header__container {
   display: flex;
   column-gap: 70px;
-  z-index: 999;
+  
 }
-
+header nav {
+  z-index: 1000;
+}
 .hero-section {
   height: 972px;
   background-size: 100% 100%;
@@ -1476,7 +1478,18 @@ footer {
   min-height: 375px;
   padding-bottom: 25px;
 }
+.tts-voice-select__search .search-bar:not(.faq-page .search-bar)  {
+  margin-top: 0;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+  background-color: rgba(0,0,0,0.6);
+}
+.tts-voice-select__search .search-bar input {
+  width:calc(100% - 100px);
 
+  border:0;
+  padding-inline:50px;
+}
 .weekly-usage-chart-box .section-heading {
   padding-inline: 30px;
 }
@@ -1946,8 +1959,6 @@ footer {
   background-color: rgba(0,0,0,0.5);
   height: 150px;
   padding-inline:50px;
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
   align-items: center;
   justify-content: space-between;
   flex-wrap: wrap;
@@ -2052,6 +2063,7 @@ footer {
   top:20px;
   box-shadow: 0px 2px 10px 2px rgba(0,0,0,0.7);
   left: 50%;
+  z-index: 999;
   background-color: black;
   border-radius: 10px;
   padding:20px;
@@ -2293,6 +2305,7 @@ footer {
   column-gap: 15%;
   padding-block: 20px;
 }
+
 .video-preview .video-controls p {
   margin: 0;
   margin-block:30px;
@@ -2848,7 +2861,9 @@ footer {
     column-gap: 0px;
   }
 
-
+  .video-controls button picture img {
+    height: 45px;
+  }
   .testimonial__box-user-details {
     align-items: center;
     margin-bottom: 20px;
@@ -3508,13 +3523,12 @@ footer {
   .dashboard__left-section-control-container p {
     font-size: 0.8em;
   }
-
   .dashboard-video-section .dashboard-header {
     background-color: rgba(0, 0, 0, 0.3);
   }
   .specific-voice-setting-select h3 {
-    width: 100%;
-    text-align: center;
+    width:30%;
+    text-align: left;
   }
   .tts-voice-select__category-select {
     justify-content: center;
@@ -3549,7 +3563,9 @@ footer {
   .pricing-section .carousel-buttons-container {
     display: none;
   }
-
+  .config-err {
+    width: 60vw;
+  }
   .dashboard,
   .text-to-speech-dashboard,
   .speech-to-text-dashboard {
@@ -3562,6 +3578,9 @@ footer {
   
   .section-heading-description {
     padding-bottom: 25px;
+  }
+  .tts-voice-select__specific-property-select {
+    padding-inline:0;
   }
 }
 

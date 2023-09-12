@@ -2,11 +2,9 @@ import { Suspense, lazy, useEffect, useReducer, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
 const DashboardHeader = lazy(() => import('src/layouts/dashboards/dashboard-header'));
 const DashboardLeftSection = lazy(() => import('src/layouts/dashboards/dashboard-left-section'));
-const DashboardRightSection = lazy(() => import('src/layouts/dashboards/dashboard-right-section'));
-const DashboardServiceOptionsRow = lazy(() => import('src/layouts/dashboards/service-options/dashboard-service-options-row'));
 import Loader from "src/layouts/loader";
 import fileDownload from "js-file-download";
-import { createDataAndSend, fetchUrl, throwConfigErr } from "src/utils/utilities";
+import { createDataAndSend, fetchUrl, filterVoices, throwConfigErr } from "src/utils/utilities";
 import { handleTextChange } from "src/utils/utilities";
 import { voiceAccentOptions, voiceAgeOptions, voiceGenderOptions } from "src/utils/dashboard-static-data";
 import TTSVoiceSelect from "src/layouts/text-to-speech-voice-select";
@@ -38,6 +36,8 @@ export default function TTSDashboard() {
     const [filteredVoices, setFilteredVoices] = useState();
     const [resultsAmount, setResultsAmount] = useState(10);
     const [configError, setConfigError] = useState(false);
+    const [filteredVoicesNameFilter, setFilteredVoicesNameFilter] = useState("");
+    const voiceNameFilterRegEx = new RegExp(filteredVoicesNameFilter, "i");
     useEffect(() => {
         setLoadingState(true);
         async function getVoices() {
@@ -49,16 +49,13 @@ export default function TTSDashboard() {
     }, [setVoices])
     useEffect(() => {
         if (voices) {
-            const age = TTSProps.age === "Choose" ? "" : TTSProps.age.toLowerCase();
-            const gender = TTSProps.gender === "Choose" ? "" : TTSProps.gender.toLowerCase();
-            const accent = TTSProps.accent === "Choose" ? "" : TTSProps.accent.toLowerCase();
-            const filteredArr = voices.filter(voice => {
-                if ((voice.useCase && voice.useCase.includes(selectedCategory.toLowerCase())) && voice.age.includes(age) && (gender === "" ? voice.gender.includes(gender) : voice.gender === gender) && voice.accent.includes(accent)) {
-                    return voice;
-                }});
+            const filteredArr = filterVoices(TTSProps, voices, selectedCategory);
             setFilteredVoices(filteredArr);
         }
     }, [voices, setFilteredVoices, TTSProps.age, TTSProps.gender, TTSProps.accent, selectedCategory]);
+
+    const filteredVoicesWName = filteredVoices ? filteredVoices.filter(voice => voiceNameFilterRegEx.test(voice.name)) : filteredVoices;
+
     function TTSReducer(state, action) {
         const payload = action.payload;
         switch (action.type) {
@@ -146,15 +143,13 @@ export default function TTSDashboard() {
             heading: "Accent"
         }
     ]
-
     function passToReducer(actionType, payload) {
         dispatch({
             type: actionType,
             payload: payload
         });
     }
-    console.clear();
-    console.log(filteredVoices);
+
     return (
 
         <div className="text-to-speech-dashboard">
@@ -162,7 +157,7 @@ export default function TTSDashboard() {
                 <DashboardHeader />
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
                     <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setTextInput={setTextInput} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
-                    {filteredVoices && <TTSVoiceSelect specificVoiceSettingsActions={specificVoiceSettingsActions} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} voices={filteredVoices.slice(0,resultsAmount)} setVoice={setVoice} voice={voice} setResultsAmount={setResultsAmount} totalVoicesLength={filteredVoices.length} resultsAmount={resultsAmount} />}
+                    {filteredVoices && <TTSVoiceSelect specificVoiceSettingsActions={specificVoiceSettingsActions} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} voices={filteredVoicesWName.slice(0, resultsAmount)} setVoice={setVoice} voice={voice} setResultsAmount={setResultsAmount} totalVoicesLength={filteredVoicesWName.length} resultsAmount={resultsAmount} setFilteredVoicesNameFilter={setFilteredVoicesNameFilter} />}
                     {configError && <ConfigErr errMessage={configError} />}
                 </ContentContainer>
                 {loadingState === true && <Loader />}

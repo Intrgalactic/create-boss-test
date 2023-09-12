@@ -210,16 +210,16 @@ function setFileAndUnload(stateSetters, fileToDownload) {
     stateSetters.setErrorAtDownload(false);
 }
 
-export function removeDragEffect(setText,setClassList) {
+export function removeDragEffect(setText, setClassList) {
     setClassList ? setClassList(true) : setText("Choose Video");
-    
+
 }
-export function handleFileInputDrag(event,setText,setClassList) {
+export function handleFileInputDrag(event, setText, setClassList) {
     event.stopPropagation();
     event.preventDefault();
     setClassList ? setClassList() : setText("Drop");
 }
-export function handleFileDrop(event,setFile,setErrorAtDownload,setClassList) {
+export function handleFileDrop(event, setFile, setErrorAtDownload, setClassList) {
     event.stopPropagation();
     event.preventDefault();
     const fileList = event.dataTransfer.files;
@@ -228,26 +228,26 @@ export function handleFileDrop(event,setFile,setErrorAtDownload,setClassList) {
     }
     else if (fileList.length > 0) {
         setFile(fileList[0]);
-        setClassList && setClassList(true,"attached-file")
+        setClassList && setClassList(true, "attached-file")
     }
 }
 export function debounce(func, wait, immediate) {
     var timeout
     return function () {
-      var context = this,
-        args = arguments
-      var later = function () {
-        timeout = null
-        if (!immediate) func.apply(context, args)
-      }
-      var callNow = immediate && !timeout
-      clearTimeout(timeout)
-      timeout = setTimeout(later, wait)
-      if (callNow) func.apply(context, args)
+        var context = this,
+            args = arguments
+        var later = function () {
+            timeout = null
+            if (!immediate) func.apply(context, args)
+        }
+        var callNow = immediate && !timeout
+        clearTimeout(timeout)
+        timeout = setTimeout(later, wait)
+        if (callNow) func.apply(context, args)
     }
-  }
+}
 
-export function expandList(isToggled,setIsToggled,triggerRef,className,imageRef) {
+export function expandList(isToggled, setIsToggled, triggerRef, className, imageRef) {
     if (!isToggled) {
         triggerRef.current.classList.add(className);
         setIsToggled(true);
@@ -269,11 +269,11 @@ export function isEqual(firstItem, secondItem) {
 
 export function appendToFormData(objWithData, formData) {
     for (const [key, value] of Object.entries(objWithData)) {
-        (key === "file" || key === "files") ? formData.append(`${key}`,value,value.name) : formData.append(`${key}`,value);
+        (key === "file" || key === "files") ? formData.append(`${key}`, value, value.name) : formData.append(`${key}`, value);
     }
 }
 
-export function createDataAndSend(dataToSend,file,outputExtension,stateSetters,fetchUrl,filesArr) {
+export function createDataAndSend(dataToSend, file, outputExtension, stateSetters, fetchUrl, filesArr) {
     const data = new FormData();
     const objWithdata = dataToSend;
     console.log(dataToSend);
@@ -300,22 +300,34 @@ export function createDataAndSend(dataToSend,file,outputExtension,stateSetters,f
     }, stateSetters);
 }
 
-export function STTReducer(state,action) {
+export function STTReducer(state, action) {
     const payload = action.payload;
-    switch(action.type) {
-        case "Language": return {...state,language: payload[1],languageCode: payload[0]};
-        case "Output Extension": return {...state,outputExtension: payload};
-        case "Detect Diarization": return {...state,diarization: payload};
-        case "Summarize": return {...state,summarization: payload};
-        case "Topic Detection": return {...state,detectTopic: payload};
-        case "Punctuation": return {...state,punctuation: payload};
-        case "Show Timestamps": return {...state,timeStamps: payload};
+    switch (action.type) {
+        case "Language": return { ...state, language: payload[1], languageCode: payload[0] };
+        case "Output Extension": return { ...state, outputExtension: payload };
+        case "Detect Diarization": return { ...state, diarization: payload };
+        case "Summarize": return { ...state, summarization: payload };
+        case "Topic Detection": return { ...state, detectTopic: payload };
+        case "Punctuation": return { ...state, punctuation: payload };
+        case "Show Timestamps": return { ...state, timeStamps: payload };
     }
 }
 
-export function throwConfigErr(setConfigErr,errMessage) {
+export function throwConfigErr(setConfigErr, errMessage) {
     setConfigErr(errMessage);
-    setTimeout(()=>{
+    setTimeout(() => {
         setConfigErr(false);
-    },5400);
+    }, 5400);
+}
+
+export function filterVoices(TTSProps,voices,selectedCategory) {
+    const age = TTSProps.age === "Choose" ? "" : TTSProps.age.toLowerCase();
+    const gender = TTSProps.gender === "Choose" ? "" : TTSProps.gender.toLowerCase();
+    const accent = TTSProps.accent === "Choose" ? "" : TTSProps.accent.toLowerCase();
+    const filteredArr = voices.filter(voice => {
+        if ((voice.useCase && voice.useCase.includes(selectedCategory.toLowerCase())) && voice.age.includes(age) && (gender === "" ? voice.gender.includes(gender) : voice.gender === gender) && voice.accent.includes(accent)) {
+            return voice;
+        }
+    });
+    return filteredArr;
 }

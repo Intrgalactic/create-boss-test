@@ -2,6 +2,9 @@ import videoPreviewFullImage from 'src/assets/images/video-preview-full.jpg';
 import webpVideoPreviewFullImage from 'src/assets/images/video-preview-full.webp';
 import mobileVideoPreviewFullImage from 'src/assets/images/mobile-video-preview-full.jpg';
 import mobileWebpVideoPreviewFullImage from 'src/assets/images/mobile-video-preview-full.webp';
+import mobileVideoPreviewFullImage2 from 'src/assets/images/mobile-video-preview-full-2.jpg';
+import mobileWebpVideoPreviewFullImage2 from 'src/assets/images/mobile-video-preview-full-2.webp';
+
 import playBtnImg from 'src/assets/images/play-button.png';
 import webpPlayBtnImg from 'src/assets/images/play-button.webp';
 import pauseBtnImg from 'src/assets/images/pause-button.png';
@@ -24,6 +27,9 @@ export function VideoPreview({ videoFile }) {
     useEffect(() => {
         if (windowSize.width < 1440 && windowSize.width > 768) {
             setImages([mobileWebpVideoPreviewFullImage, mobileVideoPreviewFullImage]);
+        }
+        else if (windowSize.width < 768) {
+            setImages([mobileWebpVideoPreviewFullImage2,mobileVideoPreviewFullImage2]);
         }
         else {
             setImages([webpVideoPreviewFullImage, videoPreviewFullImage]);
