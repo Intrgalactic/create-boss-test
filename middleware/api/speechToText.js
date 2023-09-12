@@ -33,6 +33,7 @@ const speechToText = (storage, isVideoApi) => {
         var enableWordFollow = req.body.enableWordFollow === "No" ? false : true;
         var enableScale = req.body.enableScale === "No" ? false : true;
         var enableFade = req.body.enableFade === "No" ? false : true;
+        var enableRotate = req.body.enableRotate === "No" ? false : true;
         var formattedSubtitlesColor = convertColorToReversedHex(req.body.subtitlesColor, "FFFFFF");
         var formattedStrokeColor = enableTextStroke ? convertColorToReversedHex(req.body.strokeColor, "000000") : null;
         var formattedSubBgColor = enableSubBg ? convertColorToReversedHex(req.body.subBgColor, "000000", parseFloat(req.body.subBgOpacity)) : null;
@@ -97,6 +98,7 @@ const speechToText = (storage, isVideoApi) => {
           wordFollowColor: formattedWordFollowColor,
           enableScale: enableScale,
           enableFade: enableFade,
+          enableRotate: enableRotate,
           wordsPerLine: wordsPerLine
         }, req.body.languageCode);
       }
@@ -143,7 +145,7 @@ const speechToText = (storage, isVideoApi) => {
 
     }
     catch (err) {
-      console.log(err);
+      res.status(400).send(err.message);
     }
   })
 }
@@ -187,7 +189,7 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
   var subtitles = [];
 
   if (subtitlesProps) {
-    var { video, uppercaseSubs, emotionsEnabled, defaultColor, wordFollowEnabled, wordFollowColor, enableScale, enableFade, wordsPerLine } = subtitlesProps;
+    var { video, uppercaseSubs, emotionsEnabled, defaultColor, wordFollowEnabled, wordFollowColor, enableScale, enableFade, wordsPerLine, enableRotate } = subtitlesProps;
   }
 
   const fileName = getLanguageFromBookmark(languageBookmark);
@@ -241,171 +243,181 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
       const end = parseFloat(Math.max(...endArr)).toFixed(2);
       wordsIt += pLengthCopy;
       pLength += pLengthCopy;
-      checkAndPushToArray(emotionsEnabled, wordsArr, emotionsArr, colorsPalette, subtitles, start, end, wordFollowEnabled ? wordFollowColor : defaultColor, wordFollowEnabled ? karaokeArr : false, enableScale, enableFade);
+      const subtitlesProps = {
+        emotionsArr: emotionsArr,
+        colorsPalette: colorsPalette,
+        defaultColor: wordFollowEnabled ? wordFollowColor : defaultColor,
+        karaokeArr: wordFollowEnabled ? karaokeArr : false,
+        enableScale: enableScale,
+        enableFade: enableFade,
+        enableRotate: enableRotate,
+        emotionsEnabled: emotionsEnabled
+      }
+      checkAndPushToArray(wordsArr, subtitles, start, end, subtitlesProps);
     }
   }
 
   return subtitles;
 }
 
-function checkAndPushToArray(emotionsEnabled, subsToCheck, emotionsArr, colorsPalette, subtitles, start, end, defaultColor, karaokeArr, enableScale, enableFade) {
-  let modifiedWord = addEmotionsToSubtitles(subsToCheck, emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled);
+function checkAndPushToArray(subsToCheck, subtitles, start, end, subtitlesProps) {
+  let modifiedWord = addEmotionsToSubtitles(subsToCheck, subtitlesProps);
   subtitles.push(`[${start} - ${end}]${modifiedWord}\n`);
 }
 
 async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, font, fontExtension, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign) {
+  try {
+    Ffmpeg.setFfmpegPath(ffmpegPath);
 
-  Ffmpeg.setFfmpegPath(ffmpegPath);
+    var tempFolder = path.join(__dirname, '../.././temporary');
+    const fontTempFolder = path.join(__dirname, './temporary');
+    var logoFileName, logoAlignFFmpegFormat, videoWithLogoPath;
+    var watermarkFileName, watermarkAlignFFmpegFormat, videoWithWatermarkPath;
+    var subtitlesFontFileName;
 
-  var tempFolder = path.join(__dirname, '../.././temporary');
-  const fontTempFolder = path.join(__dirname, './temporary');
-  var fontFamilyName;
-  var logoFileName, logoAlignFFmpegFormat, logoVideoFileName, videoWithLogoPath;
-  var watermarkFileName, watermarkAlignFFmpegFormat, watermarkVideoFileName, videoWithWatermarkPath;
-  var subtitlesFontFileName;
+    const srtSubtitlesBuffer = Buffer.from(srtSubtitles, 'utf-8');
+    const subtitlesFileName = generateRandomFileName('.ass');
+    const subtitlesVideoFileName = generateRandomFileName(videoExtension)
 
-  const srtSubtitlesBuffer = Buffer.from(srtSubtitles, 'utf-8');
-  const subtitlesFileName = generateRandomFileName('.ass');
-  const subtitlesVideoFileName = generateRandomFileName(videoExtension)
+    const videoFileName = generateRandomFileName(videoExtension);
 
-  const videoFileName = generateRandomFileName(videoExtension);
+    fs.writeFileSync(path.join(tempFolder, subtitlesFileName), srtSubtitlesBuffer);
+    fs.writeFileSync(path.join(tempFolder, videoFileName), videoBuffer);
 
-  fs.writeFileSync(path.join(tempFolder, subtitlesFileName), srtSubtitlesBuffer);
-  fs.writeFileSync(path.join(tempFolder, videoFileName), videoBuffer);
+    if (font) {
+      subtitlesFontFileName = generateRandomFileName(fontExtension);
+      fs.writeFileSync(path.join(fontTempFolder, subtitlesFontFileName), font.buffer);
+    }
 
-  if (font) {
-    subtitlesFontFileName = generateRandomFileName(fontExtension);
-    fontFamilyName = detectFont(font);
-    fs.writeFileSync(path.join(fontTempFolder, subtitlesFontFileName), font.buffer);
-  }
-  else {
-    fontFamilyName = "Nexa Heavy";
-  }
+    if (logo) {
+      const logoProps = createImageFile(logoExtension, tempFolder, videoExtension, logoAlign);
+      videoWithLogoPath = logoProps.videoPath;
+      logoFileName = logoProps.randomFileName;
+      logoAlignFFmpegFormat = logoProps.ffmpegFormat;
+      fs.writeFileSync(path.join(tempFolder, logoFileName), logo.buffer);
+    }
 
-  if (logo) {
-    const logoProps = createImageFile(logoExtension, tempFolder, videoExtension, logoAlign);
-    logoVideoFileName = logoProps.videoRandomFileName;
-    videoWithLogoPath = logoProps.videoPath;
-    logoFileName = logoProps.randomFileName;
-    logoAlignFFmpegFormat = logoProps.ffmpegFormat;
-    fs.writeFileSync(path.join(tempFolder, logoFileName), logo.buffer);
-  }
+    if (watermark) {
+      const watermarkProps = createImageFile(watermarkExtension, tempFolder, videoExtension, watermarkAlign);
+      videoWithWatermarkPath = watermarkProps.videoPath;
+      watermarkFileName = watermarkProps.randomFileName;
+      watermarkAlignFFmpegFormat = watermarkProps.ffmpegFormat;
+      fs.writeFileSync(path.join(tempFolder, watermarkFileName), watermark.buffer);
+    }
 
-  if (watermark) {
-    const watermarkProps = createImageFile(watermarkExtension, tempFolder, videoExtension, watermarkAlign);
-    watermarkVideoFileName = watermarkProps.videoRandomFileName;
-    videoWithWatermarkPath = watermarkProps.videoPath;
-    watermarkFileName = watermarkProps.randomFileName;
-    watermarkAlignFFmpegFormat = watermarkProps.ffmpegFormat;
-    fs.writeFileSync(path.join(tempFolder, watermarkFileName), watermark.buffer);
-  }
+    const videoWithSubtitlesPath = path.join(tempFolder, subtitlesVideoFileName);
 
-  const videoWithSubtitlesPath = path.join(tempFolder, subtitlesVideoFileName);
+    const endVideoPath = await createModifiedVideos();
+    return endVideoPath;
 
-  const endVideoPath = await createModifiedVideos();
-  return endVideoPath;
 
-  function createModifiedVideos() {
-    return new Promise((resolve, reject) => {
+    function createModifiedVideos() {
+      return new Promise((resolve, reject) => {
+        Ffmpeg()
+          .input(path.join(tempFolder, videoFileName))
+          .complexFilter([
+            {
+              filter: 'subtitles',
+              options: `./temporary/${subtitlesFileName}:fontsdir=./temporary/${font ? subtitlesFontFileName : "Nexa-Heavy.ttf"}.`
+
+            }
+          ])
+          .toFormat(videoExtension.slice(videoExtension.indexOf('.') + 1))
+          .on('start', () => {
+            console.log('Creating buffer with subtitles...');
+          })
+          .on('end', async () => {
+            fs.unlinkSync(path.join(tempFolder, subtitlesFileName));
+            fs.unlinkSync(path.join(tempFolder, videoFileName));
+            if (font) {
+              fs.unlinkSync(path.join(fontTempFolder, subtitlesFontFileName));
+            }
+            if (watermark && logo) {
+              addWatermarkWithFFmpeg(true, resolve, reject);
+            }
+            else if (watermark) {
+              addWatermarkWithFFmpeg(false, resolve, reject);
+            }
+            else if (logo) {
+              addLogoWithFFmpeg(videoWithSubtitlesPath, false, resolve, reject);
+            }
+            else {
+              resolve(videoWithSubtitlesPath);
+            }
+          })
+          .on('error', (err) => {
+            console.error('Error generating buffer with subtitles:', err);
+          })
+          .save(videoWithSubtitlesPath)
+      });
+    }
+
+    function addWatermarkWithFFmpeg(addLogoOnEnd, resolve, reject) {
       Ffmpeg()
-        .input(path.join(tempFolder, videoFileName))
+        .input(videoWithSubtitlesPath) // Input from pipe
+        .input(path.join(tempFolder, watermarkFileName)) // Input watermark from file
         .complexFilter([
           {
-            filter: 'subtitles',
-            options: `./temporary/${subtitlesFileName}:fontsdir=./temporary/${font ? subtitlesFontFileName : "Nexa-Heavy.ttf"}.`
-
-          }
+            filter: 'overlay', // Apply overlay filter for watermark
+            options: watermarkAlignFFmpegFormat,
+          },
         ])
-        .toFormat(videoExtension.slice(videoExtension.indexOf('.') + 1))
+        .toFormat('mp4')
         .on('start', () => {
-          console.log('Creating buffer with subtitles...');
+          console.log('Adding watermark...');
         })
-        .on('end', async () => {
-          fs.unlinkSync(path.join(tempFolder, subtitlesFileName));
-          fs.unlinkSync(path.join(tempFolder, videoFileName));
-          if (font) {
-            fs.unlinkSync(path.join(fontTempFolder, subtitlesFontFileName));
-          }
-          if (watermark && logo) {
-            addWatermarkWithFFmpeg(true, resolve, reject);
-          }
-          else if (watermark) {
-            addWatermarkWithFFmpeg(false, resolve, reject);
-          }
-          else if (logo) {
-            addLogoWithFFmpeg(videoWithSubtitlesPath, false, resolve, reject);
+        .on('end', () => {
+          fs.unlinkSync(videoWithSubtitlesPath);
+          fs.unlinkSync(path.join(tempFolder, watermarkFileName));
+          if (addLogoOnEnd) {
+            addLogoWithFFmpeg(videoWithWatermarkPath, true, resolve, reject);
           }
           else {
-            resolve(videoWithSubtitlesPath);
+            resolve(videoWithWatermarkPath);
           }
         })
         .on('error', (err) => {
-          console.error('Error generating buffer with subtitles:', err);
+          console.error('Error adding watermark:', err);
+          reject(err);
         })
-        .save(videoWithSubtitlesPath)
-    });
-  }
-  function addWatermarkWithFFmpeg(addLogoOnEnd, resolve, reject) {
-    Ffmpeg()
-      .input(videoWithSubtitlesPath) // Input from pipe
-      .input(path.join(tempFolder, watermarkFileName)) // Input watermark from file
-      .complexFilter([
-        {
-          filter: 'overlay', // Apply overlay filter for watermark
-          options: watermarkAlignFFmpegFormat,
-        },
-      ])
-      .toFormat('mp4')
-      .on('start', () => {
-        console.log('Adding watermark...');
-      })
-      .on('end', () => {
-        fs.unlinkSync(videoWithSubtitlesPath);
-        fs.unlinkSync(path.join(tempFolder, watermarkFileName));
-        if (addLogoOnEnd) {
-          addLogoWithFFmpeg(videoWithWatermarkPath, true, resolve, reject);
-        }
-        else {
-          resolve(videoWithWatermarkPath);
-        }
-      })
-      .on('error', (err) => {
-        console.error('Error adding watermark:', err);
-        reject(err);
-      })
-      .save(videoWithWatermarkPath); // Save the final video with watermark
-  }
-  function addLogoWithFFmpeg(videoPathToEdit, hasWatermark, resolve, reject) {
-    Ffmpeg()
-      .input(videoPathToEdit)
-      .input(path.join(tempFolder, logoFileName)) // Input logo from buffer
-      .complexFilter([
-        {
-          filter: 'overlay', // Apply overlay filter for logo
-          options: logoAlignFFmpegFormat
-        },
-      ])
-      .toFormat(videoExtension.slice(videoExtension.indexOf('.') + 1))
-      .on('start', () => {
-        console.log('Adding logo...');
-      })
-      .on('end', () => {
-        if (!hasWatermark) {
-          fs.unlinkSync(videoWithSubtitlesPath);
-        }
-        fs.unlinkSync(path.join(tempFolder, logoFileName));
-        if (hasWatermark) {
-          fs.unlinkSync(videoWithWatermarkPath)
-        }
-        console.log("Process Done");
-        resolve(videoWithLogoPath);
-      })
-      .on('error', (err) => {
-        console.error('Error adding logo:', err);
-        reject(err);
-      })
-      .save(videoWithLogoPath);
+        .save(videoWithWatermarkPath); // Save the final video with watermark
+    }
 
+    function addLogoWithFFmpeg(videoPathToEdit, hasWatermark, resolve, reject) {
+      Ffmpeg()
+        .input(videoPathToEdit)
+        .input(path.join(tempFolder, logoFileName)) // Input logo from buffer
+        .complexFilter([
+          {
+            filter: 'overlay', // Apply overlay filter for logo
+            options: logoAlignFFmpegFormat
+          },
+        ])
+        .toFormat(videoExtension.slice(videoExtension.indexOf('.') + 1))
+        .on('start', () => {
+          console.log('Adding logo...');
+        })
+        .on('end', () => {
+          if (!hasWatermark) {
+            fs.unlinkSync(videoWithSubtitlesPath);
+          }
+          fs.unlinkSync(path.join(tempFolder, logoFileName));
+          if (hasWatermark) {
+            fs.unlinkSync(videoWithWatermarkPath)
+          }
+          console.log("Process Done");
+          resolve(videoWithLogoPath);
+        })
+        .on('error', (err) => {
+          console.error('Error adding logo:', err);
+          reject(err);
+        })
+        .save(videoWithLogoPath);
+
+    }
+  }
+  catch (err) {
+    throw err;
   }
 }
 
@@ -494,11 +506,13 @@ function createImageFile() {
   fs.writeFileSync(path.join(tempFolder, watermarkFileName), watermark.buffer);
   watermarkAlignFFmpegFormat = returnDetailedAlignment(watermarkAlign);
 }
+
 function createImageFile(fileExtension, tempFolder, videoExtension, align) {
   const videoRandomFileName = generateRandomFileName(fileExtension);
   const videoPath = path.join(tempFolder, `${videoRandomFileName.slice(0, videoRandomFileName.lastIndexOf('.') - 1)}${videoExtension}`);
   const randomFileName = generateRandomFileName(fileExtension);
   const ffmpegFormat = returnDetailedAlignment(align);
+
   return {
     videoRandomFileName: videoRandomFileName,
     videoPath: videoPath,
@@ -529,9 +543,10 @@ function convertColorToReversedHex(color, variant, opacity) {
   }
 }
 
-function addEmotionsToSubtitles(subtitles, emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled) {
+function addEmotionsToSubtitles(subtitles, subtitlesProps) {
+  const { emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled, enableRotate } = subtitlesProps;
   const subtilesCopy = subtitles.split(" ");
-  var modifiedSubtitles = "";
+  var modifiedSubtitles = `${enableRotate ? `{\\frz${Math.floor(Math.random() * 45)}}` : ""}`;
   for (let i = 0; i < subtilesCopy.length - 1; i++) {
     var isAdded = false;
     for (let j = 0; j < emotionsArr.length; j++) {
