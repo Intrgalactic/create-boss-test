@@ -1,9 +1,19 @@
-import { SearchBar } from "src/components/search-bar";
-import { SectionHeading } from "src/components/section-heading";
-import { SelectButton } from "src/components/select-button";
-import { SelectVoiceBox } from "src/components/voice/select-voice-box";
-import { SpecificVoiceSettingSelect } from "src/components/voice/specific-voice-setting-select";
-import { dashboardSelectButtonContext } from "src/context/DashboardSelectButtonContext";
+import { lazy } from "react";
+const SearchBar = lazy(() => import("src/components/search-bar").then(module => {
+    return {default: module.SearchBar}
+}))
+const SectionHeading = lazy(() => import('src/components/section-heading').then(module => {
+    return {default:module.SectionHeading}
+}))
+const SelectButton = lazy(() => import('src/components/select-button').then(module => {
+    return {default: module.SelectButton}
+}))
+const SelectVoiceBox = lazy(() => import("src/components/voice/select-voice-box").then(module => {
+    return {default:module.SelectVoiceBox}
+}))
+const SpecificVoiceSettingSelect = lazy(() => import("src/components/voice/specific-voice-setting-select").then(module => {
+    return {default:module.SpecificVoiceSettingSelect}
+}))
 export default function TTSVoiceSelect({ specificVoiceSettingsActions, selectedCategory, setSelectedCategory, voices, voice, setVoice, setResultsAmount, totalVoicesLength, resultsAmount,setFilteredVoicesNameFilter }) {
     const categoriesArr = ["Advertisment", "Narrative & Story", "Conversational", "Animation", "Social Media", "Tv", "Educational", "News Presenter", "Video Games", "Audiobook"];
     const specificPropertiesArr = ["Age", "Gender", "Accent"];

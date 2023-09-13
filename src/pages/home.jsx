@@ -1,8 +1,9 @@
 
-import Contact from "src/layouts/contact";
-import Footer from "src/layouts/footer";
-import Header from "src/layouts/header";
-import Hero from "src/layouts/hero";
+import loadable from "@loadable/component";
+const Contact = loadable(() => import("src/layouts/contact"));
+const Footer = loadable(() => import("src/layouts/footer"));
+const Header = loadable(() => import("src/layouts/header"));
+const Hero = loadable(() => import("src/layouts/hero"));
 import { Suspense, lazy } from 'react';
 const ServiceOverview = lazy(() => import("src/layouts/service-overview"));
 const Testimonials = lazy(() => import("src/layouts/testimonials"));
@@ -17,7 +18,8 @@ import subtitlesToVideoImage from 'src/assets/images/subtitles-to-video.png';
 import webpSubtitlesToVideoImage from 'src/assets/images/subtitles-to-video.webp';
 import subtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.png';
 import webpSubtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.webp';
-import Loader from 'src/layouts/loader';
+
+const Loader = loadable(() => import("src/layouts/loader"));
 export default function Home() {
     const imagePaths = [
         [subtitlesFromVideoImage, webpSubtitlesFromVideoImage],

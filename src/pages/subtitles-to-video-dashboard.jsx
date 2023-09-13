@@ -1,14 +1,15 @@
 import { Suspense, lazy, useReducer, useState } from "react";
-import { ContentContainer } from "src/components/content-container";
+import loadable from "@loadable/component";
+const ContentContainer = lazy(() => import("src/components/content-container").then(module => {
+    return {default: module.ContentContainer}
+}));
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
 const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-video-left-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
-import Loader from "src/layouts/loader";
+const Loader = loadable(() => import("src/layouts/loader"));
 import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions, wordsPerLineOptions } from "src/utils/dashboard-static-data";
-import { createDataAndSend } from "src/utils/utilities";
-import fileDownload from "js-file-download";
-import DownloadingLoader from "src/layouts/downloading-loader";
+const DownloadingLoader = loadable(() => import("src/layouts/downloading-loader"));
 
 export default function STVDashboard() {
     const videoInitialState = {
@@ -110,6 +111,7 @@ export default function STVDashboard() {
             case "Random Rotate": return {...state,enableRotate: payload};
         }
     }
+
     const subtitlesOptionsRowActions = [
         {
             text: videoProps.language,
@@ -319,12 +321,12 @@ export default function STVDashboard() {
                 enableRotate: videoProps.enableRotate,
                 wordsPerLine: videoProps.wordsPerLine
             };
-            createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr);
+            (await import("src/utils/utilities")).createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr);
         }
     }
 
     async function downloadFile() {
-        fileDownload(filePath, `${videoFile && videoFile.name ? videoFile.name : `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`}`);
+        (await import("js-file-download")).fileDownload(filePath, `${videoFile && videoFile.name ? videoFile.name : `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`}`);
     }
 
     function passToReducer(actionType, payload) {

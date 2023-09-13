@@ -1,13 +1,12 @@
-import { Suspense, lazy, useEffect, useReducer, useState } from "react";
+import { Suspense, lazy, useReducer, useState } from "react";
 import { ContentContainer } from "src/components/content-container";
+import loadable from "@loadable/component";
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
 const DashboardLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-left-section"));
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
-import fileDownload from "js-file-download";
-import Loader from "src/layouts/loader";
+const Loader = loadable(() => import("src/layouts/loader"));
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
-import { STTReducer, createDataAndSend, fetchUrl, throwConfigErr } from "src/utils/utilities";
 import { ConfigErr } from "src/components/dashboard/configErr";
 
 export default function STTDashboard() {
@@ -26,7 +25,7 @@ export default function STTDashboard() {
         text: "you can check list of available languages",
         href: "https://create-boss-test.onrender.com"
     }];
-    const [speechToTextProps, dispatch] = useReducer(STTReducer, STTInitialState);
+    const [speechToTextProps, dispatch] = useReducer((async () => await import("src/utils/utilities")).STTReducer, STTInitialState);
     const [ableToTranslate, setAbleToTranslate] = useState('No');
     const [outputExtension, setOutputExtension] = useState("TXT");
     const [isTranslated, setIsTranslated] = useState(false);
@@ -128,21 +127,21 @@ export default function STTDashboard() {
                     summarizeOn: speechToTextProps.summarization,
                     subtitlesOn: speechToTextProps.timeStamps
                 };
-                createDataAndSend(objWithdata, file, outputExtension, stateSetters, 'api/speech-to-text', false);
+                (await import("src/utils/utilities")).createDataAndSend(objWithdata, file, outputExtension, stateSetters, 'api/speech-to-text', false);
             }
             else {
-                throwConfigErr(setConfigErr,"The file extension is not supported");
+                (await import("src/utils/utilities")).throwConfigErr(setConfigErr,"The file extension is not supported");
             }
         }
         else {
-            throwConfigErr(setConfigErr,"Please attach a file");
+            (await import("src/utils/utilities")).throwConfigErr(setConfigErr,"Please attach a file");
            
         }
     }
 
     async function downloadFile() {
         const outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.${outputExtension.toLowerCase()}`;
-        fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
+        (await import("js-file-download")).fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
     }
 
     function passToReducer(actionType, payload) {

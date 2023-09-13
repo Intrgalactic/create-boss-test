@@ -1,18 +1,21 @@
-import { createUserWithEmailAndPassword, deleteUser, sendEmailVerification, updateProfile } from "firebase/auth";
+import loadable from "@loadable/component";
 import { Suspense, lazy, useContext, useRef, useState } from "react";
 const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx").then(module => {return { default: module.AuthContainer }}));
 const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => {return { default: module.AuthForm }}));
-import Header from "src/layouts/header";
-import { getFirebaseErr, validateCallback, validateForm } from "src/utils/utilities";
+const Header = loadable(() => import("src/layouts/header"));
 import { auth } from "../../firebase.js";
-import Loader from "src/layouts/loader.jsx";
-import { TermsCheckbox } from "src/components/terms-label.jsx";
+const Loader = loadable(() => import("src/layouts/loader"));
+const TermsCheckbox = lazy(() => import('src/components/terms-label').then(module => {
+    return {default :module.TermsCheckbox}
+}))
 import { useNavigate } from "react-router-dom";
+
 const CtaButton = lazy(() => import('src/components/cta-button').then(module => {
     return { default: module.CtaButton }
 }))
 import { authContext } from "src/context/authContext.jsx";
 const Footer = lazy(() => import('src/layouts/footer'));
+
 export default function SignUp() {
     const isLogged = useContext(authContext);
     const navigate = useNavigate();
@@ -28,16 +31,16 @@ export default function SignUp() {
         isChecked: false
     });
   
-    function validateSignUpForm(e) {
+    async function validateSignUpForm(e) {
         e.preventDefault();
-        if (validateForm(userPersonalData.current, setValidateErr)) {
+        if ((await import("src/utils/utilities")).validateForm(userPersonalData.current, setValidateErr)) {
             setLoadingState(true);
             createAccount();
         };
     }
 
-    function createAccount() {
-        createUserWithEmailAndPassword(auth, userPersonalData.current.email, userPersonalData.current.password).then(() => {
+    async function createAccount() {
+        (await import('firebase/auth')).createUserWithEmailAndPassword(auth, userPersonalData.current.email, userPersonalData.current.password).then(() => {
             fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}create-user`, {
                 method: "POST",
                 body: `name=${userPersonalData.current.name}&email=${userPersonalData.current.email}&userName=${userPersonalData.current.userName}&isPaying=true&isNew=true`,
@@ -53,28 +56,28 @@ export default function SignUp() {
                         navigate('/onboard');
                     }
                 })
-                .catch(err => {
-                    deleteUser(auth.currentUser).catch(error => {
-                        validateCallback([getFirebaseErr],error.message,setFirebaseErr);
+                .catch(async err => {
+                    (await import("firebase/auth")).deleteUser(auth.currentUser).catch(async error => {
+                        (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr],error.message,setFirebaseErr);
                         setLoadingState(false);
                     })
-                    validateCallback([setValidateErr],err.message);
+                    (await import("src/utils/utilities")).validateCallback([setValidateErr],err.message);
                     setLoadingState(false);
                 });
-        }).then(() => {
-            sendEmailVerification(auth.currentUser).then(() => {
-                validateCallback([setFirebaseErr, setValidateErr], false);
+        }).then(async () => {
+            (await import("firebase/auth")).sendEmailVerification(auth.currentUser).then(async () => {
+                (await import("src/utils/utilities")).validateCallback([setFirebaseErr, setValidateErr], false);
             })
-                .catch((err) => {
-                    validateCallback([getFirebaseErr], err.message, setFirebaseErr);
+                .catch(async (err) => {
+                    (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message,setFirebaseErr);
                     setLoadingState(false);
                 })
-            updateProfile(auth.currentUser, { displayName: userPersonalData.current.nickName }).catch(err => {
-                validateCallback([getFirebaseErr], err.message, setFirebaseErr);
+            (await import("firebase/auth")).updateProfile(auth.currentUser, { displayName: userPersonalData.current.nickName }).catch(async err => {
+                (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message,setFirebaseErr);
                 setLoadingState(false);
             })
-        }).catch((err) => {
-            validateCallback([getFirebaseErr], err.message, setFirebaseErr);
+        }).catch(async (err) => {
+            (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message,setFirebaseErr);
             setLoadingState(false);
         })
     }

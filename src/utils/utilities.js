@@ -276,7 +276,6 @@ export function appendToFormData(objWithData, formData) {
 export function createDataAndSend(dataToSend, file, outputExtension, stateSetters, fetchUrl, filesArr) {
     const data = new FormData();
     const objWithdata = dataToSend;
-    console.log(dataToSend);
     appendToFormData(objWithdata, data);
     if (filesArr) {
         let fileIndex = 1;
@@ -320,7 +319,7 @@ export function throwConfigErr(setConfigErr, errMessage) {
     }, 5400);
 }
 
-export function filterVoices(TTSProps,voices,selectedCategory) {
+export function filterVoices(TTSProps, voices, selectedCategory) {
     const age = TTSProps.age === "Choose" ? "" : TTSProps.age.toLowerCase();
     const gender = TTSProps.gender === "Choose" ? "" : TTSProps.gender.toLowerCase();
     const accent = TTSProps.accent === "Choose" ? "" : TTSProps.accent.toLowerCase();
@@ -330,4 +329,13 @@ export function filterVoices(TTSProps,voices,selectedCategory) {
         }
     });
     return filteredArr;
+}
+
+export function TTSReducer(state, action) {
+    const payload = action.payload;
+    switch (action.type) {
+        case "Age": return { ...state, age: payload };
+        case "Gender": return { ...state, gender: payload };
+        case "Accent": return { ...state, accent: payload };
+    }
 }

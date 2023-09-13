@@ -1,13 +1,13 @@
 import { Suspense, lazy, useReducer, useState } from "react";
-import { ContentContainer } from "src/components/content-container";
+import loadable from "@loadable/component";
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
+const ContentContainer = lazy(() => import("src/components/content-container").then(module => {
+    return {default: module.ContentContainer}
+}));
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
 const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-video-left-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
-import Loader from "src/layouts/loader";
-import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
-import {  STTReducer, createDataAndSend } from "src/utils/utilities";
-import fileDownload from "js-file-download";
+const Loader = loadable(() => import("src/layouts/loader"));
 
 export default function SFVDashboard() {
     const [videoFile, setVideoFile] = useState();
@@ -28,7 +28,7 @@ export default function SFVDashboard() {
         punctuation: "Yes",
         timeStamps: "No",
     }
-    const [SFVProps,dispatch] = useReducer(STTReducer,SFVInitialState);
+    const [SFVProps,dispatch] = useReducer((async () => await import("src/utils/utilities")).STTReducer,SFVInitialState);
 
     const stateSetters = {
         setLoadingState: setLoadingState,
@@ -89,7 +89,7 @@ export default function SFVDashboard() {
     async function sendToGetSubtitles() {
         if (videoFile) {
             setLoadingState(true);
-            createDataAndSend({
+            (await import('src/utils/utilities')).createDataAndSend({
                 audioEncoding: SFVProps.outputExtension,
                 punctuationOn: SFVProps.punctuation,
                 topicsOn: SFVProps.detectTopic,
@@ -103,7 +103,7 @@ export default function SFVDashboard() {
     }
 
     async function downloadFile() {
-        fileDownload(filePath,`${videoFile && videoFile.name ? `${videoFile.name.slice(0,videoFile.name.lastIndexOf(".") - 1)}.${outputExtension.toLowerCase()}` : `output.${videoFile}.${outputExtension.toLowerCase()}`}`);
+        (await import("js-file-download")).fileDownload(filePath,`${videoFile && videoFile.name ? `${videoFile.name.slice(0,videoFile.name.lastIndexOf(".") - 1)}.${outputExtension.toLowerCase()}` : `output.${videoFile}.${outputExtension.toLowerCase()}`}`);
     }
 
     function passToReducer(actionType, payload) {

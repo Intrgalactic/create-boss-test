@@ -1,6 +1,7 @@
-import { ServiceOverviewContainer } from "src/components/service-overview-container";
-import Header from "src/layouts/header";
-import ServiceOverview from "src/layouts/service-overview";
+const { ServiceOverviewContainer } = lazy(() => import('src/components/service-overview-container').then(module => {
+    return {default:module.ServiceOverviewContainer}
+}))
+const ServiceOverview = loadable(() => import("src/layouts/service-overview"));
 import speechToTextImage from 'src/assets/images/onboard-speech-to-text.png';
 import webpSpeechToTextImage from 'src/assets/images/onboard-speech-to-text.webp';
 import textToSpeechImage from 'src/assets/images/onboard-text-to-speech.png';
@@ -9,13 +10,14 @@ import subtitlesToVideoImage from 'src/assets/images/onboard-subtitles-to-video.
 import webpSubtitlesToVideoImage from 'src/assets/images/onboard-subtitles-to-video.webp';
 import subtitlesFromVideoImage from 'src/assets/images/onboard-subtitles-from-video.png';
 import webpSubtitlesFromVideoImage from 'src/assets/images/onboard-subtitles-from-video.webp';
-import DashboardHeader from "src/layouts/dashboards/dashboard-header.jsx";
+const DashboardHeader = loadable(() =>
+  import("src/layouts/dashboards/dashboard-header.jsx")
+);
 import { Suspense, lazy, useEffect, useState } from "react";
 import { useContext } from "react";
 import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
 import { auth } from "../../firebase.js";
-import { checkIsLoggedAndFetch } from "src/utils/utilities.js";
 const PricingContainer = lazy(() => import("src/components/pricing/pricing-container.jsx").then(module => { return { default: module.PricingContainer } }));
 import Loader from "src/layouts/loader.jsx";
 import { ContentContainer } from "src/components/content-container.jsx";
@@ -31,7 +33,9 @@ export default function OnBoard() {
         [textToSpeechImage, webpTextToSpeechImage]
     ];
     useEffect(() => {
-        checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPaying, navigate);
+        (async() => {
+            await import("src/utils/utilities.js").checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPaying, navigate);
+        })();
     }, [isLogged, setIsPaying]);
     return (
         <div className="onboard-page">

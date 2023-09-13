@@ -1,15 +1,17 @@
-import { EmailAuthProvider, signInWithCredential } from "firebase/auth";
 import { Suspense, lazy, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import {     useNavigate } from "react-router-dom";
+import loadable from "@loadable/component";
+const Link = lazy(() => import('react-router-dom').then(module => {
+    return {default: module.Link}
+}))
+
 const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx").then(module => { return { default: module.AuthContainer } }));
 const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => { return { default: module.AuthForm } }));
 const CtaButton = lazy(() => import("src/components/cta-button").then(module => { return { default: module.CtaButton } }));
-import Footer from "src/layouts/footer";
-import Header from "src/layouts/header";
-import { fetchUrl, getFirebaseErr, validateCallback, validateForm } from "src/utils/utilities";
+const Footer = loadable(() => import("src/layouts/footer"));
+const Header = loadable(() => import("src/layouts/header"));
+const Loader = loadable(() => import("src/layouts/loader"));
 import { auth } from "../../firebase.js";
-import Loader from "src/layouts/loader.jsx";
-
 export default function SignIn() {
     const [validateErr, setValidateErr] = useState();
     const [firebaseErr, setFirebaseError] = useState();
@@ -19,19 +21,18 @@ export default function SignIn() {
         password: "",
     })
     const navigate = useNavigate();
-    function validateLoginForm(e) {
+    async function validateLoginForm(e) {
         e.preventDefault();
-        const userCredentials = EmailAuthProvider.credential(userData.current.email, userData.current.password);
-        if (validateForm(userData.current, setValidateErr)) {
+        const userCredentials = (await import("firebase/auth")).EmailAuthProvider.credential(userData.current.email, userData.current.password);
+        if ((await import("src/utils/utilities")).validateForm(userData.current, setValidateErr)) {
             setLoadingState(true);
-            signInWithCredential(auth, userCredentials).then(async () => {
-                const userData = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}get-user?email=${auth.currentUser.email}`);
-                await navigate('/dashboard'); 
-                setLoadingState(false)
+            (await import("firebase/auth")).signInWithCredential(auth, userCredentials).then(async () => {
+                const userData = await ((await import("src/utils/utilities")).fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}get-user?email=${auth.currentUser.email}`));
+                await navigate('/dashboard');
+                setLoadingState(false);
             })
-                .catch(err => {
-                    console.log(err);
-                    validateCallback([getFirebaseErr], err.message, setFirebaseError);
+                .catch(async err => {
+                    (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities.js")).getFirebaseErr], err.message, setFirebaseError);
                     setLoadingState(false);
                 })
         }

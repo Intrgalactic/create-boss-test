@@ -1,14 +1,17 @@
 import { Suspense, lazy, useEffect, useReducer, useState } from "react";
-import { ContentContainer } from "src/components/content-container";
+const ContentContainer = lazy(() => import("src/components/content-container").then(module => {
+    return {default: module.ContentContainer}
+}));
+    import loadable from "@loadable/component";
 const DashboardHeader = lazy(() => import('src/layouts/dashboards/dashboard-header'));
 const DashboardLeftSection = lazy(() => import('src/layouts/dashboards/dashboard-left-section'));
-import Loader from "src/layouts/loader";
-import fileDownload from "js-file-download";
-import { createDataAndSend, fetchUrl, filterVoices, throwConfigErr } from "src/utils/utilities";
-import { handleTextChange } from "src/utils/utilities";
+const Loader = loadable(() => import("src/layouts/loader"));
 import { voiceAccentOptions, voiceAgeOptions, voiceGenderOptions } from "src/utils/dashboard-static-data";
-import TTSVoiceSelect from "src/layouts/text-to-speech-voice-select";
-import { ConfigErr } from "src/components/dashboard/configErr";
+const TTSVoiceSelect = loadable(() => import("src/layouts/text-to-speech-voice-select"));
+const ConfigErr = lazy(() => import("src/components/dashboard/configErr").then(module => {
+    return {default: module.ConfigErr}
+}))
+
 
 export default function TTSDashboard() {
     const TTSInitialState = {
@@ -21,7 +24,7 @@ export default function TTSDashboard() {
         text: "you can check list of available languages",
         href: "https://create-boss-test.onrender.com"
     }];
-    const [TTSProps, dispatch] = useReducer(TTSReducer, TTSInitialState);
+    const [TTSProps, dispatch] = useReducer((async () => await import("src/utils/utilities")).TTSReducer, TTSInitialState);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [ableToTranslate, setAbleToTranslate] = useState('No');
     const [textInput, setTextInput] = useState("");
@@ -38,32 +41,28 @@ export default function TTSDashboard() {
     const [configError, setConfigError] = useState(false);
     const [filteredVoicesNameFilter, setFilteredVoicesNameFilter] = useState("");
     const voiceNameFilterRegEx = new RegExp(filteredVoicesNameFilter, "i");
+
     useEffect(() => {
         setLoadingState(true);
         async function getVoices() {
-            const voices = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get-voices`);
+            const voices = await (await import("src/utils/utilities")).fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get-voices`);
             setVoices(voices.voices);
             setLoadingState(false);
         }
         getVoices();
     }, [setVoices])
     useEffect(() => {
-        if (voices) {
-            const filteredArr = filterVoices(TTSProps, voices, selectedCategory);
-            setFilteredVoices(filteredArr);
-        }
+        (async () => {
+            if (voices) {
+                const filteredArr = (await import("src/utils/utilities")).filterVoices(TTSProps, voices, selectedCategory);
+                setFilteredVoices(filteredArr);
+            }
+        })();
+       
     }, [voices, setFilteredVoices, TTSProps.age, TTSProps.gender, TTSProps.accent, selectedCategory]);
 
     const filteredVoicesWName = filteredVoices ? filteredVoices.filter(voice => voiceNameFilterRegEx.test(voice.name)) : filteredVoices;
 
-    function TTSReducer(state, action) {
-        const payload = action.payload;
-        switch (action.type) {
-            case "Age": return { ...state, age: payload };
-            case "Gender": return { ...state, gender: payload };
-            case "Accent": return { ...state, accent: payload };
-        }
-    }
     const stateSetters = {
         setLoadingState: setLoadingState,
         setErrorAtDownload: setErrorAtDownload,
@@ -71,8 +70,8 @@ export default function TTSDashboard() {
         setIsTranslated: setIsTranslated
     }
 
-    function handleTextInput(e) {
-        handleTextChange(e, {
+    async function handleTextInput(e) {
+        (await import("src/utils/utilities")).handleTextChange(e, {
             isTranslated: isTranslated,
             errorAtDownload: errorAtDownload
         }, {
@@ -87,19 +86,19 @@ export default function TTSDashboard() {
             if (file) {
                 if (file.type === "text/plain" || file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document" || file.type === "application/pdf") {
                     setLoadingState(true);
-                    createDataAndSend({
+                    (await import("src/utils/utilities")).createDataAndSend({
                         file: file,
                         voiceId: voice
                     }, file, "mp3", stateSetters, 'api/text-to-speech');
                 }
                 else {
-                    throwConfigErr(setConfigError, "The file extension is not supported");
+                    (await import("src/utils/utilities")).throwConfigErr(setConfigError, "The file extension is not supported");
                     return false;
                 }
             }
             else if (!file) {
                 setLoadingState(true);
-                createDataAndSend({
+                (await import("src/utils/utilities")).createDataAndSend({
                     text: textInput,
                     voiceId: voice
                 }, file, "mp3", stateSetters, 'api/text-to-speech');
@@ -108,10 +107,10 @@ export default function TTSDashboard() {
         }
         else if (!configError) {
             if (textInput.length > 5000) {
-                throwConfigErr(setConfigError, "Text length is longer than 5000 characters");
+                (await import("src/utils/utilities")).throwConfigErr(setConfigError, "Text length is longer than 5000 characters");
             }
             else {
-                throwConfigErr(setConfigError, "Please input the text and select the voice");
+                (await import("src/utils/utilities")).throwConfigErr(setConfigError, "Please input the text and select the voice");
             }
         }
     }
@@ -120,7 +119,7 @@ export default function TTSDashboard() {
         if (file) {
             var outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.mp3`;
         }
-        fileDownload(filePath, `${file && file.name ? outputFileName : `output.mp3`}`);
+        (await import("js-file-download")).fileDownload(filePath, `${file && file.name ? outputFileName : `output.mp3`}`);
     }
 
     const specificVoiceSettingsActions = [

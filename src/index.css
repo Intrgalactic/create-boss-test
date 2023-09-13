@@ -12,6 +12,7 @@
 @font-face {
   font-family: "Mercenary Light Italic" ;
   src: url('assets/fonts/Mercenary.otf');
+  font-display: swap;
 }
 @font-face {
   font-family: Montserrat;

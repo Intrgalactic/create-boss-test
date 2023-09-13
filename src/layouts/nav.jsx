@@ -3,10 +3,10 @@ import { Link, useLocation, useNavigate } from "react-router-dom"
 import { NavButton } from "src/components/header/nav-button.jsx";
 import { useContext } from "react";
 import { authContext } from "src/context/authContext";
-import { logOutUser } from "src/utils/utilities";
 import { auth } from "../../firebase.js";
 import { HeaderLinksList } from "src/components/header/header-links-list.jsx";
 import useWindowSize from "src/hooks/useWindowSize.jsx";
+
 const NavWithRef = forwardRef((props, ref) => {
   const isLogged = useContext(authContext);
   const path = useLocation().pathname;
@@ -17,14 +17,15 @@ const NavWithRef = forwardRef((props, ref) => {
     props.toggleNav();
     document.querySelector(item).scrollIntoView({ behavior: "smooth" });
   }
+
   useEffect(() => {
     if (path === "/onboard" && auth.currentUser) {
       fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}get-user?email=${auth.currentUser.email}`).then(res => res.json()).then(data => {
         setIsPaying(data.isPaying)
       });
     }
-
   }, [setIsPaying, auth.currentUser, windowSize.width]);
+
   return (
     <nav ref={ref}>
       {props.isNavOpened ? <NavButton toggleNav={props.toggleNav} /> : null}
@@ -70,7 +71,7 @@ const NavWithRef = forwardRef((props, ref) => {
           <Link to='/account-settings'>
             Account Settings
           </Link>
-          <Link onClick={logOutUser}>
+          <Link onClick={async () => {(await import('src/utils/utilities.js')).logOutUser()}}>
             Logout
           </Link>
         </> :
@@ -87,7 +88,7 @@ const NavWithRef = forwardRef((props, ref) => {
 
             }
             {isLogged ? <Link to='/dashboard'>Dashboard</Link> : <Link to='/sign-in'>Login</Link>}
-            {!isLogged ? <Link to='/sign-up'>Sign Up</Link> : <Link onClick={logOutUser}>Logout</Link>}
+            {!isLogged ? <Link to='/sign-up'>Sign Up</Link> : <Link onClick={async () => {(await import('src/utils/utilities.js')).logOutUser()}}>Logout</Link>}
 
           </> : <>
             {isPaying == "false" &&
@@ -95,7 +96,7 @@ const NavWithRef = forwardRef((props, ref) => {
                 <Link to='/account-settings'>
                   Account Settings
                 </Link>
-                <Link onClick={logOutUser}>
+                <Link onClick={async () => {(await import('src/utils/utilities.js')).logOutUser()}}>
                   Logout
                 </Link>
               </>
