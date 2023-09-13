@@ -1271,7 +1271,8 @@ footer {
 .text-to-speech-dashboard,
 .speech-to-text-dashboard {
   background-image: url('assets/images/dashboard-bg.webp');
-  background-image: image-set(url('assets/images/dashboard-bg.webp') type('image/webp'),
+  background-image: image-set(
+    url('assets/images/dashboard-bg.webp') type('image/webp'),
       url('assets/images/dashboard-bg.jpg') type('image/jpeg'),
     );
   background-size: 100% 100%;

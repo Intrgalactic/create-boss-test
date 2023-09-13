@@ -44,11 +44,9 @@ export default function TTSDashboard() {
     const voiceNameFilterRegEx = new RegExp(filteredVoicesNameFilter, "i");
 
     useEffect(() => {
-        setLoadingState(true);
         async function getVoices() {
             const voices = await (await import("src/utils/utilities")).fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get-voices`);
             setVoices(voices.voices);
-            setLoadingState(false);
         }
         getVoices();
     }, [setVoices])
