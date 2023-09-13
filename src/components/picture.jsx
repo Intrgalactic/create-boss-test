@@ -9,6 +9,6 @@ export function Picture({ images, alt, imgHeight, imgWidth,picClass }) {
             <Suspense fallback={<Loader />}>
                 <img src={images[1]} alt={alt} width={imgWidth} height={imgHeight} loading="lazy" />
             </Suspense>
-        </picture>
+        </picture>     
     )
 }
