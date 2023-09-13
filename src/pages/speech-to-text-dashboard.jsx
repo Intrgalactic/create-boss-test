@@ -8,6 +8,7 @@ const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/ser
 const Loader = loadable(() => import("src/layouts/loader"));
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
 import { ConfigErr } from "src/components/dashboard/configErr";
+import { STTReducer } from "src/utils/utilities";
 
 export default function STTDashboard() {
     const STTInitialState = {
@@ -25,7 +26,7 @@ export default function STTDashboard() {
         text: "you can check list of available languages",
         href: "https://create-boss-test.onrender.com"
     }];
-    const [speechToTextProps, dispatch] = useReducer((async () => await import("src/utils/utilities")).STTReducer, STTInitialState);
+    const [speechToTextProps, dispatch] = useReducer(STTReducer, STTInitialState);
     const [ableToTranslate, setAbleToTranslate] = useState('No');
     const [outputExtension, setOutputExtension] = useState("TXT");
     const [isTranslated, setIsTranslated] = useState(false);

@@ -7,6 +7,7 @@ const DashboardHeader = lazy(() => import('src/layouts/dashboards/dashboard-head
 const DashboardLeftSection = lazy(() => import('src/layouts/dashboards/dashboard-left-section'));
 const Loader = loadable(() => import("src/layouts/loader"));
 import { voiceAccentOptions, voiceAgeOptions, voiceGenderOptions } from "src/utils/dashboard-static-data";
+import { TTSReducer } from "src/utils/utilities";
 const TTSVoiceSelect = loadable(() => import("src/layouts/text-to-speech-voice-select"));
 const ConfigErr = lazy(() => import("src/components/dashboard/configErr").then(module => {
     return {default: module.ConfigErr}
@@ -24,7 +25,7 @@ export default function TTSDashboard() {
         text: "you can check list of available languages",
         href: "https://create-boss-test.onrender.com"
     }];
-    const [TTSProps, dispatch] = useReducer((async () => await import("src/utils/utilities")).TTSReducer, TTSInitialState);
+    const [TTSProps, dispatch] = useReducer(TTSReducer, TTSInitialState);
     const [selectedCategory, setSelectedCategory] = useState("");
     const [ableToTranslate, setAbleToTranslate] = useState('No');
     const [textInput, setTextInput] = useState("");
