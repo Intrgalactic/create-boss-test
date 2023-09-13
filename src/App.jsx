@@ -32,33 +32,39 @@ function App() {
       onAuthStateChanged(auth, (user) => {
         if (user) {
           setIsLogged(true);
+          async function getVoices() {
+            const voices = await (await import("src/utils/utilities")).fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get-voices`);
+            !window.localStorage.getItem("voices") && window.localStorage.setItem("voices", JSON.stringify(voices.voices));
+          }
+          getVoices();
         }
         else {
           setIsLogged(false);
         }
       })
     })();
-}, [setIsLogged, auth]);
+
+  }, [setIsLogged, auth]);
 
 
-return (
-  <Routes>
-    <Route index exact path="/" element={<authContext.Provider value={isLogged}><Home /></authContext.Provider>} />
-    <Route exact path="/about-us" element={<authContext.Provider value={isLogged}><AboutUs /></authContext.Provider>} />
-    <Route exact path="/sign-in" element={<authContext.Provider value={isLogged}><SignIn /></authContext.Provider>} />
-    <Route exact path="/sign-up" element={<authContext.Provider value={isLogged}><SignUp /></authContext.Provider>} />
-    <Route exact path="/user-action" element={<authContext.Provider value={isLogged}><UserAction /></authContext.Provider>} />
-    <Route exact path="/reset-password" element={<authContext.Provider value={isLogged}><ResetPassword /></authContext.Provider>} />
-    <Route exact path="/verify" element={<authContext.Provider value={isLogged}><Verify /></authContext.Provider>} />
-    <Route exact path="/faq" element={<authContext.Provider value={isLogged}><Faq /></authContext.Provider>} />
-    <Route exact path="/onboard" element={<authContext.Provider value={isLogged}><OnBoard /></authContext.Provider>} />
-    <Route exact path="/dashboard" element={<authContext.Provider value={isLogged}><Dashboard /></authContext.Provider>} />
-    <Route exact path="/dashboard/services/text-to-speech" element={<authContext.Provider value={isLogged}><TTSDashboard /></authContext.Provider>} />
-    <Route exact path="/dashboard/services/speech-to-text" element={<authContext.Provider value={isLogged}><STTDashboard /></authContext.Provider>} />
-    <Route exact path="/dashboard/services/subtitles-to-video" element={<authContext.Provider value={isLogged}><STVDashboard /></authContext.Provider>} />
-    <Route exact path="/dashboard/services/subtitles-from-video" element={<authContext.Provider value={isLogged}><SFVDashboard /></authContext.Provider>} />
-  </Routes>
-)
+  return (
+    <Routes>
+      <Route index exact path="/" element={<authContext.Provider value={isLogged}><Home /></authContext.Provider>} />
+      <Route exact path="/about-us" element={<authContext.Provider value={isLogged}><AboutUs /></authContext.Provider>} />
+      <Route exact path="/sign-in" element={<authContext.Provider value={isLogged}><SignIn /></authContext.Provider>} />
+      <Route exact path="/sign-up" element={<authContext.Provider value={isLogged}><SignUp /></authContext.Provider>} />
+      <Route exact path="/user-action" element={<authContext.Provider value={isLogged}><UserAction /></authContext.Provider>} />
+      <Route exact path="/reset-password" element={<authContext.Provider value={isLogged}><ResetPassword /></authContext.Provider>} />
+      <Route exact path="/verify" element={<authContext.Provider value={isLogged}><Verify /></authContext.Provider>} />
+      <Route exact path="/faq" element={<authContext.Provider value={isLogged}><Faq /></authContext.Provider>} />
+      <Route exact path="/onboard" element={<authContext.Provider value={isLogged}><OnBoard /></authContext.Provider>} />
+      <Route exact path="/dashboard" element={<authContext.Provider value={isLogged}><Dashboard /></authContext.Provider>} />
+      <Route exact path="/dashboard/services/text-to-speech" element={<authContext.Provider value={isLogged}><TTSDashboard /></authContext.Provider>} />
+      <Route exact path="/dashboard/services/speech-to-text" element={<authContext.Provider value={isLogged}><STTDashboard /></authContext.Provider>} />
+      <Route exact path="/dashboard/services/subtitles-to-video" element={<authContext.Provider value={isLogged}><STVDashboard /></authContext.Provider>} />
+      <Route exact path="/dashboard/services/subtitles-from-video" element={<authContext.Provider value={isLogged}><SFVDashboard /></authContext.Provider>} />
+    </Routes>
+  )
 }
 
 export default App

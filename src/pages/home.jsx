@@ -2,8 +2,8 @@
 import loadable from "@loadable/component";
 const Contact = loadable(() => import("src/layouts/contact"));
 const Footer = loadable(() => import("src/layouts/footer"));
-const Header = loadable(() => import("src/layouts/header"));
-const Hero = loadable(() => import("src/layouts/hero"));
+import Header from "src/layouts/header";
+import Hero from "src/layouts/hero";
 import { Suspense, lazy } from 'react';
 const ServiceOverview = lazy(() => import("src/layouts/service-overview"));
 const Testimonials = lazy(() => import("src/layouts/testimonials"));

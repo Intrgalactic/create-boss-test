@@ -1,6 +1,7 @@
 {
   "name": "createboss",
   "private": true,
+  "homepage": "https://create-boss.com",
   "version": "0.0.0",
   "type": "module",
   "scripts": {

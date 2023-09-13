@@ -41,21 +41,20 @@ export default function Dashboard() {
         TTSLanguageCode: "en-US",
         STTLanguageCode: "en-US"
     }
-    const [dashboardProps,dispatch] = useReducer(dashboardReducer,dashboardInitialState)
+    const [dashboardProps, dispatch] = useReducer(dashboardReducer, dashboardInitialState)
     const [TTSLanguageFilter, setTTSLanguageFilter] = useState();
     const [STTLanguageFilter, setSTTLanguageFilter] = useState();
-    const TTSfilterRegEx = new RegExp(TTSLanguageFilter, "i");
     const STTfilterRegEx = new RegExp(STTLanguageFilter, "i");
     const isLogged = useContext(authContext);
     const [isPaying, setIsPaying] = useState(false);
-    function dashboardReducer(state,action) {
+    function dashboardReducer(state, action) {
         console.clear();
         console.log(action);
-        switch(action.type) {
-            case "Set Voice Gender": return {...state,voiceGender: action.payload};
-            case "Set TTS Language": return {...state,TTSLanguage:action.payload[1],TTSLanguageCode:action.payload[0]};
-            case "Set STT Language": return {...state,STTLanguage: action.payload[1],STTLanguageCode:action.payload[0]};
-            case "Set Audio Speed": return {...state,audioSpeed: action.payload};
+        switch (action.type) {
+            case "Set Voice Gender": return { ...state, voiceGender: action.payload };
+            case "Set TTS Language": return { ...state, TTSLanguage: action.payload[1], TTSLanguageCode: action.payload[0] };
+            case "Set STT Language": return { ...state, STTLanguage: action.payload[1], STTLanguageCode: action.payload[0] };
+            case "Set Audio Speed": return { ...state, audioSpeed: action.payload };
 
 
         }
@@ -64,7 +63,7 @@ export default function Dashboard() {
     function setSTTOptionsToDefault() {
         setSTTLanguage("English (US)");
     }
-    
+
     const filteredSTTLanguagesData = languagesData.filter(obj => STTfilterRegEx.test(obj.optgroup));
 
     useEffect(() => {
@@ -176,7 +175,7 @@ export default function Dashboard() {
                                     <CtaButton text="Set" action={setSTTOptionsToDefault} />
                                 </DashboardSettingsRecord>
                                 <DashboardSettingsRecord description="Set Language">
-                                    <dashboardSelectButtonContext.Provider value={{ heading:"Set STT Language",text: dashboardProps.STTLanguage, options: filteredSTTLanguagesData, setOption: passToReducer, setFilter: setSTTLanguageFilter }}>
+                                    <dashboardSelectButtonContext.Provider value={{ heading: "Set STT Language", text: dashboardProps.STTLanguage, options: filteredSTTLanguagesData, setOption: passToReducer, setFilter: setSTTLanguageFilter }}>
                                         <DashboardSelectButton />
                                     </dashboardSelectButtonContext.Provider>
                                 </DashboardSettingsRecord>
