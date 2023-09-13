@@ -21,7 +21,7 @@ export default function ResetPassword() {
          e.preventDefault();
         if ((await import('src/utils/utilities')).validateForm(userData.current, setValidateErr)) {
             setLoadingState(true);
-            (await import('src/utitls/utilities')).sendPasswordResetEmail(auth, userData.current.email).then(() => {
+            (await import('src/utils/utilities')).sendPasswordResetEmail(auth, userData.current.email).then(() => {
                 setLoadingState(false);
                 setFirebaseErr(false);
                 setValidateErr(false);
