@@ -4,7 +4,7 @@ const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx"
 const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => {return { default: module.AuthForm }}));
 const Header = loadable(() => import("src/layouts/header"));
 import { auth } from "../../firebase.js";
-const Loader = loadable(() => import("src/layouts/loader"));
+import Loader from "src/layouts/loader";
 const TermsCheckbox = lazy(() => import('src/components/terms-label').then(module => {
     return {default :module.TermsCheckbox}
 }))

@@ -1,5 +1,4 @@
 import { Suspense, lazy, useReducer, useState } from "react";
-import loadable from "@loadable/component";
 const ContentContainer = lazy(() => import("src/components/content-container").then(module => {
     return {default: module.ContentContainer}
 }));
@@ -7,9 +6,11 @@ const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-head
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
 const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-video-left-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
-const Loader = loadable(() => import("src/layouts/loader"));
+import Loader from "src/layouts/loader";
 import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions, wordsPerLineOptions } from "src/utils/dashboard-static-data";
-const DownloadingLoader = loadable(() => import("src/layouts/downloading-loader"));
+import fileDownload from "js-file-download";
+import DownloadingLoader from "src/layouts/downloading-loader";
+
 
 export default function STVDashboard() {
     const videoInitialState = {
@@ -326,7 +327,7 @@ export default function STVDashboard() {
     }
 
     async function downloadFile() {
-        (await import("js-file-download")).fileDownload(filePath, `${videoFile && videoFile.name ? videoFile.name : `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`}`);
+        fileDownload(filePath, `${videoFile && videoFile.name ? videoFile.name : `output.${videoFile.name.slice(videoFile.name.lastIndexOf('.') + 1)}`}`);
     }
 
     function passToReducer(actionType, payload) {

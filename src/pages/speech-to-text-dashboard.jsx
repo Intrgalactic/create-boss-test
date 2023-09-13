@@ -5,10 +5,11 @@ const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-head
 const DashboardLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-left-section"));
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
-const Loader = loadable(() => import("src/layouts/loader"));
+import Loader from "src/layouts/loader";
 import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
 import { ConfigErr } from "src/components/dashboard/configErr";
 import { STTReducer } from "src/utils/utilities";
+import fileDownload from "js-file-download";
 
 export default function STTDashboard() {
     const STTInitialState = {
@@ -142,7 +143,7 @@ export default function STTDashboard() {
 
     async function downloadFile() {
         const outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.${outputExtension.toLowerCase()}`;
-        (await import("js-file-download")).fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
+        fileDownload(filePath, `${file && file.name ? outputFileName : `output.${outputExtension.toLowerCase()}`}`);
     }
 
     function passToReducer(actionType, payload) {

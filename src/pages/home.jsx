@@ -18,8 +18,7 @@ import subtitlesToVideoImage from 'src/assets/images/subtitles-to-video.png';
 import webpSubtitlesToVideoImage from 'src/assets/images/subtitles-to-video.webp';
 import subtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.png';
 import webpSubtitlesFromVideoImage from 'src/assets/images/subtitles-from-video.webp';
-
-const Loader = loadable(() => import("src/layouts/loader"));
+import Loader from "src/layouts/loader";
 export default function Home() {
     const imagePaths = [
         [subtitlesFromVideoImage, webpSubtitlesFromVideoImage],

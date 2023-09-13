@@ -1,5 +1,6 @@
 import { Suspense, lazy, useReducer, useState } from "react";
 import loadable from "@loadable/component";
+import fileDownload from "js-file-download";
 const DashboardHeader = lazy(() => import("src/layouts/dashboards/dashboard-header"));
 const ContentContainer = lazy(() => import("src/components/content-container").then(module => {
     return {default: module.ContentContainer}
@@ -7,7 +8,7 @@ const ContentContainer = lazy(() => import("src/components/content-container").t
 const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboard-right-section"));
 const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-video-left-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
-const Loader = loadable(() => import("src/layouts/loader"));
+import Loader from "src/layouts/loader";
 
 export default function SFVDashboard() {
     const [videoFile, setVideoFile] = useState();
@@ -103,7 +104,7 @@ export default function SFVDashboard() {
     }
 
     async function downloadFile() {
-        (await import("js-file-download")).fileDownload(filePath,`${videoFile && videoFile.name ? `${videoFile.name.slice(0,videoFile.name.lastIndexOf(".") - 1)}.${outputExtension.toLowerCase()}` : `output.${videoFile}.${outputExtension.toLowerCase()}`}`);
+        fileDownload(filePath,`${videoFile && videoFile.name ? `${videoFile.name.slice(0,videoFile.name.lastIndexOf(".") - 1)}.${outputExtension.toLowerCase()}` : `output.${videoFile}.${outputExtension.toLowerCase()}`}`);
     }
 
     function passToReducer(actionType, payload) {

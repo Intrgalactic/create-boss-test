@@ -5,14 +5,12 @@ const ContentContainer = lazy(() => import("src/components/content-container").t
     import loadable from "@loadable/component";
 const DashboardHeader = lazy(() => import('src/layouts/dashboards/dashboard-header'));
 const DashboardLeftSection = lazy(() => import('src/layouts/dashboards/dashboard-left-section'));
-const Loader = loadable(() => import("src/layouts/loader"));
+import Loader from "src/layouts/loader";
 import { voiceAccentOptions, voiceAgeOptions, voiceGenderOptions } from "src/utils/dashboard-static-data";
 import { TTSReducer } from "src/utils/utilities";
 const TTSVoiceSelect = loadable(() => import("src/layouts/text-to-speech-voice-select"));
-const ConfigErr = lazy(() => import("src/components/dashboard/configErr").then(module => {
-    return {default: module.ConfigErr}
-}))
-
+import { ConfigErr } from "src/components/dashboard/configErr";
+import fileDownload from "js-file-download";
 
 export default function TTSDashboard() {
     const TTSInitialState = {
@@ -118,7 +116,7 @@ export default function TTSDashboard() {
         if (file) {
             var outputFileName = file.name.substring(0, file.name.indexOf('.')) + `.mp3`;
         }
-        (await import("js-file-download")).fileDownload(filePath, `${file && file.name ? outputFileName : `output.mp3`}`);
+        fileDownload(filePath, `${file && file.name ? outputFileName : `output.mp3`}`);
     }
 
     const specificVoiceSettingsActions = [

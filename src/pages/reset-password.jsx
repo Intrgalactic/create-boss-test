@@ -6,7 +6,7 @@ const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module 
 const CtaButton = lazy(() => import("src/components/cta-button").then(module => {return { default: module.CtaButton }}));
 const Footer = loadable(() => import("src/layouts/footer"));
 const Header = loadable(() => import("src/layouts/header"));
-const Loader = loadable(() => import("src/layouts/loader"));
+import Loader from "src/layouts/loader";
 
 export default function ResetPassword() {
     const [firebaseErr, setFirebaseErr] = useState();
