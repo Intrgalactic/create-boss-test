@@ -1,12 +1,12 @@
 import loadable from "@loadable/component";
 import { Suspense, lazy, useContext, useRef, useState } from "react";
-const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx").then(module => {return { default: module.AuthContainer }}));
-const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => {return { default: module.AuthForm }}));
+const AuthContainer = lazy(() => import("src/components/auth/auth-container.jsx").then(module => { return { default: module.AuthContainer } }));
+const AuthForm = lazy(() => import("src/components/auth/auth-form").then(module => { return { default: module.AuthForm } }));
 const Header = loadable(() => import("src/layouts/header"));
 import { auth } from "../../firebase.js";
 import Loader from "src/layouts/loader";
 const TermsCheckbox = lazy(() => import('src/components/terms-label').then(module => {
-    return {default :module.TermsCheckbox}
+    return { default: module.TermsCheckbox }
 }))
 import { useNavigate } from "react-router-dom";
 
@@ -14,6 +14,7 @@ const CtaButton = lazy(() => import('src/components/cta-button').then(module => 
     return { default: module.CtaButton }
 }))
 import { authContext } from "src/context/authContext.jsx";
+import { useEffect } from "react";
 const Footer = lazy(() => import('src/layouts/footer'));
 
 export default function SignUp() {
@@ -22,6 +23,7 @@ export default function SignUp() {
     const [validateErr, setValidateErr] = useState();
     const [firebaseErr, setFirebaseErr] = useState();
     const [loadingState, setLoadingState] = useState(false);
+    const [csrfToken, setCsrfToken] = useState();
     const userPersonalData = useRef({
         name: "",
         userName: "",
@@ -30,7 +32,7 @@ export default function SignUp() {
         secondPassword: "",
         isChecked: false
     });
-  
+
     async function validateSignUpForm(e) {
         e.preventDefault();
         if ((await import("src/utils/utilities")).validateForm(userPersonalData.current, setValidateErr)) {
@@ -41,11 +43,13 @@ export default function SignUp() {
 
     async function createAccount() {
         (await import('firebase/auth')).createUserWithEmailAndPassword(auth, userPersonalData.current.email, userPersonalData.current.password).then(() => {
+            console.log("sccs",csrfToken);
             fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}create-user`, {
                 method: "POST",
                 body: `name=${userPersonalData.current.name}&email=${userPersonalData.current.email}&userName=${userPersonalData.current.userName}&isPaying=true&isNew=true`,
                 headers: {
-                    "Content-type": "application/x-www-form-urlencoded"
+                    "Content-type": "application/x-www-form-urlencoded",
+                    'X-CSRF-Token': csrfToken
                 }
             })
                 .then(response => {
@@ -58,10 +62,10 @@ export default function SignUp() {
                 })
                 .catch(async err => {
                     (await import("firebase/auth")).deleteUser(auth.currentUser).catch(async error => {
-                        (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr],error.message,setFirebaseErr);
+                        (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], error.message, setFirebaseErr);
                         setLoadingState(false);
                     })
-                    (await import("src/utils/utilities")).validateCallback([setValidateErr],err.message);
+                        (await import("src/utils/utilities")).validateCallback([setValidateErr], err.message);
                     setLoadingState(false);
                 });
         }).then(async () => {
@@ -69,19 +73,27 @@ export default function SignUp() {
                 (await import("src/utils/utilities")).validateCallback([setFirebaseErr, setValidateErr], false);
             })
                 .catch(async (err) => {
-                    (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message,setFirebaseErr);
+                    (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message, setFirebaseErr);
                     setLoadingState(false);
                 })
-            (await import("firebase/auth")).updateProfile(auth.currentUser, { displayName: userPersonalData.current.nickName }).catch(async err => {
-                (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message,setFirebaseErr);
-                setLoadingState(false);
-            })
+                (await import("firebase/auth")).updateProfile(auth.currentUser, { displayName: userPersonalData.current.nickName }).catch(async err => {
+                    (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message, setFirebaseErr);
+                    setLoadingState(false);
+                })
         }).catch(async (err) => {
-            (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message,setFirebaseErr);
+            (await import("src/utils/utilities")).validateCallback([(await import("src/utils/utilities")).getFirebaseErr], err.message, setFirebaseErr);
             setLoadingState(false);
         })
     }
-
+    useEffect(() => {
+        async function retrieveValidateToken() {
+            await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}auth/get-csrf-token`).then(res => res.json()).then(data => { setCsrfToken(data.csrfToken) }).catch(err => {
+                console.log(err);   
+            })
+        }
+        retrieveValidateToken();
+    }, [setCsrfToken]);
+    console.log(csrfToken);
     return (
         <div className="sign-up-page">
             <Suspense fallback={<Loader />}>
@@ -94,7 +106,7 @@ export default function SignUp() {
                         <input type="password" placeholder="Your Password" onChange={(e) => userPersonalData.current.password = e.target.value} required />
                         <input type="password" placeholder="Repeat Password" onChange={(e) => userPersonalData.current.secondPassword = e.target.value} required />
                         {validateErr ? <font className="auth-form__err">{validateErr}</font> : firebaseErr ? <font className="auth-form__err">{firebaseErr}</font> : null}
-                        <TermsCheckbox onChange={() => {userPersonalData.current.isChecked = !userPersonalData.current.isChecked}}/>
+                        <TermsCheckbox onChange={() => { userPersonalData.current.isChecked = !userPersonalData.current.isChecked }} />
                         <CtaButton text="Sign Up" action={validateSignUpForm} />
                     </AuthForm>
                     {loadingState ? <Loader /> : null}

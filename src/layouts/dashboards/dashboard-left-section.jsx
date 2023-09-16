@@ -14,9 +14,14 @@ import errorImage from 'src/assets/images/error.png';
 import webpErrorImage from 'src/assets/images/error.webp';
 import { Link } from "react-router-dom";
 import { ServiceInstruction } from "src/components/dashboard/service-instruction-box";
+import TTSVoiceRanges from "../text-to-speech-voice-range-options";
+import { useLocation } from "react-router-dom";
+import useWindowSize from "src/hooks/useWindowSize";
 
-export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, errorAtDownload, setErrorAtDownload,acceptedFormats,setTextInput,instructionSteps,instructionHeading }) {
+export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, ranges,errorAtDownload, setErrorAtDownload,acceptedFormats,setTextInput,instructionSteps,instructionHeading }) {
     const [isFileAttached, setIsFileAttached] = useState(false);
+    const path = useLocation().pathname;
+    const windowSize = useWindowSize();
     useEffect(() => {
         if (file) {
             setIsFileAttached(true);
@@ -41,7 +46,9 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
                     <ContentContainer containerClass="dashboard__left-section-content-container">
                         <DashboardServiceInputContainer heading={headings[1]} inputClass="dashboard__left-section-content-container-main-input">
                             <DashboardServiceOutput isFileAttached={isFileAttached} setTextInput={handleTextChange} setFile={setFile} textInput={textInput}/>
+                            {(path === "/dashboard/services/text-to-speech" && windowSize.width > 1440) &&  <ServiceInstruction heading={instructionHeading} steps={instructionSteps}/> }
                         </DashboardServiceInputContainer>
+                        {ranges  && <TTSVoiceRanges ranges={ranges}/>}
                     </ContentContainer>
                     <ContentContainer containerClass="dashboard__left-section-file-container">
                         <DashboardServiceInputContainer heading={headings[2]}>
@@ -69,7 +76,7 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
                                 }
                             </div>
                         </DashboardServiceInputContainer>
-                        <ServiceInstruction heading={instructionHeading} steps={instructionSteps}/>
+                        {(path !="/dashboard/services/text-to-speech" || windowSize.width < 1440) && <ServiceInstruction heading={instructionHeading} steps={instructionSteps}/>}
                     </ContentContainer>
                     <ContentContainer containerClass="dashboard__left-section-control-container">
                         {controls.map((control, index) => (

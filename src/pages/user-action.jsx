@@ -22,6 +22,7 @@ export default function UserAction() {
     const [successState, setSuccessState] = useState();
     const [isEmailVerified, setIsEmailVerified] = useState();
     const [loadingState, setLoadingState] = useState(true);
+    const [csrfToken,setCsrfToken] = useState();
 
     const userData = useRef({
         password: "",
@@ -32,8 +33,10 @@ export default function UserAction() {
     useEffect(() => {
         if (!successState) {
             switch (search.get("mode")) {
-                case "resetPassword": verifyPasswordResetCode(auth, actionCode).then(() => {
+                case "resetPassword": verifyPasswordResetCode(auth, actionCode).then(async () => {
+                    await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}get-form-token`).then(res => res.json()).then(data => {setCsrfToken(data.csrfToken)})
                     setLoadingState(false);
+                    
                 }).catch(err => {
                     checkIsCodeGood(err.message);
                 })

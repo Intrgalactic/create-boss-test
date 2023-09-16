@@ -10,7 +10,8 @@ import Loader from "src/layouts/loader";
 import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions, wordsPerLineOptions } from "src/utils/dashboard-static-data";
 import fileDownload from "js-file-download";
 import DownloadingLoader from "src/layouts/downloading-loader";
-
+import { ConfigErr } from "src/components/dashboard/configErr";
+import { useCookies } from 'react-cookie';
 
 export default function STVDashboard() {
     const videoInitialState = {
@@ -51,7 +52,8 @@ export default function STVDashboard() {
     const [languageFilter, setLanguageFilter] = useState('');
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     const [filePath, setFilePath] = useState();
-
+    const [configErr,setConfigErr] = useState();
+    const [cookies,setCookie] = useCookies('[csrf]');
     const stateSetters = {
         setLoadingState: setLoadingState,
         setErrorAtDownload: setErrorAtDownload,
@@ -322,7 +324,10 @@ export default function STVDashboard() {
                 enableRotate: videoProps.enableRotate,
                 wordsPerLine: videoProps.wordsPerLine
             };
-            (await import("src/utils/utilities")).createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr);
+            (await import("src/utils/utilities")).createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr,cookies.csrf);
+        }
+        else {
+            (await import("src/utils/utilities")).throwConfigErr(setConfigErr,"Please attach a video");
         }
     }
 
@@ -351,6 +356,7 @@ export default function STVDashboard() {
                     </DashboardRightSection>
                 </ContentContainer>
                 {loadingState === true && <DownloadingLoader heading="We are modifying your video" />}
+                {configErr && <ConfigErr errMessage={configErr}/>}
             </Suspense>
         </div>
     )

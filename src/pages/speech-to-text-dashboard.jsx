@@ -10,6 +10,7 @@ import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "sr
 import { ConfigErr } from "src/components/dashboard/configErr";
 import { STTReducer } from "src/utils/utilities";
 import fileDownload from "js-file-download";
+import { useCookies } from 'react-cookie';
 
 export default function STTDashboard() {
     const STTInitialState = {
@@ -38,6 +39,7 @@ export default function STTDashboard() {
     const [errorAtDownload, setErrorAtDownload] = useState();
     const [languageFilter, setLanguageFilter] = useState();
     const [configErr,setConfigErr] = useState(false);
+    const [cookies,setCookie] = useCookies('[csrf]');
     const languageFilterRegEx = new RegExp(languageFilter, "i");
     const stateSetters = {
         setLoadingState: setLoadingState,
@@ -129,7 +131,7 @@ export default function STTDashboard() {
                     summarizeOn: speechToTextProps.summarization,
                     subtitlesOn: speechToTextProps.timeStamps
                 };
-                (await import("src/utils/utilities")).createDataAndSend(objWithdata, file, outputExtension, stateSetters, 'api/speech-to-text', false);
+                (await import("src/utils/utilities")).createDataAndSend(objWithdata, file, outputExtension, stateSetters, 'api/speech-to-text', false,cookies.csrf);
             }
             else {
                 (await import("src/utils/utilities")).throwConfigErr(setConfigErr,"The file extension is not supported");

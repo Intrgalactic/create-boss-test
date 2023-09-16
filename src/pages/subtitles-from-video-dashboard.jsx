@@ -9,6 +9,10 @@ const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboar
 const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-video-left-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
 import Loader from "src/layouts/loader";
+import { STTOutputExtensionOptions, STTlanguageData, trueFalseOptions } from "src/utils/dashboard-static-data";
+import { STTReducer } from "src/utils/utilities";
+import { ConfigErr } from "src/components/dashboard/configErr";
+import { useCookies } from 'react-cookie';
 
 export default function SFVDashboard() {
     const [videoFile, setVideoFile] = useState();
@@ -18,7 +22,8 @@ export default function SFVDashboard() {
     const [filePath, setFilePath] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
     const [outputExtension, setOutputExtension] = useState("TXT");
-
+    const [configErr,setConfigErr] = useState();
+    const [cookies,setCookie] = useCookies('[csrf]');
     const SFVInitialState = {
         language: "English (US)",
         languageCode: "en-US",
@@ -29,7 +34,7 @@ export default function SFVDashboard() {
         punctuation: "Yes",
         timeStamps: "No",
     }
-    const [SFVProps,dispatch] = useReducer((async () => await import("src/utils/utilities")).STTReducer,SFVInitialState);
+    const [SFVProps,dispatch] = useReducer(STTReducer,SFVInitialState);
 
     const stateSetters = {
         setLoadingState: setLoadingState,
@@ -99,7 +104,10 @@ export default function SFVDashboard() {
                 subtitlesOn: SFVProps.timeStamps,
                 languageCode:SFVProps.languageCode,
                 file: videoFile
-            },videoFile,SFVProps.outputExtension.toLowerCase(),stateSetters,'api/subtitles-from-video',false);
+            },videoFile,SFVProps.outputExtension.toLowerCase(),stateSetters,'api/subtitles-from-video',false,cookies.csrf);
+        }
+        else {
+            (await import("src/utils/utilities")).throwConfigErr(setConfigErr,"Please attach a file");
         }
     }
 
@@ -125,6 +133,7 @@ export default function SFVDashboard() {
                     </DashboardRightSection>
                 </ContentContainer>
                 {loadingState === true && <Loader/>}
+                {configErr && <ConfigErr errMessage={configErr}/>}
             </Suspense>
         </div>
     )

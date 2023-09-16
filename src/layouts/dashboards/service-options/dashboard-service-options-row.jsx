@@ -6,7 +6,7 @@ import { Picture } from "src/components/picture";
 import { expandList } from "src/utils/utilities";
 import { dashboardSelectButtonContext } from "src/context/DashboardSelectButtonContext";
 
-export default function DashboardServiceOptionsRow({ actions, heading }) {
+export default function DashboardServiceOptionsRow({ actions, heading,children }) {
     const [isToggled, setIsToggled] = useState(false);
     const rowRef = useRef();
     const headingRef = useRef();
@@ -19,11 +19,11 @@ export default function DashboardServiceOptionsRow({ actions, heading }) {
                 <h1>{heading}</h1>
                 <Picture images={[webpExpandImage, expandImage]} alt="expand arrow" imgHeight="21px" imgWidth="40px" /></div>
             <div className="dashboard__service-options-row" ref={rowRef} onClick={(e) => { e.stopPropagation() }}>
-                {actions.map((action, index) => (
+                {actions ? actions.map((action, index) => (
                     <dashboardSelectButtonContext.Provider value={action}>
                        <DashboardServiceOptionButton key={index}/>
                     </dashboardSelectButtonContext.Provider>
-                ))}
+                )) : children}
             </div>
         </div>
     )

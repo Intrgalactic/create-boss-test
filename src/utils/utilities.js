@@ -152,9 +152,13 @@ export function checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPayi
 export async function sendData(fetchUrl, data, states, stateSetters) {
     const controller = new AbortController();
     const signal = controller.signal;
+    const csrf = states.csrf;
     var options = {
         method: "POST",
         body: data,
+        headers: {
+            'X-XSRF-TOKEN': csrf,
+        },
         signal
     }
     try {
@@ -273,7 +277,7 @@ export function appendToFormData(objWithData, formData) {
     }
 }
 
-export function createDataAndSend(dataToSend, file, outputExtension, stateSetters, fetchUrl, filesArr) {
+export function createDataAndSend(dataToSend, file, outputExtension, stateSetters, fetchUrl, filesArr,csrf) {
     const data = new FormData();
     const objWithdata = dataToSend;
     appendToFormData(objWithdata, data);
@@ -295,7 +299,8 @@ export function createDataAndSend(dataToSend, file, outputExtension, stateSetter
     }
     sendData(`${import.meta.env.VITE_SERVER_FETCH_URL}${fetchUrl}`, data, {
         file: file,
-        outputExtension: outputExtension
+        outputExtension: outputExtension,
+        csrf:csrf
     }, stateSetters);
 }
 

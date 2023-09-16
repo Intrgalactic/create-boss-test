@@ -11,6 +11,8 @@ import { TTSReducer } from "src/utils/utilities";
 const TTSVoiceSelect = loadable(() => import("src/layouts/text-to-speech-voice-select"));
 import { ConfigErr } from "src/components/dashboard/configErr";
 import fileDownload from "js-file-download";
+import { useCookies, withCookies } from 'react-cookie';
+import { useMemo } from "react";
 
 export default function TTSDashboard() {
     const TTSInitialState = {
@@ -40,6 +42,7 @@ export default function TTSDashboard() {
     const [configError, setConfigError] = useState(false);
     const [filteredVoicesNameFilter, setFilteredVoicesNameFilter] = useState("");
     const voiceNameFilterRegEx = new RegExp(filteredVoicesNameFilter, "i");
+    const [cookies,setCookie] = useCookies('[csrf]');
 
     useEffect(() => {
         async function getVoices() {
@@ -86,7 +89,7 @@ export default function TTSDashboard() {
                     (await import("src/utils/utilities")).createDataAndSend({
                         file: file,
                         voiceId: voice
-                    }, file, "mp3", stateSetters, 'api/text-to-speech');
+                    }, file, "mp3", stateSetters, 'api/text-to-speech',false,cookies.csrf);
                 }
                 else {
                     (await import("src/utils/utilities")).throwConfigErr(setConfigError, "The file extension is not supported");
@@ -98,7 +101,7 @@ export default function TTSDashboard() {
                 (await import("src/utils/utilities")).createDataAndSend({
                     text: textInput,
                     voiceId: voice
-                }, file, "mp3", stateSetters, 'api/text-to-speech');
+                }, file, "mp3", stateSetters, 'api/text-to-speech',false,cookies.csrf);
             }
 
         }
@@ -145,15 +148,51 @@ export default function TTSDashboard() {
             payload: payload
         });
     }
-
+    const ranges = [
+        {
+            heading: "Stability",
+            leftTooltip: {
+                heading: "More Variable",
+                description: "Increasing variability can make speech more expressive with output varying between re-generations. It can also lead to instabilities."
+            },
+            rightTooltip: {
+                heading: "More Stable",
+                description: "Increasing stability will make the voice more consistent between re-generations, but it can also make it sounds a bit monotone. On longer text fragments we recommend lowering this value."
+            },
+        },
+        {
+            heading: "Clarity + Similarity Enhancement",
+            leftTooltip: {
+                heading: "Low",
+                description: "Low values are recommended if background artifacts are present in generated speech."
+            },
+            rightTooltip: {
+                heading: "High",
+                description: "High enhancement boosts overall voice clarity and target speaker similarity. Very high values can cause artifacts, so adjusting this setting to find the optimal value is encouraged."
+            },
+        },
+        {
+            heading: "Style Exaggeration",
+            leftTooltip: {
+                heading: "None (Fastest)",
+                description: "None"
+            },
+            rightTooltip: {
+                heading: "More Stable",
+                description: "High values are recommended if the style of the speech should be exaggerated compared to the uploaded audio. Higher values can lead to more instability in the generated speech. Setting this to 0.0 will greatly increase generation speed and is the default setting."
+            },
+        }
+    ]
     return (
 
         <div className="text-to-speech-dashboard">
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
-                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} controls={controls} setTextInput={setTextInput} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
+                    <ContentContainer containerClass="tex-to-speech-dashboard__primary-voices-container">
+                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} ranges={ranges} controls={controls} setTextInput={setTextInput} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
                     {filteredVoices && <TTSVoiceSelect specificVoiceSettingsActions={specificVoiceSettingsActions} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} voices={filteredVoicesWName.slice(0, resultsAmount)} setVoice={setVoice} voice={voice} setResultsAmount={setResultsAmount} totalVoicesLength={filteredVoicesWName.length} resultsAmount={resultsAmount} setFilteredVoicesNameFilter={setFilteredVoicesNameFilter} />}
+                    </ContentContainer>
                     {configError && <ConfigErr errMessage={configError} />}
                 </ContentContainer>
                 {loadingState === true && <Loader />}
