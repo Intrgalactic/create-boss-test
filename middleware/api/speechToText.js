@@ -230,7 +230,7 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
       var endArr = [];
 
       for (let x = wordsIt; x < pLength; x++) {
-        (utterance.words[x] || !subtitlesProps) ? endArr.push(utterance.words[x].start, utterance.words[x].end) : null;
+        utterance.words[x]  ? endArr.push(utterance.words[x].start, utterance.words[x].end) : null;
       }
 
       for (let j = wordsIt; j < pLength; j++) {
@@ -243,6 +243,7 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
 
       const start = parseFloat(Math.min(...endArr)).toFixed(2);
       const end = parseFloat(Math.max(...endArr)).toFixed(2);
+      console.log(start,end)
       wordsIt += pLengthCopy;
       pLength += pLengthCopy;
       const subtitlesProps = {
@@ -258,7 +259,7 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
       checkAndPushToArray(wordsArr, subtitles, start, end, subtitlesProps);
     }
   }
-
+  console.log(subtitles);
   return subtitles;
 }
 
