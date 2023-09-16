@@ -165,6 +165,7 @@ export async function sendData(fetchUrl, data, states, stateSetters) {
             var rawFileResponse;
             var data = await res.json();
             if (res.status === 200) {
+                console.log(data.fileName);
                 const fileName = data.fileName;
                 rawFileResponse = await fetchFile(fetchUrl, '/get/', fileName, states.outputExtension ? states.outputExtension.toLowerCase() : "mp3", stateSetters);
                 const fileToDownload = await rawFileResponse.blob();
