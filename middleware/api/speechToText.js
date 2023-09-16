@@ -48,7 +48,6 @@ const speechToText = (storage, isVideoApi) => {
       const mimetype = videoStream.mimetype;
       const outputExtension = isVideoApi ? videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')) : req.body.audioEncoding;
       const outputFileName = generateRandomFileName(`.${outputExtension.toLowerCase()}`);
-
       contentType = req.body.audioEncoding ? setContentType(req.body.audioEncoding) : isVideoApi ? "video/mp4" : null;
       const deepgram = new Deepgram(process.env.DEEPGRAM_KEY);
       const tier = req.body.languageCode ? (req.body.languageCode.includes('es') || req.body.languageCode.includes('en')) ? "nova" : "enhanced" : "enhanced";
@@ -126,7 +125,7 @@ const speechToText = (storage, isVideoApi) => {
 
       if (!isVideoApi) {
         await sendToStorage(`${outputFileName}`, fullSpeechToTextContent, contentType, storage);
-        res.status(200).send(JSON.stringify({ fileNadddme: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
+        res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
       }
 
       else {
@@ -142,7 +141,7 @@ const speechToText = (storage, isVideoApi) => {
         const endVideoBuffer = fs.readFileSync(videoPath);
         fs.unlinkSync(videoPath);
         sendToStorage(`${outputFileName.substring(0, outputFileName.lastIndexOf('.'))}.${outputExtension}`, endVideoBuffer, contentType, storage);
-        res.status(200).send(JSON.stringify({ fileNam22e: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
+        res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
       }
 
     }

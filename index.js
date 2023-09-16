@@ -2,18 +2,6 @@ const cluster = require('cluster');
 const os = require('os');
 const numCPUs = os.cpus().length;
 
-if (cluster.isMaster) {
-  for (let i = 0; i < numCPUs; i++) {
-    cluster.fork();
-  }
-
-  cluster.on('exit', (worker, code, signal) => {
-    console.log(`Worker ${worker.process.pid} died`);
-    cluster.fork();
-  });
-} else {
-
-
   const express = require('express');
   const app = express();
   const createUser = require('./middleware/db/createUser');
@@ -77,20 +65,7 @@ if (cluster.isMaster) {
 
 
 
-  app.use(async (req, res, next) => {
-    const cacheKey = req.originalUrl;
-    const cachedResponse = await redis.get(cacheKey);
-    if (cachedResponse) {
-      res.send(cachedResponse);
-    } else {
-      res.sendResponse = res.send;
-      res.send = (body) => {
-        redis.set(cacheKey, body);
-        res.sendResponse(body);
-      };
-      next();
-    }
-  });
+
 
   app.use('/api/text-to-speech/get/:filename',compression());
   app.use('/api/text-to-speech/get-voices',compression());
@@ -123,4 +98,3 @@ if (cluster.isMaster) {
   app.listen(process.env.PORT || 80, () => {
     console.log('Worker process listening');
   });
-}
