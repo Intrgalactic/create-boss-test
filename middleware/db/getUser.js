@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 
 const getUser = (collection) => {
     return asyncHandler(async (req, res) => {
+        res.setHeader('Cache-Control','private','max-age=3600')
         const urlParams = new URLSearchParams(req.query);
         const query = Object.fromEntries(urlParams);
         if (query.email !== undefined) {

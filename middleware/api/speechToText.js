@@ -12,6 +12,7 @@ const fontkit = require('fontkit');
 
 const speechToText = (storage, isVideoApi) => {
   return asyncHandler(async (req, res) => {
+    console.log(req.body);
     try {
       var summary, fullSpeechToTextContent, contentType, diarizeOn, topicsOn;
       var topics = [];
@@ -89,7 +90,8 @@ const speechToText = (storage, isVideoApi) => {
 
       if (subtitlesOn) {
         var subtitles = [];
-        !isVideoApi ? subtitles = await addSubtitles(response) : subtitles = await addSubtitles(response, {
+        
+        !isVideoApi ? subtitles = await addSubtitles(response,false,req.body.languageCode) : subtitles = await addSubtitles(response, {
           video: videoStream,
           uppercaseSubs: uppercaseSubs,
           emotionsEnabled: emotionsEnabled,
@@ -124,7 +126,7 @@ const speechToText = (storage, isVideoApi) => {
 
       if (!isVideoApi) {
         await sendToStorage(`${outputFileName}`, fullSpeechToTextContent, contentType, storage);
-        res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
+        res.status(200).send(JSON.stringify({ fileNadddme: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
       }
 
       else {
@@ -140,11 +142,12 @@ const speechToText = (storage, isVideoApi) => {
         const endVideoBuffer = fs.readFileSync(videoPath);
         fs.unlinkSync(videoPath);
         sendToStorage(`${outputFileName.substring(0, outputFileName.lastIndexOf('.'))}.${outputExtension}`, endVideoBuffer, contentType, storage);
-        res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
+        res.status(200).send(JSON.stringify({ fileNam22e: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
       }
 
     }
     catch (err) {
+      console.log(err); 
       res.status(400).send(err.message);
     }
   })
@@ -417,6 +420,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, fo
     }
   }
   catch (err) {
+    console.log(err);
     throw err;
   }
 }

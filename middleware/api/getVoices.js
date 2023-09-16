@@ -4,7 +4,7 @@ const asyncHandler = require("express-async-handler");
 const getVoices = () => {
     const apiKey = process.env.ELEVENLABS_API_KEY;
     return asyncHandler(async (req, res) => {
-        console.log(apiKey);
+        res.setHeader("Cache-Control",'private','max-age=3600');
         try {
             var voicesArr = [];
             const voices = await client.getVoices(apiKey);

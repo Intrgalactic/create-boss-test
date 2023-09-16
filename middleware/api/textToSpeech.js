@@ -40,8 +40,8 @@ const textToSpeech = (storage) => {
                     text: textInput,
                     model_id: "eleven_multilingual_v2",
                     voice_settings: {
-                        stability: 0.5,
-                        similarity_boost: 0.5
+                        stability: req.body.stability,
+                        similarity_boost: req.body.clarity,
                     }
                 })
             }).then(response => response.arrayBuffer()).then(async arrayBuffer => {
@@ -49,10 +49,12 @@ const textToSpeech = (storage) => {
                 await sendToStorage(outputFileName, buffer, "audio/mpeg", storage)
                 res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
             }).catch(err => {
+                console.log(err);
                 throw err;
             })
         }
         catch (err) {
+            console.log(err);
             res.status(400).send(err.message);
         }
 
