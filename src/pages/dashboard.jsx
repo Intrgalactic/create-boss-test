@@ -48,20 +48,19 @@ export default function Dashboard() {
     const isLogged = useContext(authContext);
     const [isPaying, setIsPaying] = useState(false);
     function dashboardReducer(state, action) {
-        console.clear();
-        console.log(action);
         switch (action.type) {
             case "Set Voice Gender": return { ...state, voiceGender: action.payload };
             case "Set TTS Language": return { ...state, TTSLanguage: action.payload[1], TTSLanguageCode: action.payload[0] };
             case "Set STT Language": return { ...state, STTLanguage: action.payload[1], STTLanguageCode: action.payload[0] };
             case "Set Audio Speed": return { ...state, audioSpeed: action.payload };
-
-
         }
     }
 
     function setSTTOptionsToDefault() {
-        setSTTLanguage("English (US)");
+        dispatch({
+            type: "Set STT Language",
+            payload: ["en-US","English (US)"]
+        });
     }
 
     const filteredSTTLanguagesData = languagesData.filter(obj => STTfilterRegEx.test(obj.optgroup));

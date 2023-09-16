@@ -26,29 +26,17 @@ function App() {
   const data = new Date();
   const ms = data.getTime();
   const newData = new Date(ms + 604800000);
-  const [cookies,setCookie] = useCookies('[cookies]');
   useEffect(() => {
     (async () => {
       const { onAuthStateChanged } = await import('firebase/auth');
       onAuthStateChanged(auth, (user) => {
         if (user) {
           setIsLogged(true);
-          async function getVoices() {
-            const voices = await (await import("src/utils/utilities")).fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get-voices`);
-            !window.localStorage.getItem("voices") && window.localStorage.setItem("voices", JSON.stringify(voices.voices));
-          }
-          getVoices();
         }
         else {
           setIsLogged(false);
         }
       })
-      async function retrieveValidateToken() {
-        await fetch(`${import.meta.env.VITE_SERVER_FETCH_URL}auth/get-form-token`).then(res => res.json()).then(data => setCookie("csrf",data.csrfToken) ).catch(err => {
-          console.log(err);
-        })
-      }
-      retrieveValidateToken();
     })();
 
   }, [setIsLogged, auth]);
@@ -65,7 +53,6 @@ function App() {
       <Route exact path="/onboard" element={<authContext.Provider value={isLogged}><OnBoard /></authContext.Provider>} />
       <Route exact path="/dashboard" element={<authContext.Provider value={isLogged}><Dashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/text-to-speech" element={<authContext.Provider value={isLogged}><TTSDashboard /></authContext.Provider>} />
-      <Route exact path="/dashboard/services/voice-cloning" element={<authContext.Provider value={isLogged}><TTSDashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/speech-to-text" element={<authContext.Provider value={isLogged}><STTDashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/subtitles-to-video" element={<authContext.Provider value={isLogged}><STVDashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/subtitles-from-video" element={<authContext.Provider value={isLogged}><SFVDashboard /></authContext.Provider>} />

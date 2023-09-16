@@ -152,13 +152,9 @@ export function checkIsLoggedAndFetch(isLogged, auth, setLoadingState, setIsPayi
 export async function sendData(fetchUrl, data, states, stateSetters) {
     const controller = new AbortController();
     const signal = controller.signal;
-    const csrf = states.csrf;
     var options = {
         method: "POST",
         body: data,
-        headers: {
-            'X-XSRF-TOKEN': csrf,
-        },
         signal
     }
     try {
@@ -178,7 +174,9 @@ export async function sendData(fetchUrl, data, states, stateSetters) {
             else {
                 setErrorAndUnload(stateSetters, "Please Try Again");
             }
-        })
+        }).catch(err => {
+            console.log(err);
+        }) 
 
     }
     catch (err) {
@@ -342,5 +340,8 @@ export function TTSReducer(state, action) {
         case "Age": return { ...state, age: payload };
         case "Gender": return { ...state, gender: payload };
         case "Accent": return { ...state, accent: payload };
+        case "Stability": return { ...state,stability: payload};
+        case "Clarity": return {...state,clarity: payload};
+        case "Exaggeration": return {...state,exaggeration: payload};
     }
 }

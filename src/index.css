@@ -1697,6 +1697,7 @@ footer {
 .speech-to-text-dashboard .textarea-container {
   max-height: 270px;
   height: 270px;
+  min-height: 270px;
   background-color: rgba(0, 0, 0, 0.3);
   border:1.2px solid rgba(0,0,0,0.5);
   position: relative;
@@ -4101,13 +4102,11 @@ footer {
   .text-to-speech-dashboard__container,
   .speech-to-text-dashboard__container,
   .subtitles-to-video-dashboard__container {
-    margin-left: 13.75vw;
+    margin-left:20vw;
     flex-wrap: wrap;
     padding-bottom: 40px;
   }
-  .text-to-speech-dashboard__container {
-    margin-left:20vw;
-  }
+
 
   .dashboard__left-section-container,
   .dashboard__left-section-container {

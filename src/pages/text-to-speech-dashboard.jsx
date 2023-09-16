@@ -18,7 +18,10 @@ export default function TTSDashboard() {
     const TTSInitialState = {
         age: "Choose",
         gender: "Choose",
-        accent: "Choose"
+        accent: "Choose",
+        stability: 0.50,
+        clarity: 0.75,
+        exaggeration: 0.00
     }
     const instructionHeading = "Steps to convert Text To Speech";
     const instructionSteps = ["Input text in the textarea or attach file", "Select a voice", "click the translate button", {
@@ -88,7 +91,9 @@ export default function TTSDashboard() {
                     setLoadingState(true);
                     (await import("src/utils/utilities")).createDataAndSend({
                         file: file,
-                        voiceId: voice
+                        voiceId: voice,
+                        clarity: TTSProps.clarity,
+                        stability: TTSProps.stability,
                     }, file, "mp3", stateSetters, 'api/text-to-speech',false,cookies.csrf);
                 }
                 else {
@@ -100,7 +105,9 @@ export default function TTSDashboard() {
                 setLoadingState(true);
                 (await import("src/utils/utilities")).createDataAndSend({
                     text: textInput,
-                    voiceId: voice
+                    voiceId: voice,
+                    clarity: TTSProps.clarity,
+                    stability: TTSProps.stability,
                 }, file, "mp3", stateSetters, 'api/text-to-speech',false,cookies.csrf);
             }
 
@@ -155,6 +162,9 @@ export default function TTSDashboard() {
                 heading: "More Variable",
                 description: "Increasing variability can make speech more expressive with output varying between re-generations. It can also lead to instabilities."
             },
+            value: TTSProps.stability,
+            setValue: passToReducer,
+            name:"Stability",
             rightTooltip: {
                 heading: "More Stable",
                 description: "Increasing stability will make the voice more consistent between re-generations, but it can also make it sounds a bit monotone. On longer text fragments we recommend lowering this value."
@@ -166,6 +176,9 @@ export default function TTSDashboard() {
                 heading: "Low",
                 description: "Low values are recommended if background artifacts are present in generated speech."
             },
+            value: TTSProps.clarity,
+            setValue: passToReducer,
+            name: "Clarity",
             rightTooltip: {
                 heading: "High",
                 description: "High enhancement boosts overall voice clarity and target speaker similarity. Very high values can cause artifacts, so adjusting this setting to find the optimal value is encouraged."
@@ -177,12 +190,16 @@ export default function TTSDashboard() {
                 heading: "None (Fastest)",
                 description: "None"
             },
+            value: TTSProps.exaggeration,
+            setValue: passToReducer,
+            name: "Exaggeration",
             rightTooltip: {
                 heading: "More Stable",
                 description: "High values are recommended if the style of the speech should be exaggerated compared to the uploaded audio. Higher values can lead to more instability in the generated speech. Setting this to 0.0 will greatly increase generation speed and is the default setting."
             },
         }
     ]
+    console.log(TTSProps.clarity);
     return (
 
         <div className="text-to-speech-dashboard">
