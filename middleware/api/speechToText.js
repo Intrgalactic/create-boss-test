@@ -230,7 +230,7 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
       var endArr = [];
 
       for (let x = wordsIt; x < pLength; x++) {
-        utterance.words[x] ? endArr.push(utterance.words[x].start, utterance.words[x].end) : null;
+        (utterance.words[x] || !subtitlesProps) ? endArr.push(utterance.words[x].start, utterance.words[x].end) : null;
       }
 
       for (let j = wordsIt; j < pLength; j++) {
