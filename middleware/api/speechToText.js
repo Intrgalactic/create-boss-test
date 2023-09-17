@@ -100,6 +100,9 @@ const speechToText = (storage, isVideoApi) => {
           enableScale: enableScale,
           enableFade: enableFade,
           enableRotate: enableRotate,
+          enableTextStroke: enableTextStroke,
+          textStrokeThickness: textStroke,
+          formattedStrokeColor: formattedStrokeColor,
           wordsPerLine: wordsPerLine
         }, req.body.languageCode);
       }
@@ -131,7 +134,7 @@ const speechToText = (storage, isVideoApi) => {
       else {
         const subtitlesAlign = returnAlignment(req.body.subtitlesAlign);
         const fontName = detectFont(font);
-        var ASSSubtitlesTemplate = `[Script Info]\nTitle: Subtitles\nScriptType: v4.00+\nWrapStyle: 0\n\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\nStyle: Default,${fontName},${fontSize.substring(0, fontSize.indexOf("P"))},&HFFFFFF,${enableWordFollow ? formattedSubtitlesColor : "&HFFFFFF"},${formattedStrokeColor ? formattedStrokeColor : "&H000000"},${formattedSubBgColor ? formattedSubBgColor : "&H000000"},-1,${italicizeSubs ? "1" : "0"},0,0,100,100,0,0,1,${textStroke ? textStroke : 0},${enableShadow ? "2" : "0"},${subtitlesAlign},0,0,0,1\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`
+        var ASSSubtitlesTemplate = `[Script Info]\nTitle: Subtitles\nScriptType: v4.00+\nWrapStyle: 0\n\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\nStyle: Default,${fontName},${fontSize.substring(0, fontSize.indexOf("P"))},&HFFFFFF,${enableWordFollow ? formattedSubtitlesColor : "&HFFFFFF"},${formattedSubBgColor ? formattedSubBgColor : "&H000000"},${formattedSubBgColor ? formattedSubBgColor : "&H000000"},-1,${italicizeSubs ? "1" : "0"},0,0,100,100,0,0,${enableSubBg ? "3" : "1"},0,${enableShadow ? "2" : "0"},${subtitlesAlign},0,0,0,1\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`
         const srtSubtitles = convertToSrt(subtitles.join(''));
         const srtSubtitlesArr = srtSubtitles.split('\n');
         for (let i = 0; i < srtSubtitlesArr.length; i++) {
@@ -191,7 +194,7 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
   var subtitles = [];
 
   if (subtitlesProps) {
-    var { video, uppercaseSubs, emotionsEnabled, defaultColor, wordFollowEnabled, wordFollowColor, enableScale, enableFade, wordsPerLine, enableRotate } = subtitlesProps;
+    var { video, uppercaseSubs, emotionsEnabled, defaultColor, wordFollowEnabled, wordFollowColor, enableScale, enableFade, wordsPerLine, enableRotate,enableTextStroke,formattedStrokeColor,textStrokeThickness } = subtitlesProps;
   }
 
   const fileName = getLanguageFromBookmark(languageBookmark);
@@ -254,7 +257,10 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
         enableScale: enableScale,
         enableFade: enableFade,
         enableRotate: enableRotate,
-        emotionsEnabled: emotionsEnabled
+        enableTextStroke,
+        formattedStrokeColor:formattedStrokeColor,
+        textStrokeThickness:textStrokeThickness,
+        emotionsEnabled: emotionsEnabled,
       }
       checkAndPushToArray(wordsArr, subtitles, start, end, subtitlesProps);
     }
@@ -548,8 +554,9 @@ function convertColorToReversedHex(color, variant, opacity) {
 }
 
 function addEmotionsToSubtitles(subtitles, subtitlesProps) {
-  const { emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled, enableRotate } = subtitlesProps;
+  const { emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled, enableRotate,enableTextStroke,textStrokeThickness,formattedStrokeColor } = subtitlesProps;
   const subtilesCopy = subtitles.split(" ");
+  console.log(formattedStrokeColor);
   var modifiedSubtitles = `${enableRotate ? `{\\frz${Math.floor(Math.random() * 45)}}` : ""}`;
   for (let i = 0; i < subtilesCopy.length - 1; i++) {
     var isAdded = false;
@@ -557,24 +564,24 @@ function addEmotionsToSubtitles(subtitles, subtitlesProps) {
       for (let k = 0; k < emotionsArr[j].length; k++) {
         if (subtilesCopy[i].toLowerCase() === emotionsArr[j][k]) {
           switch (j) {
-            case 0: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[0]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
+            case 0: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[0]) : defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 1: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[1]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
+            case 1: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[1]) : defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 2: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[2]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
+            case 2: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[2]) : defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 3: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[3]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
+            case 3: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[3]) : defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 4: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[4]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
+            case 4: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[4]) : defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            case 5: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[5]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
+            case 5: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[5]) : defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `; isAdded = true;
               break;
-            default: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[6]) : defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]}`;
+            default: modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : ""}\\c${emotionsEnabled ? convertColorToReversedHex(colorsPalette[6]) : defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]}`;
               break;
           }
         }
         else if (j === emotionsArr.length - 1 && k === emotionsArr[j].length - 1 && !isAdded) {
-          modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : null}\\c${defaultColor}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `
+          modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : null}\\c${defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `
         }
       }
     }

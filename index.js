@@ -61,12 +61,6 @@ const numCPUs = os.cpus().length;
     })
   );
   app.use(cookieParser());
-
-
-
-
-
-
   app.use('/api/text-to-speech/get/:filename',compression());
   app.use('/api/text-to-speech/get-voices',compression());
   app.use('/api/speech-to-text/get/:filename',compression());
@@ -93,7 +87,6 @@ const numCPUs = os.cpus().length;
   app.post('/api/subtitles-from-video', upload.single('file'), speechToText(googleCloudStorage, false));
   app.get('/api/subtitles-from-video/get/:filename', downloadFile(googleCloudStorage));
   app.get('/api/subtitles-from-video/delete/:filename', deleteFile(googleCloudStorage));
-
 
   app.listen(process.env.PORT || 80, () => {
     console.log('Worker process listening');
