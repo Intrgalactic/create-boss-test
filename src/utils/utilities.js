@@ -213,25 +213,27 @@ function setFileAndUnload(stateSetters, fileToDownload) {
     stateSetters.setErrorAtDownload(false);
 }
 
-export function removeDragEffect(setText, setClassList) {
-    setClassList ? setClassList(true) : setText("Choose Video");
+export function removeDragEffect(setText, setClassList,fileRef,attachedName,dropName) {
+    setClassList ? setClassList(true,false,fileRef,dropName,attachedName) : setText("Choose Video");
 
 }
-export function handleFileInputDrag(event, setText, setClassList) {
+export function handleFileInputDrag(event, setText, setClassList,fileRef,attachedName,dropName) {
     event.stopPropagation();
     event.preventDefault();
-    setClassList ? setClassList() : setText("Drop");
+   
+    setClassList ? setClassList(false,false,fileRef,dropName,attachedName) : setText("Drop");
 }
-export function handleFileDrop(event, setFile, setErrorAtDownload, setClassList) {
+export function handleFileDrop(event, setFile, setErrorAtDownload, setClassList,fileRef,attachedName,dropName) {
     event.stopPropagation();
     event.preventDefault();
     const fileList = event.dataTransfer.files;
-    if (fileList[0].size > 1048576 * 15) {
+    if (fileList[0].size > 1048576 * 10) {
         setErrorAtDownload("The File Is Too Big");
+        setClassList.length > 1 ? setClassList(true,false,fileRef,dropName,attachedName) : setClassList("Choose Video");
     }
     else if (fileList.length > 0) {
         setFile(fileList[0]);
-        setClassList && setClassList(true, "attached-file")
+        setClassList && setClassList(true,false,fileRef,dropName,attachedName);
     }
 }
 export function debounce(func, wait, immediate) {
@@ -320,7 +322,7 @@ export function throwConfigErr(setConfigErr, errMessage) {
     setConfigErr(errMessage);
     setTimeout(() => {
         setConfigErr(false);
-    }, 5400);
+    }, 3700);
 }
 
 export function filterVoices(TTSProps, voices, selectedCategory) {
@@ -345,4 +347,16 @@ export function TTSReducer(state, action) {
         case "Clarity": return {...state,clarity: payload};
         case "Exaggeration": return {...state,exaggeration: payload};
     }
+}
+
+export async function getVoices(setVoices) {
+    const voices = await fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get-voices`);
+    setVoices(voices.voices);
+}
+
+export function addClassList(remove,add,fileRef,dropName,attachedName) {
+
+    !remove ? fileRef.current.classList.add(dropName) : fileRef.current.classList.remove(dropName);
+    add &&  fileRef.current.classList.add(attachedName) 
+
 }

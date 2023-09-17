@@ -22,7 +22,7 @@ const DashboardSelectButton = lazy(() => import('src/components/dashboard/servic
     return { default: module.DashboardSelectButton }
 }))
 import { planDetailsData, dashboardActionsData, languagesData, } from "src/utils/dashboard-static-data";
-
+import {useLocalStorage} from '@uidotdev/usehooks';
 import { authContext } from "src/context/authContext";
 import { useNavigate } from "react-router-dom";
 import { Tooltip, XAxis, ResponsiveContainer, LineChart, Line } from "recharts";
@@ -42,10 +42,11 @@ export default function Dashboard() {
         STTLanguageCode: "en-US"
     }
     const [dashboardProps, dispatch] = useReducer(dashboardReducer, dashboardInitialState)
-    const [TTSLanguageFilter, setTTSLanguageFilter] = useState();
     const [STTLanguageFilter, setSTTLanguageFilter] = useState();
     const STTfilterRegEx = new RegExp(STTLanguageFilter, "i");
+    const [loadingState,setLoadingState] = useState(false);
     const isLogged = useContext(authContext);
+    const [voices,setVoices] = useLocalStorage("voices",false);
     const [isPaying, setIsPaying] = useState(false);
     function dashboardReducer(state, action) {
         switch (action.type) {
@@ -55,6 +56,14 @@ export default function Dashboard() {
             case "Set Audio Speed": return { ...state, audioSpeed: action.payload };
         }
     }
+    useEffect(() => {
+        (async () => {
+            setLoadingState(true);
+            (await import("../utils/utilities.js")).getVoices(setVoices).then(() => {
+                setLoadingState(false);
+            });
+        })
+    }, [setVoices])
 
     function setSTTOptionsToDefault() {
         dispatch({
@@ -182,6 +191,7 @@ export default function Dashboard() {
                         </DashboardBox>
                     </ContentContainer>
                 </ContentContainer>
+                {loadingState && <Loader/>}
             </Suspense>
         </div>
 

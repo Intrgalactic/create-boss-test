@@ -20,6 +20,7 @@ const Faq = loadable(() => import('./pages/faq'));
 const SignIn = loadable(() => import('./pages/sign-in'));
 const SignUp = loadable(() => import('./pages/sign-up'));
 import { useCookies } from 'react-cookie';
+import VCDashboard from './pages/voice-cloning-dashboard';
 
 function App() {
   const [isLogged, setIsLogged] = useState();
@@ -53,6 +54,7 @@ function App() {
       <Route exact path="/onboard" element={<authContext.Provider value={isLogged}><OnBoard /></authContext.Provider>} />
       <Route exact path="/dashboard" element={<authContext.Provider value={isLogged}><Dashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/text-to-speech" element={<authContext.Provider value={isLogged}><TTSDashboard /></authContext.Provider>} />
+      <Route exact path="/dashboard/services/voice-cloning" element={<authContext.Provider value={isLogged}><VCDashboard/></authContext.Provider>} />
       <Route exact path="/dashboard/services/speech-to-text" element={<authContext.Provider value={isLogged}><STTDashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/subtitles-to-video" element={<authContext.Provider value={isLogged}><STVDashboard /></authContext.Provider>} />
       <Route exact path="/dashboard/services/subtitles-from-video" element={<authContext.Provider value={isLogged}><SFVDashboard /></authContext.Provider>} />

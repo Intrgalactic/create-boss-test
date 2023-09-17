@@ -112,9 +112,10 @@ export default function STVDashboard() {
             case "Scale": return { ...state, scale: payload };
             case "Words Per Line": return {...state, wordsPerLine: payload};
             case "Random Rotate": return {...state,enableRotate: payload};
+            case "Initial": return {...videoInitialState}
         }
     }
-
+    console.log(videoProps);
     const subtitlesOptionsRowActions = [
         {
             text: videoProps.language,
@@ -341,13 +342,17 @@ export default function STVDashboard() {
             payload: payload
         });
     }
-
+    function resetVideoSettings() {
+        dispatch({
+            type:"Initial",
+        })
+    }
     return (
         <div className="subtitles-to-video-dashboard">
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="subtitles-to-video-dashboard__container">
-                    <DashboardVideoLeftSection heading="Video To Modify" videoFile={videoFile} setVideoFile={setVideoFile} sendToGetSubtitles={sendToGetSubtitles} filePath={filePath} downloadFile={downloadFile} setFilePath={setFilePath} />
+                    <DashboardVideoLeftSection heading="Video To Modify" resetSettings={resetVideoSettings} videoFile={videoFile} setVideoFile={setVideoFile} sendToGetSubtitles={sendToGetSubtitles} filePath={filePath} downloadFile={downloadFile} setFilePath={setFilePath}  setErrorAtDownload={setErrorAtDownload}/>
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To Blank Logo Without Watermark">
                         <DashboardServiceOptionsRow actions={subtitlesOptionsRowActions} heading="Subtitles" />
                         <DashboardServiceOptionsRow actions={subtitlesEffectsOptionsRowActions} heading="Subtitles Effects" />

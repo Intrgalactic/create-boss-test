@@ -41,6 +41,9 @@ const NavWithRef = forwardRef((props, ref) => {
                 <Link to='/dashboard/services/text-to-speech'>
                   Text To Speech
                 </Link>
+                <Link to='/dashboard/services/voice-cloning'>
+                  Voice Cloning
+                </Link>
                 <Link to='/dashboard/services/speech-to-text'>
                   Speech To Text
                 </Link>
@@ -57,6 +60,9 @@ const NavWithRef = forwardRef((props, ref) => {
               <Link to='/dashboard/services/text-to-speech'>
                 Text To Speech
               </Link>
+              <Link to='/dashboard/services/voice-cloning'>
+                  Voice Cloning
+                </Link>
               <Link to='/dashboard/services/speech-to-text'>
                 Speech To Text
               </Link>

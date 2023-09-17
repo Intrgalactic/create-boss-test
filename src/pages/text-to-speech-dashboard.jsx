@@ -1,8 +1,8 @@
 import { Suspense, lazy, useEffect, useReducer, useState } from "react";
 const ContentContainer = lazy(() => import("src/components/content-container").then(module => {
-    return {default: module.ContentContainer}
+    return { default: module.ContentContainer }
 }));
-    import loadable from "@loadable/component";
+import loadable from "@loadable/component";
 const DashboardHeader = lazy(() => import('src/layouts/dashboards/dashboard-header'));
 const DashboardLeftSection = lazy(() => import('src/layouts/dashboards/dashboard-left-section'));
 import Loader from "src/layouts/loader";
@@ -11,9 +11,9 @@ import { TTSReducer } from "src/utils/utilities";
 const TTSVoiceSelect = loadable(() => import("src/layouts/text-to-speech-voice-select"));
 import { ConfigErr } from "src/components/dashboard/configErr";
 import fileDownload from "js-file-download";
-import { useCookies, withCookies } from 'react-cookie';
-import { useMemo } from "react";
-
+import { useCookies } from 'react-cookie';
+import {useLocalStorage} from '@uidotdev/usehooks';
+import VoiceCloningPanel from "src/layouts/voice-cloning-panel";
 export default function TTSDashboard() {
     const TTSInitialState = {
         age: "Choose",
@@ -38,34 +38,34 @@ export default function TTSDashboard() {
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
-    const [voices, setVoices] = useState();
+    const [voices, setVoices] = useLocalStorage('voices');
     const [voice, setVoice] = useState();
     const [filteredVoices, setFilteredVoices] = useState();
     const [resultsAmount, setResultsAmount] = useState(10);
     const [configError, setConfigError] = useState(false);
     const [filteredVoicesNameFilter, setFilteredVoicesNameFilter] = useState("");
     const voiceNameFilterRegEx = new RegExp(filteredVoicesNameFilter, "i");
-    const [cookies,setCookie] = useCookies('[csrf]');
+    const [cookies, setCookie] = useCookies('[csrf]');
 
-    useEffect(() => {
-        async function getVoices() {
-            const voices = await (await import("src/utils/utilities")).fetchUrl(`${import.meta.env.VITE_SERVER_FETCH_URL}api/text-to-speech/get-voices`);
-            setVoices(voices.voices);
-        }
-        getVoices();
-    }, [setVoices])
     useEffect(() => {
         (async () => {
             if (voices) {
-                const filteredArr = (await import("src/utils/utilities")).filterVoices(TTSProps, voices, selectedCategory);
-                setFilteredVoices(filteredArr);
+                filterVoices();
+            }
+            else {
+                ((await import("src/utils/utilities")).getVoices(setVoices));
+        
             }
         })();
-       
-    }, [voices, setFilteredVoices, TTSProps.age, TTSProps.gender, TTSProps.accent, selectedCategory]);
+
+    }, [TTSProps.age, TTSProps.gender, TTSProps.accent, selectedCategory,setVoices]);
 
     const filteredVoicesWName = filteredVoices ? filteredVoices.filter(voice => voiceNameFilterRegEx.test(voice.name)) : filteredVoices;
 
+    async function filterVoices() {
+        const filteredArr = (await import("src/utils/utilities")).filterVoices(TTSProps, voices, selectedCategory);
+        setFilteredVoices(filteredArr);
+    }
     const stateSetters = {
         setLoadingState: setLoadingState,
         setErrorAtDownload: setErrorAtDownload,
@@ -94,7 +94,7 @@ export default function TTSDashboard() {
                         voiceId: voice,
                         clarity: TTSProps.clarity,
                         stability: TTSProps.stability,
-                    }, file, "mp3", stateSetters, 'api/text-to-speech',false,cookies.csrf);
+                    }, file, "mp3", stateSetters, 'api/text-to-speech', false, cookies.csrf);
                 }
                 else {
                     (await import("src/utils/utilities")).throwConfigErr(setConfigError, "The file extension is not supported");
@@ -108,7 +108,7 @@ export default function TTSDashboard() {
                     voiceId: voice,
                     clarity: TTSProps.clarity,
                     stability: TTSProps.stability,
-                }, file, "mp3", stateSetters, 'api/text-to-speech',false,cookies.csrf);
+                }, file, "mp3", stateSetters, 'api/text-to-speech', false, cookies.csrf);
             }
 
         }
@@ -164,7 +164,7 @@ export default function TTSDashboard() {
             },
             value: TTSProps.stability,
             setValue: passToReducer,
-            name:"Stability",
+            name: "Stability",
             rightTooltip: {
                 heading: "More Stable",
                 description: "Increasing stability will make the voice more consistent between re-generations, but it can also make it sounds a bit monotone. On longer text fragments we recommend lowering this value."
@@ -184,22 +184,7 @@ export default function TTSDashboard() {
                 description: "High enhancement boosts overall voice clarity and target speaker similarity. Very high values can cause artifacts, so adjusting this setting to find the optimal value is encouraged."
             },
         },
-        {
-            heading: "Style Exaggeration",
-            leftTooltip: {
-                heading: "None (Fastest)",
-                description: "None"
-            },
-            value: TTSProps.exaggeration,
-            setValue: passToReducer,
-            name: "Exaggeration",
-            rightTooltip: {
-                heading: "More Stable",
-                description: "High values are recommended if the style of the speech should be exaggerated compared to the uploaded audio. Higher values can lead to more instability in the generated speech. Setting this to 0.0 will greatly increase generation speed and is the default setting."
-            },
-        }
     ]
-    console.log(TTSProps.clarity);
     return (
 
         <div className="text-to-speech-dashboard">
@@ -207,8 +192,8 @@ export default function TTSDashboard() {
                 <DashboardHeader />
                 <ContentContainer containerClass="text-to-speech-dashboard__container">
                     <ContentContainer containerClass="tex-to-speech-dashboard__primary-voices-container">
-                    <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} ranges={ranges} controls={controls} setTextInput={setTextInput} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
-                    {filteredVoices && <TTSVoiceSelect specificVoiceSettingsActions={specificVoiceSettingsActions} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} voices={filteredVoicesWName.slice(0, resultsAmount)} setVoice={setVoice} voice={voice} setResultsAmount={setResultsAmount} totalVoicesLength={filteredVoicesWName.length} resultsAmount={resultsAmount} setFilteredVoicesNameFilter={setFilteredVoicesNameFilter} />}
+                        <DashboardLeftSection headings={["Text-To-Speech", "Input Your Text", "Attach Text File", "File Output"]} ranges={ranges} controls={controls} setTextInput={setTextInput} setAbleToTranslate={setAbleToTranslate} textInput={textInput} handleTextChange={handleTextInput} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
+                        {filteredVoices && <TTSVoiceSelect specificVoiceSettingsActions={specificVoiceSettingsActions} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} voices={filteredVoicesWName.slice(0, resultsAmount)} setVoice={setVoice} voice={voice} setResultsAmount={setResultsAmount} totalVoicesLength={filteredVoicesWName.length} resultsAmount={resultsAmount} setFilteredVoicesNameFilter={setFilteredVoicesNameFilter} />}
                     </ContentContainer>
                     {configError && <ConfigErr errMessage={configError} />}
                 </ContentContainer>
