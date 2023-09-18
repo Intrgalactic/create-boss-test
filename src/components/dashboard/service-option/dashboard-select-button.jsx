@@ -4,11 +4,12 @@ import { dashboardSelectButtonContext } from "src/context/DashboardSelectButtonC
 const CtaButton = lazy(() => import("src/components/cta-button").then(module => { return { default: module.CtaButton } }));
 const DashboardOptionsSelect = lazy(() => import('./dashboard-options-select').then(module => { return { default: module.DashboardOptionsSelect } }));
 
-export function DashboardSelectButton() {
+export function DashboardSelectButton({isSectionOpened}) {
     const listRef = useRef();
     const inputBtnRef = useRef();
     const inputFileRef = useRef();
     const colorInputRef = useRef();
+    const btnRef = useRef();
     const [btnText, setBtnText] = useState("Choose");
     const dashboardSelectButtonProps = useContext(dashboardSelectButtonContext);
     useEffect(() => {
@@ -27,13 +28,23 @@ export function DashboardSelectButton() {
                 setBtnText("Picked");
             }
         }
+        document.body.addEventListener("click", checkIfListOpen)
         return () => {
             if (inputBtnRef.current) {
                 removeFileListeners(inputBtnRef);
+                
             }
+            document.body.removeEventListener("click", checkIfListOpen)
         }
     }, [dashboardSelectButtonProps && dashboardSelectButtonProps.file, setBtnText, inputBtnRef.current, dashboardSelectButtonProps && dashboardSelectButtonProps.color]);
-
+    function checkIfListOpen(e = undefined) {
+        e && e.stopPropagation();
+        if (listRef.current && (e ? e.target !== (btnRef.current || inputBtnRef.current) && true : false)) {
+            if (listRef.current.classList.contains('visible-list')) {
+                toggleOptionsList();
+            }
+        }
+    }
     function removeDragEffect() {
         setBtnText("Choose");
     }
@@ -75,10 +86,13 @@ export function DashboardSelectButton() {
     function chooseColor() {
         colorInputRef.current.click();
     }
+    useEffect(() => {
+        !isSectionOpened && checkIfListOpen();
+    },[isSectionOpened]);
     return (
-        <div className="dashboard__select-button">
+        <div className="dashboard__select-button" >
             {dashboardSelectButtonProps.type !== "input" && dashboardSelectButtonProps.type !== "color" ? <>
-                <CtaButton text={dashboardSelectButtonProps.text} action={toggleOptionsList} />
+                <CtaButton text={dashboardSelectButtonProps.text} action={toggleOptionsList} ref={btnRef}/>
             </> : dashboardSelectButtonProps.type !== "color" ?
                 <>
                     <CtaButton text={btnText} action={chooseFile} ref={inputBtnRef} />
@@ -86,7 +100,7 @@ export function DashboardSelectButton() {
                 </>
                 :
                 <>
-                    <CtaButton text={btnText} action={chooseColor} />
+                    <CtaButton text={btnText} action={chooseColor} ref={btnRef}/>
                     <input type="color" ref={colorInputRef} onChange={(e) => dashboardSelectButtonProps.setColor(dashboardSelectButtonProps.heading, e.target.value)} className="stv-input" />
                 </>
             }
