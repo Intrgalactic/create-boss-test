@@ -25,7 +25,9 @@ const NavWithRef = forwardRef((props, ref) => {
       });
     }
   }, [setIsPaying, auth.currentUser, windowSize.width]);
-
+  useEffect(() => {
+    props.isNavOpened ? document.body.style.overflowY = "hidden" : document.body.style.overflowY = "auto";
+  },[props.isNavOpened])
   return (
     <nav ref={ref}>
       {props.isNavOpened ? <NavButton toggleNav={props.toggleNav} /> : null}

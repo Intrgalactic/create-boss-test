@@ -12,6 +12,7 @@ import fileDownload from "js-file-download";
 import DownloadingLoader from "src/layouts/downloading-loader";
 import { ConfigErr } from "src/components/dashboard/configErr";
 import { useCookies } from 'react-cookie';
+import { useEffect } from "react";
 
 export default function STVDashboard() {
     const videoInitialState = {
@@ -115,7 +116,6 @@ export default function STVDashboard() {
             case "Initial": return {...videoInitialState}
         }
     }
-    console.log(videoProps);
     const subtitlesOptionsRowActions = [
         {
             text: videoProps.language,
@@ -347,6 +347,18 @@ export default function STVDashboard() {
             type:"Initial",
         })
     }
+
+    useEffect(() => {
+        if (filePath) {
+            const videoF = new File(
+                [filePath],
+                "video.mp4",
+                {type: "video/mp4"}
+            )
+            setVideoFile(videoF);
+        }
+    },[filePath]);
+
     return (
         <div className="subtitles-to-video-dashboard">
             <Suspense fallback={<Loader />}>

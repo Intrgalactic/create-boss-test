@@ -7,7 +7,7 @@ export function FileRecord({file,index,removeFile}) {
         <div className="file-record">
             <p className="file-name">{file.name}</p>
             <p className="file-size">{file.size}</p>
-            <button onClick={() => {removeFile(index)}}className="remove-file"><Picture images={[trashImage,webpTrashImage]} alt="trash" imgWidth="26px" imgHeight="28.5px"/></button>
+            <button onClick={() => {removeFile(index)}}className="remove-file"><Picture images={[trashImage,webpTrashImage]} alt="trash" imgWidth="32" imgHeight="32"/></button>
         </div>
     )
 }
