@@ -16,9 +16,9 @@ export default function STTDashboard() {
     const STTInitialState = {
         language: "English (US)",
         languageCode: "en-US",
-        outputExtension: "TXT",
         diarization: "No",
         summarization: "No",
+        outputExtension: "TXT",
         detectTopic: "No",
         punctuation: "Yes",
         timeStamps: "No",
@@ -30,10 +30,9 @@ export default function STTDashboard() {
     }];
     const [speechToTextProps, dispatch] = useReducer(STTReducer, STTInitialState);
     const [ableToTranslate, setAbleToTranslate] = useState('No');
-    const [outputExtension, setOutputExtension] = useState("TXT");
     const [isTranslated, setIsTranslated] = useState(false);
     const [filePath, setFilePath] = useState('');
-    const controls = [`Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${outputExtension}`, "Reset", "Translate"];
+    const controls = [`Able To Translate : ${ableToTranslate}`, `Extension Of Output File : ${speechToTextProps.outputExtension}`, "Reset", "Translate"];
     const [loadingState, setLoadingState] = useState(false);
     const [file, setFile] = useState();
     const [errorAtDownload, setErrorAtDownload] = useState();
@@ -79,7 +78,7 @@ export default function STTDashboard() {
         {
             text: speechToTextProps.outputExtension,
             options: STTOutputExtensionOptions,
-            setOption: setOutputExtension,
+            setOption: passToReducer,
             heading: "Output Extension",
         },
         {

@@ -1271,7 +1271,9 @@ footer {
 .onboard-page .carousel-button {
   filter: sepia(1) brightness(0%);
 }
-
+.dashboard {
+  padding-bottom: 100px;
+}
 .dashboard,
 .text-to-speech-dashboard,
 .speech-to-text-dashboard,.voice-cloning-dashboard {
@@ -1498,7 +1500,7 @@ footer {
   border:0;
   border-bottom-left-radius: 0px;
   border-bottom-right-radius: 0px;
-  border-bottom:1.2px solid rgba(0,0,0,0.5);
+  border-bottom:2px solid rgba(0,0,0,0.5);
   padding-inline:50px;
 }
 .weekly-usage-chart-box .section-heading {
@@ -1599,7 +1601,6 @@ footer {
   position: relative;
   padding-inline: 2.5%;
   padding-bottom: 150px;
-  width: 87.5vw;
   margin-left: 12.5vw;
 }
 .text-to-speech-dashboard__container {
@@ -2142,6 +2143,7 @@ footer {
 }
 .tts-voice-select .dashboard__service-options-row {
   box-shadow: 0px 4px 5px 1px rgba(0, 0, 0, 0.2);
+
 }
 .tts-voice-select__category-select {
   display:flex;
@@ -2194,6 +2196,7 @@ footer {
   position: absolute;
   bottom: 0;
   border-bottom-left-radius: 5px;
+  font-family: NexaHeavy;
   border-bottom-right-radius: 5px;
   width: 100%;
 }
@@ -2407,6 +2410,15 @@ footer {
   border-radius:20px;
   width: 5px;
 }
+.tts-voice-select__category-select::-webkit-scrollbar {
+  height: 5px;
+  border-radius: 5px;
+  background-color:rgba(0,0,0,0.3);
+}
+.tts-voice-select__category-select::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.5);
+  border-radius: 10px;
+}
 .voice-cloning .files-list::-webkit-scrollbar-thumb {
   background-color: rgba(0,0,0,0.9);
   border-radius: 10px;
@@ -2448,7 +2460,9 @@ footer {
   color: white;
   font-family: NexaHeavy;
 }
-
+.dashboard__service-option-button p {
+  font-size: 0.8em;
+}
 .text-to-speech-dashboard .dashboard__select-button,
 .speech-to-text-dashboard .dashboard__select-button,
 .subtitles-to-video-dashboard .dashboard__select-button {
@@ -2528,6 +2542,7 @@ footer {
   max-height: 0;
   transform-origin: center top;
   transition: 0.2s ease-out;
+  z-index: 1;
   transform: scaleY(0);
   flex-wrap: wrap;
 }
@@ -2535,6 +2550,7 @@ footer {
 .dashboard__service-options-row__container img {
   transition-duration: 150ms;
   transition-timing-function: ease-in-out;
+  z-index: 1;
 }
 
 .input-dragged:after {
@@ -3130,7 +3146,9 @@ footer {
     background-image: image-set(url('assets/images/mobile-contact-bg.webp') type('image/webp'),
         url('assets/images/mobile-contact-bg.jpg') type('image/jpeg'));
   }
-
+  .submit-voice-btn,.cloned-voice-input {
+    font-size: 1em;
+  }
   .benefits-section {
     background-size: 150% 100%;
   }
@@ -3635,7 +3653,7 @@ footer {
   }
 
   .dashboard__service-option-button p {
-    font-size: 0.7em;
+    font-size: 0.55em;
   }
 
   .dashboard__select-box {

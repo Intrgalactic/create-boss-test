@@ -7,7 +7,7 @@ const DashboardRightSection = lazy(() => import("src/layouts/dashboards/dashboar
 const DashboardVideoLeftSection = lazy(() => import("src/layouts/dashboards/dashboard-video-left-section"));
 const DashboardServiceOptionsRow = lazy(() => import("src/layouts/dashboards/service-options/dashboard-service-options-row"));
 import Loader from "src/layouts/loader";
-import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions, wordsPerLineOptions } from "src/utils/dashboard-static-data";
+import { fontSizeOptions, detailedAlignmentOptions, mainAlignmentOptions, subBgColorOptions, subBgOpacityOptions, STTlanguageData, trueFalseOptions, textStrokeOptions, wordsPerLineOptions, builtInFontsOptions } from "src/utils/dashboard-static-data";
 import fileDownload from "js-file-download";
 import DownloadingLoader from "src/layouts/downloading-loader";
 import { ConfigErr } from "src/components/dashboard/configErr";
@@ -44,6 +44,7 @@ export default function STVDashboard() {
         language: "English (US)",
         fadeIn: 'No',
         scale: "No",
+        builtInFont: "Nexa Heavy"
     }
 
     const [videoProps, dispatch] = useReducer(videoPropsReducer, videoInitialState);
@@ -113,6 +114,8 @@ export default function STVDashboard() {
             case "Scale": return { ...state, scale: payload };
             case "Words Per Line": return {...state, wordsPerLine: payload};
             case "Random Rotate": return {...state,enableRotate: payload};
+            case "Built-In Subtitles Font": return {...state,builtInFont: payload};
+            case "Own Subtitles Font": return {...state,subtitlesFontFile:payload};
             case "Initial": return {...videoInitialState}
         }
     }
@@ -125,11 +128,17 @@ export default function STVDashboard() {
             heading: "Language",
         },
         {
-            heading: "Subtitles Font",
+            heading: "Own Subtitles Font",
             type: "input",
             file: videoProps.subtitlesFontFile,
             setFile: passToReducer,
             acceptList: "application/font-*,.ttf, .otf, .woff, .woff2"
+        },
+        {   
+            text: videoProps.builtInFont,
+            options: builtInFontsOptions,
+            setOption: passToReducer,
+            heading: "Built-In Subtitles Font",
         },
         {
             heading: "Italicize",
@@ -323,7 +332,8 @@ export default function STVDashboard() {
                 enableLogo: videoProps.enableLogo,
                 enableWatermark: videoProps.enableWatermark,
                 enableRotate: videoProps.enableRotate,
-                wordsPerLine: videoProps.wordsPerLine
+                wordsPerLine: videoProps.wordsPerLine,
+                builtInFont: videoProps.builtInFont
             };
             (await import("src/utils/utilities")).createDataAndSend(objWithdata, videoFile, videoFile.name.slice(videoFile.name.lastIndexOf('.')), stateSetters, 'api/subtitles-to-video', filesArr,cookies.csrf);
         }

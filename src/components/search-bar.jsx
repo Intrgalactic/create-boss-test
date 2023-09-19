@@ -7,7 +7,7 @@ export function SearchBar({setFilter}) {
       
     }
     return (
-        <div className="search-bar">
+        <div className="search-bar" onClick={(e) => {e.stopPropagation()}}>
             <input type="text" placeholder="🔎︎ Search" onChange={filterFields}/>
         </div>
     )

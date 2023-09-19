@@ -12,8 +12,7 @@ export default function DashboardServiceOptionsRow({ actions, heading, children 
     const headingRef = useRef();
 
     function expandOptionsList(e) {
-        console.log(e.target.nodeName);
-        if (e.target !== rowRef.current && !e.target.classList.contains("call-to-action-btn") && !e.target.classList.contains("dashboard__service-option-button") && e.target.nodeName !== "P" && e.target.nodeName !== "INPUT") {
+        if (e.target !== rowRef.current && !e.target.classList.contains("call-to-action-btn") && !e.target.classList.contains("tts-voice-select__category-select") && !e.target.classList.contains("dashboard__service-option-button") && e.target.nodeName !== "P" && e.target.nodeName !== "BUTTON" && e.target.nodeName !== "INPUT" && !e.target.classList.contains("dashboard__service-options-row__container") && !e.target.classList.contains("dashboard__select-box-option")) {
             expandList(isToggled, setIsToggled, rowRef, "expanded", headingRef);
         }
     }
@@ -24,8 +23,8 @@ export default function DashboardServiceOptionsRow({ actions, heading, children 
                 <Picture images={[webpExpandImage, expandImage]} alt="expand arrow" imgHeight="21px" imgWidth="40px" /></div>
             <div className="dashboard__service-options-row" ref={rowRef}>
                 {actions ? actions.map((action, index) => (
-                    <dashboardSelectButtonContext.Provider value={action}>
-                        <DashboardServiceOptionButton key={index} isSectionOpened={isToggled}/>
+                    <dashboardSelectButtonContext.Provider value={action} key={index}>
+                        <DashboardServiceOptionButton isSectionOpened={isToggled}/>
                     </dashboardSelectButtonContext.Provider>
                 )) : children}
             </div>

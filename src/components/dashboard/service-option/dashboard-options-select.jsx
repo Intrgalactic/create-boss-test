@@ -21,7 +21,7 @@ export const DashboardOptionsSelect = forwardRef((props, ref) => {
                             <SearchBar setFilter={props.setFilter} />
                             {props.options.map((optgroup, index) => (
                                 <div className="dashboard__select-box-optgroup" key={index}>
-                                    <p className="select-box-optgroup-p">{optgroup.optgroup}</p>
+                                    <p className="select-box-optgroup-p" onClick={(e) => {e.stopPropagation()}}>{optgroup.optgroup}</p>
                                     {optgroup.options.map((option, index) =>
                                         <div className="dashboard__select-box-option" key={index} onClick={(e) => { props.setOption(props.heading,[e.target.getAttribute("aria-details"), e.target.innerText]), props.toggleList() }}>
                                             <p aria-details={optgroup.code[index]} >{option}</p>
