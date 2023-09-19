@@ -24,7 +24,8 @@ const speechToText = (storage, isVideoApi) => {
         var watermark = req.body.enableWatermark === "Yes" && req.files[watermarkIndex] && req.files[watermarkIndex];
         var watermarkExtension = watermark && watermark.originalname.slice(watermark.originalname.lastIndexOf('.'));
         var fontIndex = req.body.subtitles && req.body.subtitles;
-        var font = req.files[fontIndex] && req.files[fontIndex];
+        var font = req.files[fontIndex] && req.files[fontIndex]
+        var builtInFont = !req.files[fontIndex] && req.body.builtInFont;
         var fontExtension = req.files[fontIndex] && req.files[fontIndex].originalname.slice(font.originalname.lastIndexOf('.'));
         var fontSize = req.body.subtitlesFontSize;
         var wordsPerLine = req.body.wordsPerLine === "Choose" ? null : req.body.wordsPerLine;
@@ -135,13 +136,13 @@ const speechToText = (storage, isVideoApi) => {
         const subtitlesAlign = returnAlignment(req.body.subtitlesAlign);
         const fontName = detectFont(font);
         console.log(formattedSubBgColor);
-        var ASSSubtitlesTemplate = `[Script Info]\nTitle: Subtitles\nScriptType: v4.00+\nWrapStyle: 0\n\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\nStyle: Default,${fontName},${fontSize.substring(0, fontSize.indexOf("P"))},&HFFFFFF,${enableWordFollow ? formattedSubtitlesColor : "&HFFFFFF"},${formattedSubBgColor},${formattedSubBgColor},-1,${italicizeSubs ? "1" : "0"},0,0,100,100,0,0,${enableSubBg ? "3" : "1"},0,${enableShadow ? "2" : "0"},${subtitlesAlign},30,30,0,1\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`
+        var ASSSubtitlesTemplate = `[Script Info]\nTitle: Subtitles\nScriptType: v4.00+\nWrapStyle: 0\n\n[V4+ Styles]\nFormat: Name, Fontname, Fontsize, PrimaryColour, SecondaryColour, OutlineColour, BackColour, Bold, Italic, Underline, StrikeOut, ScaleX, ScaleY, Spacing, Angle, BorderStyle, Outline, Shadow, Alignment, MarginL, MarginR, MarginV, Encoding\nStyle: Default,${builtInFont ? builtInFont : fontName},${fontSize.substring(0, fontSize.indexOf("P"))},&HFFFFFF,${enableWordFollow ? formattedSubtitlesColor : "&HFFFFFF"},${formattedSubBgColor},${formattedSubBgColor},-1,${italicizeSubs ? "1" : "0"},0,0,100,100,0,0,${enableSubBg ? "3" : "1"},0,${enableShadow ? "2" : "0"},${subtitlesAlign},30,30,0,1\n\n[Events]\nFormat: Layer, Start, End, Style, Name, MarginL, MarginR, MarginV, Effect, Text\n`
         const srtSubtitles = convertToSrt(subtitles.join(''));
         const srtSubtitlesArr = srtSubtitles.split('\n');
         for (let i = 0; i < srtSubtitlesArr.length; i++) {
           ASSSubtitlesTemplate += `${srtSubtitlesArr[i]}\n`;
         }
-        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), ASSSubtitlesTemplate, videoStream.buffer, font, fontExtension, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign);
+        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), ASSSubtitlesTemplate, videoStream.buffer, font, fontExtension, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign,builtInFont);
         const endVideoBuffer = fs.readFileSync(videoPath);
         fs.unlinkSync(videoPath);
         sendToStorage(`${outputFileName.substring(0, outputFileName.lastIndexOf('.'))}.${outputExtension}`, endVideoBuffer, contentType, storage);
@@ -275,12 +276,11 @@ function checkAndPushToArray(subsToCheck, subtitles, start, end, subtitlesProps)
   subtitles.push(`[${start} - ${end}]${modifiedWord}\n`);
 }
 
-async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, font, fontExtension, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign) {
+async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, font, fontExtension, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign,builtInFont) {
   try {
     Ffmpeg.setFfmpegPath(ffmpegPath);
 
     var tempFolder = path.join(__dirname, '../.././temporary');
-    const fontTempFolder = path.join(__dirname, './temporary');
     var logoFileName, logoAlignFFmpegFormat, videoWithLogoPath;
     var watermarkFileName, watermarkAlignFFmpegFormat, videoWithWatermarkPath;
     var subtitlesFontFileName;
@@ -296,7 +296,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, fo
 
     if (font) {
       subtitlesFontFileName = generateRandomFileName(fontExtension);
-      fs.writeFileSync(path.join(fontTempFolder, subtitlesFontFileName), font.buffer);
+      fs.writeFileSync(path.join(tempFolder, subtitlesFontFileName), font.buffer);
     }
 
     if (logo) {
@@ -328,7 +328,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, fo
           .complexFilter([
             {
               filter: 'subtitles',
-              options: `./temporary/${subtitlesFileName}:fontsdir=./temporary/${font ? subtitlesFontFileName : "Nexa-Heavy.ttf"}.`
+              options: `./temporary/${subtitlesFileName}:fontsdir=./temporary/${font ? subtitlesFontFileName : `${builtInFont.split(" ").join("-")}.ttf`}.`
 
             }
           ])
@@ -340,7 +340,7 @@ async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, fo
             fs.unlinkSync(path.join(tempFolder, subtitlesFileName));
             fs.unlinkSync(path.join(tempFolder, videoFileName));
             if (font) {
-              fs.unlinkSync(path.join(fontTempFolder, subtitlesFontFileName));
+              fs.unlinkSync(path.join(tempFolder, subtitlesFontFileName));
             }
             if (watermark && logo) {
               addWatermarkWithFFmpeg(true, resolve, reject);
@@ -444,7 +444,7 @@ function returnAlignment(alignment) {
       return "2";
   }
 }
-function returnDetailedAlignment(alignment, fontSize) {
+function returnDetailedAlignment(alignment) {
   switch (alignment) {
     case "Top Left":
       return { x: 10, y: 10 };
