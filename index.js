@@ -26,7 +26,6 @@ const numCPUs = os.cpus().length;
 
   const multerStorage = multer.memoryStorage();
   const upload = multer({ storage: multerStorage });
-  const redis = new Redis();
   const corsOptions = {
     origin: process.env.CORS_URL,
     optionsSuccessStatus: 200,
