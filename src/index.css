@@ -1783,6 +1783,7 @@ footer {
   height: 270px;
   min-height: 270px;
   box-shadow: 0px 4px 5px 1px rgba(0, 0, 0, 0.5);
+  -webkit-box-shadow: 0px 4px 5px 1px rgba(0, 0, 0, 0.5);
   background-color: rgba(0, 0, 0, 0.3);
   border: 1.2px solid rgba(0, 0, 0, 0.5);
   position: relative;
@@ -4489,7 +4490,6 @@ footer {
   .tts-voice-ranges {
     position: absolute;
     width: calc(70vw - 100px);
-    height: 500px;
   }
 
   .voice-cloning .service-instruction {
@@ -4614,11 +4614,11 @@ footer {
   }
 
   .text-to-speech-dashboard .dashboard__left-section-control-container {
-    margin-top: 900px;
+    margin-top: 700px;
   }
 
   .text-to-speech-dashboard .service-instruction {
-    top: calc(100% + 50px + 500px + 50px);
+    top: calc(100% + 50px + 310px + 50px);
   }
 
   .dashboard__left-section-content-container-control-input,
