@@ -1784,6 +1784,8 @@ footer {
   min-height: 270px;
   box-shadow: 0px 4px 5px 1px rgba(0, 0, 0, 0.5);
   -webkit-box-shadow: 0px 4px 5px 1px rgba(0, 0, 0, 0.5);
+  -webkit-filter: drop-shadow(0px 4px 5px 1px rgba(0, 0, 0, 0.5));
+  filter: drop-shadow(0px 4px 5px 1px rgba(0, 0, 0, 0.5));
   background-color: rgba(0, 0, 0, 0.3);
   border: 1.2px solid rgba(0, 0, 0, 0.5);
   position: relative;
@@ -1821,6 +1823,7 @@ footer {
   border: 1.2px solid rgba(0, 0, 0, 0.5);
   background-color: rgba(0, 0, 0, 0.3);
   align-items: center;
+  font-size: 1.2em;
   display: grid;
   font-family: NexaRegular;
   border-radius: 5px;
@@ -1939,6 +1942,7 @@ footer {
   height: 100%;
   background-color: transparent;
   border-radius: 5px;
+  font-size: 1.2em;
   color: white;
   border: none;
   font-family: NexaHeavy;
@@ -2569,7 +2573,13 @@ footer {
 .file-size {
   width: 100px;
 }
-
+.section-heading-sub-heading {
+  font-family: NexaRegular;
+  text-shadow: 0px 4px 5px rgba(0, 0, 0, 0.2);
+  width: 60%;
+  padding: 0;
+  text-align: left;
+}
 .remove-file {
   background-color: transparent;
   border: none;
@@ -3258,6 +3268,7 @@ footer {
   .text-to-speech-dashboard .service-instruction {
     width: 80vw;
     left: 0;
+    top:calc(100% + 70px);
   }
 
   .tts-voice-ranges input {

@@ -159,7 +159,7 @@ export default function STTDashboard() {
             <Suspense fallback={<Loader />}>
                 <DashboardHeader />
                 <ContentContainer containerClass="speech-to-text-dashboard__container">
-                    <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
+                    <DashboardLeftSection headings={["Speech-To-Text", "Record Your Voice", "Attach Audio File", "File Output"]} subHeading="Easily Retrieve Text From Any File With Details With 95% Accuracy And 5% WER (Word Error Rate)" controls={controls} setAbleToTranslate={setAbleToTranslate} mainAction={sendToSynthetize} isTranslated={isTranslated} downloadFile={downloadFile} setFile={setFile} file={file} errorAtDownload={errorAtDownload} setErrorAtDownload={setErrorAtDownload} acceptedFormats="audio/mpeg,audio/wav,video/ogg" instructionHeading={instructionHeading} instructionSteps={instructionSteps} />
                     <DashboardRightSection configurationHeading="Default Configuration Is Set To English Language">
                         <DashboardServiceOptionsRow actions={firstServiceOptionsRowActions} heading="Voice Options" />
                     </DashboardRightSection>

@@ -18,7 +18,7 @@ import TTSVoiceRanges from "../text-to-speech-voice-range-options";
 import { useLocation } from "react-router-dom";
 import useWindowSize from "src/hooks/useWindowSize";
 
-export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, ranges,errorAtDownload, setErrorAtDownload,acceptedFormats,setTextInput,instructionSteps,instructionHeading }) {
+export default function DashboardLeftSection({ mainAction, headings, controls, setAbleToTranslate,subHeading, textInput, handleTextChange, isTranslated, downloadFile, file, setFile, ranges,errorAtDownload, setErrorAtDownload,acceptedFormats,setTextInput,instructionSteps,instructionHeading }) {
     const [isFileAttached, setIsFileAttached] = useState(false);
     const path = useLocation().pathname;
     const windowSize = useWindowSize();
@@ -42,6 +42,7 @@ export default function DashboardLeftSection({ mainAction, headings, controls, s
     return (
             <div className="dashboard__left-section">
                 <SectionHeading heading={headings[0]} />
+                <p className="section-heading-sub-heading">{subHeading}</p>
                 <div className="dashboard__left-section-container">
                     <ContentContainer containerClass="dashboard__left-section-content-container">
                         <DashboardServiceInputContainer heading={headings[1]} inputClass="dashboard__left-section-content-container-main-input">
