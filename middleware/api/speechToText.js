@@ -16,6 +16,7 @@ const speechToText = (storage, isVideoApi) => {
     try {
       var summary, fullSpeechToTextContent, contentType, diarizeOn, topicsOn;
       var topics = [];
+      console.log(req.file);
       if (isVideoApi) {
         var logoIndex = req.body.enableLogo === "Yes" && req.body.logo && req.body.logo;
         var logo = req.body.enableLogo === "Yes" && req.files[logoIndex] && req.files[logoIndex];
@@ -48,11 +49,11 @@ const speechToText = (storage, isVideoApi) => {
       const videoStream = isVideoApi ? req.files[0] : req.file;
       const mimetype = videoStream.mimetype;
       const outputExtension = isVideoApi ? videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')) : req.body.audioEncoding;
-      const outputFileName = generateRandomFileName(`.${outputExtension.toLowerCase()}`);
-      contentType = req.body.audioEncoding ? setContentType(req.body.audioEncoding) : isVideoApi ? "video/mp4" : null;
-      const deepgram = new Deepgram(process.env.DEEPGRAM_KEY);
-      const tier = req.body.languageCode ? (req.body.languageCode.includes('es') || req.body.languageCode.includes('en')) ? "nova" : "enhanced" : "enhanced";
 
+      const outputFileName = generateRandomFileName(`.${outputExtension.toLowerCase()}`);
+      contentType = req.body.audioEncoding ? setContentType(req.body.audioEncoding.toUpperCase()) : isVideoApi ? "video/mp4" : null;
+      const deepgram = new Deepgram(process.env.DEEPGRAM_API_KEY);
+      const tier = req.body.languageCode ? (req.body.languageCode.includes('es') || req.body.languageCode.includes('en')) ? "nova" : "enhanced" : "enhanced";
       diarizeOn = req.body.diarizeOn ? convertToBoolean(req.body.diarizeOn) : false;
       topicsOn = req.body.topicsOn ? convertToBoolean(req.body.topicsOn) : false;
       const punctuationOn = req.body.punctuationOn ? convertToBoolean(req.body.punctuationOn) : true;
@@ -69,7 +70,7 @@ const speechToText = (storage, isVideoApi) => {
         utterances: true,
         diarize: diarizeOn,
         summarize: summarizeOn,
-        language: req.body.languageCode
+        language: "en-US"
       }
 
       const response = await deepgram.transcription.preRecorded(
@@ -90,8 +91,8 @@ const speechToText = (storage, isVideoApi) => {
 
       if (subtitlesOn) {
         var subtitles = [];
-        
-        !isVideoApi ? subtitles = await addSubtitles(response,false,req.body.languageCode) : subtitles = await addSubtitles(response, {
+
+        !isVideoApi ? subtitles = await addSubtitles(response, false, req.body.languageCode) : subtitles = await addSubtitles(response, {
           video: videoStream,
           uppercaseSubs: uppercaseSubs,
           emotionsEnabled: emotionsEnabled,
@@ -126,7 +127,7 @@ const speechToText = (storage, isVideoApi) => {
       summarizeOn ? fullSpeechToTextContent += `\nSummary:\n\n${summary.short}\n` : null;
       subtitlesOn ? fullSpeechToTextContent += `\nSubtitles:\n\n${subtitles.join('\n')}\n` : null;
       topicsOn ? fullSpeechToTextContent += `\nTopics:\n\n${topics}\n` : null;
-
+      console.log(fullSpeechToTextContent);
       if (!isVideoApi) {
         await sendToStorage(`${outputFileName}`, fullSpeechToTextContent, contentType, storage);
         res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
@@ -142,7 +143,7 @@ const speechToText = (storage, isVideoApi) => {
         for (let i = 0; i < srtSubtitlesArr.length; i++) {
           ASSSubtitlesTemplate += `${srtSubtitlesArr[i]}\n`;
         }
-        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), ASSSubtitlesTemplate, videoStream.buffer, font, fontExtension, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign,builtInFont);
+        const videoPath = await addSubtitlesToVideo(videoStream.originalname.slice(videoStream.originalname.lastIndexOf('.')), ASSSubtitlesTemplate, videoStream.buffer, font, fontExtension, logo, req.body.logoAlign, logoExtension, watermark, watermarkExtension, req.body.watermarkAlign, builtInFont);
         const endVideoBuffer = fs.readFileSync(videoPath);
         fs.unlinkSync(videoPath);
         sendToStorage(`${outputFileName.substring(0, outputFileName.lastIndexOf('.'))}.${outputExtension}`, endVideoBuffer, contentType, storage);
@@ -151,17 +152,16 @@ const speechToText = (storage, isVideoApi) => {
 
     }
     catch (err) {
-      console.log(err); 
+      console.log(err);
       res.status(400).send(err.message);
     }
   })
 }
 
 function addTopics(response, topics) {
-  for (let i = 0; i < response.results.channels[0].alternatives[0].topics.length; i++) {
-
-    if (typeof (response.results.channels[0].alternatives[0].topics[i].topics[0]) === "object") {
-      topics.push(response.results.channels[0].alternatives[0].topics[i].topics[0].topic);
+  for (let i = 0; i < response.results.channels[0].alternatives[0].topics[0].topics.length; i++) {
+    if (response.results.channels[0].alternatives[0].topics[0].topics[i].confidence > 0.65) {
+      topics.push(response.results.channels[0].alternatives[0].topics[0].topics[i].topic);
     }
   }
 }
@@ -194,24 +194,23 @@ function convertToBoolean(variable) {
 async function addSubtitles(response, subtitlesProps, languageBookmark) {
   var aspectRatio;
   var subtitles = [];
-
   if (subtitlesProps) {
-    var { video, uppercaseSubs, emotionsEnabled, defaultColor, wordFollowEnabled, wordFollowColor, enableScale, enableFade, wordsPerLine, enableRotate,enableTextStroke,formattedStrokeColor,textStrokeThickness } = subtitlesProps;
+    var { video, uppercaseSubs, emotionsEnabled, defaultColor, wordFollowEnabled, wordFollowColor, enableScale, enableFade, wordsPerLine, enableRotate, enableTextStroke, formattedStrokeColor, textStrokeThickness } = subtitlesProps;
   }
 
   const fileName = getLanguageFromBookmark(languageBookmark);
-  var wordsEmotionallyLabeled = require(`../../data/emotions/${fileName}/words.json`);
-  var colorsPalette = ["0CFF00", "0046FF", "FFD500", "5900FF", "FF7000", "FF0000"];
-  var happyWords = wordsEmotionallyLabeled.happy;
-  var sadWords = wordsEmotionallyLabeled.sad;
-  var anxiousWords = wordsEmotionallyLabeled.anxious;
-  var surprisedWords = wordsEmotionallyLabeled.surprised;
-  var afraidWords = wordsEmotionallyLabeled.afraid
-  var angryWords = wordsEmotionallyLabeled.angry;
-
-  var emotionsArr = [happyWords, sadWords, anxiousWords, surprisedWords, afraidWords, angryWords];
-  var wordsIt = 0;
-
+  if (subtitlesProps) {
+    var wordsEmotionallyLabeled = require(`../../data/emotions/${fileName}/words.json`);
+    var colorsPalette = ["0CFF00", "0046FF", "FFD500", "5900FF", "FF7000", "FF0000"];
+    var happyWords = wordsEmotionallyLabeled.happy;
+    var sadWords = wordsEmotionallyLabeled.sad;
+    var anxiousWords = wordsEmotionallyLabeled.anxious;
+    var surprisedWords = wordsEmotionallyLabeled.surprised;
+    var afraidWords = wordsEmotionallyLabeled.afraid
+    var angryWords = wordsEmotionallyLabeled.angry;
+    var emotionsArr = [happyWords, sadWords, anxiousWords, surprisedWords, afraidWords, angryWords];
+    var wordsIt = 0;
+  }
   function getAspectRatio() {
     if (video) {
       var ratio = getVideoMetrics(video, "aspectRatio");
@@ -227,47 +226,52 @@ async function addSubtitles(response, subtitlesProps, languageBookmark) {
   var pLengthCopy = pLength;
 
   for (let utterance of response.results.utterances) {
-    pLength = pLengthCopy;
-    wordsIt = 0;
-    for (let i = 0; i < utterance.words.length; i += pLengthCopy) {
-      var wordsArr = "";
-      var karaokeArr = [];
-      var endArr = [];
+    if (subtitlesProps) {
+      pLength = pLengthCopy;
+      wordsIt = 0;
+      for (let i = 0; i < utterance.words.length; i += pLengthCopy) {
+        var wordsArr = "";
+        var karaokeArr = [];
+        var endArr = [];
 
-      for (let x = wordsIt; x < pLength; x++) {
-        utterance.words[x]  ? endArr.push(utterance.words[x].start, utterance.words[x].end) : null;
-      }
-
-      for (let j = wordsIt; j < pLength; j++) {
-        wordsArr += utterance.words[j] ? uppercaseSubs ? `${utterance.words[j].word.toUpperCase()} ` : `${utterance.words[j].word} ` : "";
-        if (utterance.words[j]) {
-          wordFollowEnabled ? karaokeArr.push(((utterance.words[j].end - utterance.words[j].start) * 100).toFixed(2)) : null;
+        for (let x = wordsIt; x < pLength; x++) {
+          console.log(utterance.words[x]);
+          utterance.words[x] ? endArr.push(utterance.words[x].start, utterance.words[x].end) : null;
         }
 
-      }
+        for (let j = wordsIt; j < pLength; j++) {
+          console.log(j);
+          wordsArr += utterance.words[j] ? uppercaseSubs ? `${utterance.words[j].word.toUpperCase()} ` : `${utterance.words[j].word} ` : `${utterance.words[j].word}`;
+          if (utterance.words[j]) {
+            wordFollowEnabled ? karaokeArr.push(((utterance.words[j].end - utterance.words[j].start) * 100).toFixed(2)) : null;
+          }
 
-      const start = parseFloat(Math.min(...endArr)).toFixed(2);
-      const end = parseFloat(Math.max(...endArr)).toFixed(2);
-      console.log(start,end)
-      wordsIt += pLengthCopy;
-      pLength += pLengthCopy;
-      const subtitlesProps = {
-        emotionsArr: emotionsArr,
-        colorsPalette: colorsPalette,
-        defaultColor: wordFollowEnabled ? wordFollowColor : defaultColor,
-        karaokeArr: wordFollowEnabled ? karaokeArr : false,
-        enableScale: enableScale,
-        enableFade: enableFade,
-        enableRotate: enableRotate,
-        enableTextStroke,
-        formattedStrokeColor:formattedStrokeColor,
-        textStrokeThickness:textStrokeThickness,
-        emotionsEnabled: emotionsEnabled,
+        }
+
+        const start = parseFloat(Math.min(...endArr)).toFixed(2);
+        const end = parseFloat(Math.max(...endArr)).toFixed(2);
+        wordsIt += pLengthCopy;
+        pLength += pLengthCopy;
+        const subtitlesProps = {
+          emotionsArr: emotionsArr,
+          colorsPalette: colorsPalette,
+          defaultColor: wordFollowEnabled ? wordFollowColor : defaultColor,
+          karaokeArr: wordFollowEnabled ? karaokeArr : false,
+          enableScale: enableScale,
+          enableFade: enableFade,
+          enableRotate: enableRotate,
+          enableTextStroke,
+          formattedStrokeColor: formattedStrokeColor,
+          textStrokeThickness: textStrokeThickness,
+          emotionsEnabled: emotionsEnabled,
+        }
+        checkAndPushToArray(wordsArr, subtitles, start, end, subtitlesProps);
       }
-      checkAndPushToArray(wordsArr, subtitles, start, end, subtitlesProps);
+    }
+    else {
+      subtitles.push(`[${parseFloat(utterance.start).toFixed(2)}] - [${parseFloat(utterance.end).toFixed(2)}] ${utterance.transcript}`);
     }
   }
-  console.log(subtitles);
   return subtitles;
 }
 
@@ -276,7 +280,7 @@ function checkAndPushToArray(subsToCheck, subtitles, start, end, subtitlesProps)
   subtitles.push(`[${start} - ${end}]${modifiedWord}\n`);
 }
 
-async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, font, fontExtension, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign,builtInFont) {
+async function addSubtitlesToVideo(videoExtension, srtSubtitles, videoBuffer, font, fontExtension, logo, logoAlign, logoExtension, watermark, watermarkExtension, watermarkAlign, builtInFont) {
   try {
     Ffmpeg.setFfmpegPath(ffmpegPath);
 
@@ -555,9 +559,8 @@ function convertColorToReversedHex(color, variant, opacity) {
 }
 
 function addEmotionsToSubtitles(subtitles, subtitlesProps) {
-  const { emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled, enableRotate,enableTextStroke,textStrokeThickness,formattedStrokeColor } = subtitlesProps;
+  const { emotionsArr, colorsPalette, defaultColor, karaokeArr, enableScale, enableFade, emotionsEnabled, enableRotate, enableTextStroke, textStrokeThickness, formattedStrokeColor } = subtitlesProps;
   const subtilesCopy = subtitles.split(" ");
-  console.log(formattedStrokeColor);
   var modifiedSubtitles = `${enableRotate ? `{\\frz${Math.floor(Math.random() * 45)}}` : ""}`;
   for (let i = 0; i < subtilesCopy.length - 1; i++) {
     var isAdded = false;
@@ -582,7 +585,7 @@ function addEmotionsToSubtitles(subtitles, subtitlesProps) {
           }
         }
         else if (j === emotionsArr.length - 1 && k === emotionsArr[j].length - 1 && !isAdded) {
-          modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : null}\\c${defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,250,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `
+          modifiedSubtitles += `{${karaokeArr ? '\\k' + karaokeArr[i] : null}\\c${defaultColor}${enableTextStroke ? `\\bord${textStrokeThickness}\\3c${formattedStrokeColor}` : ""}${enableScale ? "\\fscx0,\\fscy0,\\t(0,200,\\fscx100\\fscy100)" : ""}${enableFade ? "\\fad(150,150)" : ""}}${subtilesCopy[i]} `
         }
       }
     }

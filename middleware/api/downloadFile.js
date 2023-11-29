@@ -9,7 +9,8 @@ const downloadFile = (googleCloudStorage) => {
 
         while (retryAttempts < MAX_RETRY_ATTEMPTS) {
             try {
-                const file = await googleCloudStorage.bucket('create-boss').file(req.params.filename);
+                console.log(req.params.filename);
+                const file = await googleCloudStorage.bucket('createboss').file(req.params.filename);
                 const [fileBuffer] = await file.download();
                 
                 res.set('Content-Type', file.metadata.contentType);

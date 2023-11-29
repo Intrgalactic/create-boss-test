@@ -4,16 +4,15 @@ const { Document, Packer, Paragraph, TextRun } = require('docx');
 const { spawn } = require('child_process');
 const pathToFfmpeg = require('ffmpeg-static');
 
-const sendToStorage = async (filename, data, contentType, storage) => {
+const sendToStorage = async (filename, data, contentType, storage,folder) => {
     try {
-        const mainBucket = storage.bucket("create-boss");
-        const file = mainBucket.file(filename);
+        const mainBucket = storage.bucket("createboss");
+        const file = !folder ? mainBucket.file(filename) : mainBucket.file(`${folder}/${filename}`);
         
         var contentEncoding;
         var metadata = {
             contentType: contentType
         }
-
         if (contentType === "text/plain" || contentType === "application/pdf" || contentType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document") {
             contentEncoding = "utf-8";
             metadata.contentEncoding = contentEncoding;
@@ -71,6 +70,7 @@ function savePDF(stream, data) {
 }
 
 async function saveDOCX(filename, data, stream) {
+    console.log(filename);
     try {
         const docxBuffer = await generateDocxContent(filename, data);
         stream.write(docxBuffer);
@@ -81,10 +81,9 @@ async function saveDOCX(filename, data, stream) {
     }
 }
 
-function generateDocxContent(filename, data) {
+async function generateDocxContent(filename, data) {
     try {
-        const index = filename.lastIndexOf('.');
-        const title = filename.slice(0, index);
+        const title = "CreateBoss Transcription";
 
         const doc = new Document({
             sections: [],
@@ -98,14 +97,14 @@ function generateDocxContent(filename, data) {
                     children: [
                         new Paragraph({
                             children: [
-                                new TextRun({ text: title, bold: true, size: 24 }),
+                                new TextRun({ text: title, bold: true, size: 24,color:"#000000"}),
                             ],
                         }),
                         new Paragraph({ text: "", size: 16 }),
                         new Paragraph({
                             children: [
 
-                                new TextRun({ text: data, size: 16 })
+                                new TextRun({ text: data, size: 16,color:"#000000" })
                             ]
                         }),
                     ],
@@ -113,8 +112,9 @@ function generateDocxContent(filename, data) {
             ],
         });
         doc.creator = 'Create-Boss'; // Set the creator of the document
-        doc.title = title; // 
-        const docxBuffer = Packer.toBuffer(doc);
+        doc.title = "CreateBoss Transcription"; // 
+        const docxBuffer = await Packer.toBuffer(doc);
+        console.log(docxBuffer);
         return docxBuffer;
     }
     catch (err) {

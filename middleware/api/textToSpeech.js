@@ -13,51 +13,42 @@ const fileTypes = [
 ];
 
 const parseFile = require('../utils/fileParser');
-const fetch = require('node-fetch');
+const createSpeech = require("../utils/createSpeechSample");
+const verifyToken = require("../utils/verifyToken");
 
 const textToSpeech = (storage) => {
 
     return asyncHandler(async (req, res) => {
-        const apiKey = process.env.ELEVENLABS_API_KEY;
+        const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : req.cookies.jwt;
+        const tokenUser = verifyToken(token);
         var textInput;
         var outputFileName = generateRandomFileName(`.mp3`);
-        try {
-            if (req.file) {
-                outputFileName = encodeURIComponent(req.file.originalname);
-                textInput = await getTextToSynthetize(req.file, req)
-            }
-            else {
-                textInput = req.body.text;
-            }
-            await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${req.body.voiceId}/stream`, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'audio/mpeg',
-                    'xi-api-key': `${apiKey}`,
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    text: textInput,
-                    model_id: "eleven_multilingual_v2",
-                    voice_settings: {
-                        stability: req.body.stability,
-                        similarity_boost: req.body.clarity,
-                    }
-                })
-            }).then(response => response.arrayBuffer()).then(async arrayBuffer => {
-                const buffer = Buffer.from(arrayBuffer);
+        if (tokenUser.exp > Date.now() / 1000) {
+            try {
+                if (req.file) {
+                    textInput = await getTextToSynthetize(req.file, req)
+                }
+                else {
+                    textInput = req.body.text;
+                }
+                console.log(req.body,textInput,req.file);
+                const buffer = await createSpeech(req.body.voiceId, req.body.stability, req.body.clarity, textInput).catch(err => {
+                    console.log(err);
+                    throw err;
+                });
+                console.log(buffer);
                 await sendToStorage(outputFileName, buffer, "audio/mpeg", storage)
                 res.status(200).send(JSON.stringify({ fileName: outputFileName.substring(0, outputFileName.lastIndexOf('.')) }));
-            }).catch(err => {
+            }
+            catch (err) {
                 console.log(err);
-                throw err;
-            })
+                res.status(400).send(err.message);
+            }
         }
-        catch (err) {
-            console.log(err);
-            res.status(400).send(err.message);
+        else {
+            console.log('expired');
+            res.sendStatus(403);
         }
-
     });
 
 }
@@ -80,7 +71,6 @@ async function getTextToSynthetize(file, req) {
     else {
         outputFileName = req.body.text;
     }
-
     return textToSynthetize
 }
 

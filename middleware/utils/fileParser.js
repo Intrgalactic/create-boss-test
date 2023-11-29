@@ -65,7 +65,6 @@ async function parseOdt(fileBuffer) {
 function getContentFromJson(contentJson) {
     var textContent = "";
     const textData = JSON.parse(contentJson);
-    console.log(textData['office:document-content']['office:body']['office:text']['text:p'][0]["text:span"]);
     for (let i = 0; i < textData['office:document-content']['office:body']['office:text']['text:p'].length - 1; i++) {
         if (typeof (textData['office:document-content']['office:body']['office:text']['text:p'][i]['text:span']) === "object" && textData['office:document-content']['office:body']['office:text']['text:p'][i]['text:span']._text) {
             textContent += `${textData['office:document-content']['office:body']['office:text']['text:p'][i]['text:span']._text}\n`;
@@ -75,7 +74,6 @@ function getContentFromJson(contentJson) {
         }
        
     }
-    console.log(textData);
     return textContent;
 }
 async function parseDoc(docBuffer) {

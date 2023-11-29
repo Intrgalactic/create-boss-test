@@ -1,28 +1,52 @@
 const asyncHandler = require('express-async-handler');
+const jwt = require('jsonwebtoken');
 
 const getUser = (collection) => {
     return asyncHandler(async (req, res) => {
-        res.setHeader('Cache-Control','private','max-age=3600')
-        const urlParams = new URLSearchParams(req.query);
-        const query = Object.fromEntries(urlParams);
-        if (query.email !== undefined) {
+        if (req.body.email !== undefined) {
             try {
-                const user = await collection.findOne(query);
-                console.log(user);
+                const user = await collection.findOne({ email: req.body.email });
                 if (user === null) {
-                    res.status(400).send("Account Not Found");
+                    res.status(404).send("Account Not Found");
                 }
                 else {
-                    res.status(200).send({
-                        email: user.email,
-                        name: user.name,
-                        lastName: user.lastName,
-                        userName: user.userName,
-                        isPaying: user.isPaying
-                    })
+                    var token = false;
+                    const secretKey = process.env.JSON_WEB_TOKEN_SECRET_KEY;
+                    if (req.body.getToken === "true") {
+                        token = jwt.sign({ email: req.body.email }, secretKey, { expiresIn: req.body.web ? "24h" : "7d" });
+                    }
+                    if (req.body.web) {
+                        if (req.body.getToken) {
+                            res.cookie("jwt", token, {
+                                httpOnly: true,
+                                secure: false,
+                                sameSite: "strict"
+                            })
+                        }
+                        res.status(200).send({
+                            email: user.email,
+                            name: user.name,
+                            lastName: user.lastName,
+                            userName: user.userName,
+                            isPaying: user.isPaying,
+                            emailChanged: user.emailChanged,
+                        })
+                    }
+                    else {
+                        res.status(200).send({
+                            email: user.email,
+                            name: user.name,
+                            lastName: user.lastName,
+                            userName: user.userName,
+                            isPaying: user.isPaying,
+                            emailChanged: user.emailChanged,
+                            token: token
+                        })
+                    }
                 }
             }
-            catch(err) {
+            catch (err) {
+                console.log(err);
                 res.sendStatus(400);
             }
         }

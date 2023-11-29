@@ -1,23 +1,18 @@
 const client = require('elevenlabs-node');
 const asyncHandler = require("express-async-handler");
 
-const getVoices = () => {
+const getVoices = (collection) => {
     const apiKey = process.env.ELEVENLABS_API_KEY;
     return asyncHandler(async (req, res) => {
         res.setHeader("Cache-Control",'private','max-age=3600');
         try {
             var voicesArr = [];
-            const voices = await client.getVoices(apiKey);
-            for (voice of voices.voices) {
+            const voices = collection.find({email: req.query.email});
+            for await (const voice of voices) {
                 voicesArr.push({
-                    id: voice.voice_id,
-                    name:voice.name,
-                    accent: voice.labels.accent,
-                    description: voice.description != null ? voice.description : voice.labels.description,
-                    age: voice.labels.age,
-                    gender: voice.labels.gender,
-                    useCase: voice.labels['use case'],
-                    audio: voice.preview_url
+                    name: voice.voiceName,
+                    id: voice.voiceId,
+                    previewUrl: voice.previewUrl,
                 })
             }
             res.status(200).send(JSON.stringify({ voices: voicesArr }));
