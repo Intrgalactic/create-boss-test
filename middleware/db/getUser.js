@@ -19,7 +19,7 @@ const getUser = (collection) => {
                         if (req.body.getToken) {
                             res.cookie("jwt", token, {
                                 httpOnly: true,
-                                secure: false,
+                                secure: true,
                                 sameSite: "strict"
                             })
                         }
