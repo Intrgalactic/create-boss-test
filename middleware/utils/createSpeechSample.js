@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 
 async function createSpeech(voiceId, stability, clarity, textInput) {
     const text = textInput ? textInput : "This is a sample text generated with use of artificial intelligence";

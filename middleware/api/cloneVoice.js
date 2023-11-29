@@ -4,6 +4,7 @@ const path = require('path');
 const generateRandomFileName = require('../utils/generateFileName');
 const sendToStorage = require('./sendToStorage');
 const createSpeech = require('../utils/createSpeechSample');
+const fetch = require('node-fetch');
 
 const cloneVoice = (cloudStorage,collection) => {
     return asyncHandler(async (req, res) => {
